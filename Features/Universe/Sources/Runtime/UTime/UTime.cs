@@ -6,8 +6,8 @@ namespace Universe
     {
         #region Public
 
-        public static float DeltaTime;
-        public static float FixedDeltaTime;
+        public static float DeltaTime => Time.deltaTime;
+        public static float FixedDeltaTime => Time.fixedDeltaTime;
 
         #endregion
     }

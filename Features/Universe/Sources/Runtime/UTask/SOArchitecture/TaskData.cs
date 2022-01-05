@@ -10,6 +10,7 @@ namespace Universe.SceneTask.Runtime
         public AssetReference m_assetReference;
         public TaskPriority m_priority = TaskPriority.PERSISTENT;
         public bool m_canBeLoadOnlyOnce = true;
+        //public bool m_alwaysUpdated;
 
         #endregion
     }

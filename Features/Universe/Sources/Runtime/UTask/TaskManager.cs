@@ -39,8 +39,36 @@ namespace Universe
             InitializeUTrackedAliases();
         }
 
-        public void OnDestroy()
+        public void Update()
         {
+            if (gameObject.scene.name != Task.GetFocusSceneName()) return;
+            foreach (var u in _registeredUpdate)
+            {
+                u.OnUpdate(DeltaTime);
+            }
+        }
+
+        public void FixedUpdate()
+        {
+            if (gameObject.scene.name != Task.GetFocusSceneName()) return;
+            foreach (var u in _registeredFixedUpdate)
+            {
+                u.OnUpdate(FixedDeltaTime);
+            }
+        }
+
+        public void LateUpdate()
+        {
+            if (gameObject.scene.name != Task.GetFocusSceneName()) return;
+            foreach (var u in _registeredLateUpdate)
+            {
+                u.OnUpdate(DeltaTime);
+            }
+        }
+        
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
             Task.Unregister(this);
         }
 
