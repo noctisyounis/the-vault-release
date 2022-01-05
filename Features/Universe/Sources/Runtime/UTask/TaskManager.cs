@@ -53,7 +53,7 @@ namespace Universe
             if (gameObject.scene.name != Task.GetFocusSceneName()) return;
             foreach (var u in _registeredFixedUpdate)
             {
-                u.OnUpdate(FixedDeltaTime);
+                u.OnFixedUpdate(FixedDeltaTime);
             }
         }
 
@@ -62,7 +62,7 @@ namespace Universe
             if (gameObject.scene.name != Task.GetFocusSceneName()) return;
             foreach (var u in _registeredLateUpdate)
             {
-                u.OnUpdate(DeltaTime);
+                u.OnLateUpdate(DeltaTime);
             }
         }
         
