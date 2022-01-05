@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aeb7fa5c19b8104598b5ad3e847b2ff, type: 3}
+  m_Name: Test2_SpreadsheetLinkData
+  m_EditorClassIdentifier: 
+  m_nameForExport: Test2
+  m_spreadsheetProvider: {fileID: 11400000, guid: 8f946ee38fb80ad4e89876ce5e0dfdc2, type: 2}
+  m_serviceUrl: https://script.google.com/macros/s/AKfycbwQ9GMrPt544sEI4UcJwm0H-dksi6aeZl0uFA9axSyyPdRA1NvAGNM4IaiAmIpbnSE7/exec
+  m_GETparameters:
+  - m_name: ssid
+    m_value: 1EfdDxKBs5GhqA54UQLxmnL3yJxri3ofPHKaq-rjT6uo

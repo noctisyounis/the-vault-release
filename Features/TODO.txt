@@ -1,0 +1,61 @@
+TODO:
+- UAchievement
+
+- UAnalytics
+
+- UArchitecture
+	- Fact/Signal Database Editor
+	- Fact Editor
+		- Correct PPtr Value from generic property drawer
+	- UInjector
+		-- Correct Null Exception on inspector
+		- Inject With Multiple Manners ( easy )
+
+- UBehaviour
+
+- UGizmos
+
+- UGraphicInjector
+	- Create rendering abstraction to MaterialPropertyBlock()
+
+- UHardware
+
+- ULifeCycle
+	- Update Manager
+
+- UPool
+
+- URules
+	- Expression
+	- Rule
+	- RuleSet
+	- URules Inspector
+
+- USpawn
+	-- Create Spawn abstraction around Addressable
+	- Create Release abstraction around Addressable
+	- Create Quality Tiers Switcher
+
+- UTime
+
+- UVerbose
+	-- Extract from UBehaviour
+    -- Wrap the system
+    - Add Warnings
+    - Add Errors
+
+- Scene Fragmentation
+	- Tasks etc
+
+- Debug Menu
+	- Implementation
+	- UI Modularisation
+	- InGame Console
+	- Artist Vison
+- USaver 
+	- Instantiate GameSignal with GameSignal.CreateInstance()
+	
+	
+DONE:
+    -- UInput
+    -- USaver

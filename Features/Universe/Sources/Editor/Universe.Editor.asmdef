@@ -1,0 +1,23 @@
+{
+    "name": "Universe.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:85f45ced71d704547b2c6e33cddcb899",
+        "GUID:fdff0c350c873e341913d59f1cba8e63",
+        "GUID:5fab070156eb205448368e7ab292d540",
+        "GUID:ed4ff0b54ac90474888b6933f2dc2403",
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:478a2357cc57436488a56e564b08d223"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

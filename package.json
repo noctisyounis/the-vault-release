@@ -1,0 +1,16 @@
+{
+  "name": "com.noctisyounis.the-vault",
+  "version": "1.0.0",
+  "displayName": "The Vault",
+  "description": "This is the vault",
+  
+ "keywords": [
+    "the",
+    "vault"
+  ],
+  "author": 
+  {
+    "name": "Open Source - Noctis Younis",
+    "email": "cherifyounis@gmail.com"
+  }
+}

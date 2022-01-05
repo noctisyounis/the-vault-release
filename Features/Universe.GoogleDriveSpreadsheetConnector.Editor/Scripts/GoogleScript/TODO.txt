@@ -1,0 +1,9 @@
+Put this script on a google drive sheet
+ - Tools / Script Editor
+ - Copy/Paste
+ - new deployment
+ - Web application
+ 	- Execute as yourself
+	- open to everyone
+ - Deploy
+ - take the URL given at the end and copy paste in your WebSpreadsheetData
