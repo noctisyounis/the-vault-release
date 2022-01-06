@@ -19,8 +19,9 @@ namespace Universe
 
         #region Unity API
 
-        private void Awake() 
+        public override void Awake()
         {
+            base.Awake();
             s_settings = m_settings;
             s_pathTable = m_pathTable;
         }

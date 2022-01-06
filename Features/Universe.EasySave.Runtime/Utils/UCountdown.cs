@@ -4,7 +4,6 @@ using UnityEngine.Events;
 
 namespace Universe
 {
-    
     public class UCountdown : UBehaviour
     {
         #region Public
@@ -12,26 +11,35 @@ namespace Universe
         public float m_timeBeforeEvent;
         public FloatFact m_timeBeforeEventVariable;
         public bool m_isRepeated;
+        
+        public enum TimeMode { Normal, Unscaled };
         [EnumToggleButtons]
         public TimeMode m_timeMode;
         public UnityEvent OnCountdownReached;
-
-
-        public enum TimeMode { Normal, Unscaled };
 
         [Header( "Internal" ), Space( 10 )]
         [SerializeField]
         public bool m_isConsumed;
 
         #endregion
+        
+        
+        #region Properties
+
+        private float GetTimeFromTimeMode() => 
+            m_timeMode == TimeMode.Normal ? UTime.Time : UTime.UnscaledTime;
+        
+        #endregion
 
 
-        #region System
+        #region Unity API
 
-        private void Awake()
+        public override void Awake()
         {
-            if( enabled )
-                Initialize();
+            base.Awake();
+            if (!enabled) return;
+            
+            Initialize();
         }
 
         private void OnEnable()
@@ -42,45 +50,20 @@ namespace Universe
         private void OnDisable()
         {
             _started = false;
-
         }
 
-        private void Update()
+        public override void OnUpdate(float deltaTime)
         {
             if (!_started) return;
             
-            float timeBeforeEvent = m_timeBeforeEvent;
-            if( m_timeBeforeEventVariable != null )
+            var timeBeforeEvent = m_timeBeforeEvent;
+            if (m_timeBeforeEventVariable != null)
+            {
                 timeBeforeEvent = m_timeBeforeEventVariable.Value;
-
-            if( m_timeMode == TimeMode.Normal )
-            {
-                if( Time.time > _startTime + timeBeforeEvent && !m_isConsumed )
-                {
-                    Verbose( "Countdown.Update m_isRepeated = " + m_isRepeated + ", current = " + Time.time + ", Invoke event" );
-                    OnCountdownReached.Invoke();
-                    if( m_isRepeated )
-                    {
-                        Initialize();
-                        return;
-                    }
-                    m_isConsumed = true;
-                }
             }
-            else if( m_timeMode == TimeMode.Unscaled )
-            {
-                if( Time.unscaledTime > _startTime + timeBeforeEvent && !m_isConsumed )
-                {
-                    Verbose( "Countdown.Update m_isRepeated = " + m_isRepeated + ", current = " + Time.unscaledTime + ", Invoke event" );
-                    OnCountdownReached.Invoke();
-                    if( m_isRepeated )
-                    {
-                        Initialize();
-                        return;
-                    }
-                    m_isConsumed = true;
-                }
-            }
+            
+            var timeMode = GetTimeFromTimeMode();
+            Tick(timeMode, timeBeforeEvent);
         }
 
         #endregion
@@ -91,15 +74,25 @@ namespace Universe
         private void Initialize()
         {
             _started = true;
-            if( m_timeMode == TimeMode.Normal )
+            _startTime = GetTimeFromTimeMode();
+            
+            Verbose( $"Countdown.Initialize _startTIme = {_startTime}" );
+        }
+
+        private void Tick(float time, float timeBeforeEvent)
+        {
+            if (!(time > _startTime + timeBeforeEvent) || m_isConsumed) return;
+                
+            Verbose( $"Countdown.Update m_isRepeated = {m_isRepeated}, current = {time}, Invoke event" );
+            OnCountdownReached.Invoke();
+                
+            if( m_isRepeated )
             {
-                _startTime = Time.time;
+                Initialize();
+                return;
             }
-            else if( m_timeMode == TimeMode.Unscaled )
-            {
-                _startTime = Time.unscaledTime;
-            }
-            Verbose( "Countdown.Initialize _startTIme = " + _startTime );
+
+            m_isConsumed = true;
         }
 
         #endregion

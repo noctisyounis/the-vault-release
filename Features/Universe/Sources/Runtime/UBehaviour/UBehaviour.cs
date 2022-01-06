@@ -90,6 +90,41 @@ namespace Universe
         #endregion
         
         
+        #region Gizmos
+
+        public void DrawCube(Vector3 position, float size, Color color) =>
+            this.UDrawCube(position, size, color);
+
+        public void DrawLine(Vector3 start, Vector3 end, Color color) =>
+            this.UDrawLine(start, end, color);
+
+        public void DrawSphere(Vector3 position, float radius, Color color) =>
+            this.UDrawSphere(position, radius, color);
+
+        public void DrawTorus(Vector3 position, Quaternion rotation, float radius, float thickness, Color color) =>
+            this.UDrawTorus(position, rotation, radius, thickness, color);
+
+        public void DrawCone(Vector3 position, Quaternion rotation, float radius, float length, Color color) =>
+            this.UDrawCone(position, rotation, radius, length, color);
+
+        public void DrawPolyline(List<Vector3> points, bool closed, float thickness, Color color) =>
+            this.UDrawPolyline(points, closed, thickness, color);
+
+        public void DrawPolygon(List<Vector3> points, Color color) =>
+            this.UDrawPolygon(points, color);
+
+        public void DrawTriangle(Vector3 a, Vector3 b, Vector3 c, float roundness, Color color) =>
+            this.UDrawTriangle(a, b, c, roundness, color);
+
+        public void DrawDisc(Vector3 position, Vector3 normal, float radius, Color color) =>
+            this.UDrawDisc(position, normal, radius, color);
+
+        public void DrawRectangle(Vector3 position, Quaternion rotation, Vector2 size, Color color) =>
+            this.UDrawRectangle(position, rotation, size, color);
+        
+        #endregion
+        
+
         #region Inputs
 
         protected float GetAxis(string axis) => 

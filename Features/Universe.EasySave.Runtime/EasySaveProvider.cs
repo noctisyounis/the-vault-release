@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using static System.Enum;
+using static ES3;
+using static ES3.Location;
+using static Universe.USaveLevel;
+
 namespace Universe.EasySave.Runtime
 {
     using static GUILayout;
@@ -43,7 +48,7 @@ namespace Universe.EasySave.Runtime
         public override void Save( USaveLevel saveLevel )
         {
             Verbose( "Save level  = ", saveLevel );
-            List<FactBase> levelFacts = GetAllFactsInCurrentSaveLevel( saveLevel );
+            var levelFacts = GetAllFactsInCurrentSaveLevel( saveLevel );
 
             InitializeCompletionPercentage( GetCountSaveLevelFacts( levelFacts ) );
             SaveListFacts( levelFacts );
@@ -63,21 +68,21 @@ namespace Universe.EasySave.Runtime
 
         #region Unity API
 
-        private void Awake()
+        public void Start()
         {
             USaver.m_normalizedPercentageOfCompletion = m_normalizedPercentageOfCompletion;
             USaver.OnLoadFinish = OnLoadFinish;
             USaver.OnSaveFinish = OnSaveFinish;
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             if( !IsDebug ) return;
 
             if( Button( "Save All" ) ) SaveAll();
             if( Button( "Load All" ) ) LoadAll();
-            if( Button( "Save Game data" ) ) Save( USaveLevel.Game );
-            if( Button( "Load user data" ) ) Load( USaveLevel.User );
+            if( Button( "Save Game data" ) ) Save( Game );
+            if( Button( "Load user data" ) ) Load( User );
         }
 
         #endregion
@@ -106,7 +111,7 @@ namespace Universe.EasySave.Runtime
         private void SaveListFacts( List<FactBase> levelFacts )
         {
             var settings = GetEasySaveCache();
-            Verbose( $"levelfacts = {levelFacts}" );
+            Verbose( $"Level Facts = {levelFacts}" );
 
             SaveFacts( settings, levelFacts );
         }
@@ -163,12 +168,12 @@ namespace Universe.EasySave.Runtime
 
         private static void StoreEasySaveCacheFile()
         {
-            ES3.StoreCachedFile();
+            StoreCachedFile();
         }
 
         private void CacheSaveFile()
         {
-            ES3.CacheFile( m_saveFile );
+            CacheFile( m_saveFile );
         }
 
         private void SaveFacts( ES3Settings settings, List<FactBase> levelFacts )
@@ -206,7 +211,7 @@ namespace Universe.EasySave.Runtime
 
             if( DoesntEntryExist( entry ) ) return;
 
-            ES3.LoadInto( entry.name, entry, settings );
+            LoadInto( entry.name, entry, settings );
             IncreaseCompletionPercentage();
         }
 
@@ -218,8 +223,8 @@ namespace Universe.EasySave.Runtime
 
         private bool CheckIfSaveFileExists()
         {
-            var locationset = new ES3Settings( ES3.Location.File );
-            return ES3.FileExists( locationset );
+            var locationSet = new ES3Settings( File );
+            return FileExists( locationSet );
         }
 
         #endregion
@@ -228,19 +233,19 @@ namespace Universe.EasySave.Runtime
         #region Private
 
         private bool IsParsingOneSaveLevel() => !_parseAllSaveLevel;
-        private static bool IsSavable( USaveLevel saveLevel ) => saveLevel != USaveLevel.None;
-        private ES3Settings GetEasySaveCache() => new ES3Settings( ES3.Location.Cache );
+        private static bool IsSavable( USaveLevel saveLevel ) => saveLevel != None;
+        private ES3Settings GetEasySaveCache() => new ES3Settings( Location.Cache );
         private List<FactBase> GetAllFactsInCurrentSaveLevel( USaveLevel saveLevel )
             => m_factList.FindAll( x => x.m_saveLevel == saveLevel );
         private List<FactBase> GetAllSavableFacts()
-            => m_factList.FindAll( x => x.m_saveLevel != USaveLevel.None );
+            => m_factList.FindAll( x => x.m_saveLevel != None );
 
-        private int GetCountAllSaveLevelFactsCount => m_factList.Count( x => x.m_saveLevel != USaveLevel.None );
+        private int GetCountAllSaveLevelFactsCount => m_factList.Count( x => x.m_saveLevel != None );
         private int GetCountSaveLevelFacts( USaveLevel saveLevel ) => GetAllFactsInCurrentSaveLevel( saveLevel ).Count;
         private int GetCountSaveLevelFacts( List<FactBase> levelFacts ) => levelFacts.Count;
 
-        private static bool DoesntEntryExist( FactBase entry ) => !ES3.KeyExists( entry.name );
-        private static Array GetAllSaveLevels => Enum.GetValues( typeof( USaveLevel ) );
+        private static bool DoesntEntryExist( FactBase entry ) => !KeyExists( entry.name );
+        private static Array GetAllSaveLevels => GetValues( typeof( USaveLevel ) );
 
         private bool SaveDoesntExist() => !CheckIfSaveFileExists();
 
