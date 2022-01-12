@@ -112,6 +112,9 @@ namespace Universe
 			}
 
 			s_currentFolder--;
+
+			if(s_currentFolder < 0) return;
+
 			RefreshFolderAt(s_currentFolder);
 		}
 

@@ -13,6 +13,7 @@ namespace Universe
         #region Exposed
 
         [Header("Settings")] 
+        public bool m_alwaysUpdate;
         public XR m_xr;
         
         [Serializable]
@@ -41,16 +42,20 @@ namespace Universe
 
         public void Update()
         {
-            if (gameObject.scene.name != Task.GetFocusSceneName()) return;
+            if (!CanUpdate()) return;
+
             foreach (var u in _registeredUpdate)
             {
                 u.OnUpdate(DeltaTime);
             }
         }
 
+        
+
         public void FixedUpdate()
         {
-            if (gameObject.scene.name != Task.GetFocusSceneName()) return;
+            if (!CanUpdate()) return;
+
             foreach (var u in _registeredFixedUpdate)
             {
                 u.OnFixedUpdate(FixedDeltaTime);
@@ -59,7 +64,8 @@ namespace Universe
 
         public void LateUpdate()
         {
-            if (gameObject.scene.name != Task.GetFocusSceneName()) return;
+            if (!CanUpdate()) return;
+
             foreach (var u in _registeredLateUpdate)
             {
                 u.OnLateUpdate(DeltaTime);
@@ -156,6 +162,8 @@ namespace Universe
 
             list.Remove(target);
         }
+
+        private bool CanUpdate() => m_alwaysUpdate || gameObject.scene.name == Task.GetFocusSceneName();
         
         #endregion
 
