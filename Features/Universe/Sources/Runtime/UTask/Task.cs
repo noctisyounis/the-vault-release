@@ -119,9 +119,7 @@ namespace Universe.SceneTask.Runtime
 
         private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete(TaskData task = null)
         {
-            var highestScene = GetFocusedScene();
-            m_focusScene = highestScene;
-            
+            GetFocusedScene();
             if (task) ULoad(null, task);
 
             return null;
