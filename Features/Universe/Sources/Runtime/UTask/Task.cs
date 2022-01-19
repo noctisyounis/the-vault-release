@@ -91,6 +91,14 @@ namespace Universe.SceneTask.Runtime
             m_focusSceneHandle = entry[0];
             return m_focusSceneHandle.Result;
         }
+
+        public static SceneInstance GetLoadedScene(TaskData from)
+        {
+            var task = _dicoOfTasks[from];
+            var sceneHandle = task[0];
+
+            return sceneHandle.Result;
+        }
         
         #endregion
 
@@ -182,19 +190,19 @@ namespace Universe.SceneTask.Runtime
         public static void UnregisterUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
-            taskManager.RemoveFromUpdate(target);
+            taskManager?.RemoveFromUpdate(target);
         }
 
         public static void UnregisterFixedUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
-            taskManager.RemoveFromFixedUpdate(target);
+            taskManager?.RemoveFromFixedUpdate(target);
         }
 
         public static void UnRegisterLateUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
-            taskManager.RemoveFromLateUpdate(target);
+            taskManager?.RemoveFromLateUpdate(target);
         }
         #endregion
 
