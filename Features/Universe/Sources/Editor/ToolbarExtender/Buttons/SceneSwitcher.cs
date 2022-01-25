@@ -56,8 +56,8 @@ namespace Universe.ToolbarExtention
 						var scene = GetSceneAt (i);
 						SetString($"[CustomPlayMode]{i.ToString()}", scene.path);
 					}
-
-					playModeStartScene = LoadAssetAtPath<SceneAsset>("Assets/Features/Universe/Sources/Runtime/GameStarter/GameStarter.unity");
+					
+					playModeStartScene = LoadAssetAtPath<SceneAsset>(EditorBuildSettings.scenes[0].path);
 					isPlaying = true;
 				}
 
