@@ -13,7 +13,6 @@ namespace Universe
         #region Exposed
 
         [Header("Settings")] 
-        public bool m_alwaysUpdate;
         public XR m_xr;
         
         [Serializable]
@@ -43,10 +42,16 @@ namespace Universe
         public void Update()
         {
             if (!CanUpdate()) return;
+            var deltaTime = DeltaTime;
+            var length = _registeredUpdate.Count;
 
-            foreach (var u in _registeredUpdate)
+            for (int i = 0; i < length; i++)
             {
-                u.OnUpdate(DeltaTime);
+                var u = _registeredUpdate[i];
+
+                if(!u.UseUpdates) continue;
+
+                u.OnUpdate(deltaTime);
             }
         }
 
@@ -55,20 +60,32 @@ namespace Universe
         public void FixedUpdate()
         {
             if (!CanUpdate()) return;
+            var fixedDeltaTime = FixedDeltaTime;
+            var length = _registeredFixedUpdate.Count;
 
-            foreach (var u in _registeredFixedUpdate)
+            for (int i = 0; i < length; i++)
             {
-                u.OnFixedUpdate(FixedDeltaTime);
+                var u = _registeredFixedUpdate[i];
+
+                if(!u.UseUpdates) continue;
+                
+                u.OnFixedUpdate(fixedDeltaTime);
             }
         }
 
         public void LateUpdate()
         {
             if (!CanUpdate()) return;
+            var deltaTime = DeltaTime;
+            var length = _registeredLateUpdate.Count;
 
-            foreach (var u in _registeredLateUpdate)
+            for (int i = 0; i < length; i++)
             {
-                u.OnLateUpdate(DeltaTime);
+                var u = _registeredLateUpdate[i];
+
+                if(!u.UseUpdates) continue;
+                
+                u.OnLateUpdate(deltaTime);
             }
         }
         
@@ -163,12 +180,19 @@ namespace Universe
             list.Remove(target);
         }
 
-        private bool CanUpdate() => m_alwaysUpdate || gameObject.scene.name == Task.GetFocusSceneName();
+        public void SetAlwaysUpdated(bool next)
+        {
+            _alwaysUpdated = next;
+        }
+
+        private bool CanUpdate() => _alwaysUpdated || gameObject.scene.name == Task.GetFocusSceneName();
         
         #endregion
 
 
         #region Private And Protected
+
+        private bool _alwaysUpdated;
         
         private UTrackedAlias _headsetTrackedAlias;
         private UTrackedAlias _playAreaTrackedAlias;
@@ -178,6 +202,9 @@ namespace Universe
         private List<UBehaviour> _registeredUpdate = new();
         private List<UBehaviour> _registeredFixedUpdate = new();
         private List<UBehaviour> _registeredLateUpdate = new();
+        private List<UBehaviour> _updatableBehaviours = new();
+        private List<UBehaviour> _fixedUpdatableBehaviours = new();
+        private List<UBehaviour> _lateUpdatableBehaviours = new();
 
         #endregion
     }

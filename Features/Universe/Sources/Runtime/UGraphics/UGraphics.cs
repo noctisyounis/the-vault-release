@@ -18,7 +18,7 @@ namespace Universe
         private void Start() 
         {
             UpdateAsset();
-            Spawn(_preferedAsset, transform.position, transform.rotation, transform, 0);
+            Spawn(_preferedAsset, Vector3.zero, Quaternion.identity, transform, 0);
         }
 
         #endregion

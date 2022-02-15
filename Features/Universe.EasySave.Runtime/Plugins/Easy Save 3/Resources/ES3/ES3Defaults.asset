@@ -31,12 +31,17 @@ MonoBehaviour:
     assemblyNames:
     - Universe.Runtime
     - Universe.Runtime.EasySave
-    - Plugins.JSONExtension
+    - Universe.Plugins.EasySave3
+    - ShapesRuntime
     - CSharpExtensions
     - Sirenix.OdinInspector.CompatibilityLayer
-    - Universe.GoogleDriveSpreadsheetConnector.Editor
+    - ShapesSamples
+    - ShapesProvider.Runtime
+    - Plugins.JSONExtension
+    - ShapesEditor
     - Sirenix.OdinInspector.CompatibilityLayer.Editor
     - Universe.Editor
+    - Universe.GoogleDriveSpreadsheetConnector.Editor
     showAdvancedSettings: 1
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1

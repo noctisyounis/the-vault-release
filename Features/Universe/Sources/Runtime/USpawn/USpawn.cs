@@ -54,8 +54,10 @@ namespace Universe
             assetReference.InstantiateAsync().Completed += go =>
             {
                 var tr = go.Result.transform;
-                tr.SetPositionAndRotation(position, rotation);
+                
                 tr.SetParent(parent);
+                tr.localPosition = position;
+                tr.localRotation = rotation;
 
                 if(callback != null) callback(go.Result);
             };

@@ -171,6 +171,7 @@ MonoBehaviour:
   IsDebug: 0
   IsVerbose: 0
   GizmosVisible: 0
+  UseUpdates: 1
   Velocity: {x: 0, y: 0, z: 0}
   Magnitude: 0
 --- !u!1 &911519039
@@ -320,6 +321,7 @@ MonoBehaviour:
   IsDebug: 0
   IsVerbose: 0
   GizmosVisible: 0
+  UseUpdates: 1
   Velocity: {x: 0, y: 0, z: 0}
   Magnitude: 0
 --- !u!1 &1513410601
@@ -451,6 +453,7 @@ MonoBehaviour:
   IsDebug: 0
   IsVerbose: 0
   GizmosVisible: 0
+  UseUpdates: 1
   m_xr:
     m_useXRInput: 1
     m_headset: {fileID: 2036929089}
@@ -617,6 +620,7 @@ MonoBehaviour:
   IsDebug: 0
   IsVerbose: 0
   GizmosVisible: 0
+  UseUpdates: 1
   Velocity: {x: 0, y: 0, z: 0}
   Magnitude: 0
 --- !u!1 &2036929088
@@ -667,5 +671,6 @@ MonoBehaviour:
   IsDebug: 0
   IsVerbose: 0
   GizmosVisible: 0
+  UseUpdates: 1
   Velocity: {x: 0, y: 0, z: 0}
   Magnitude: 0

@@ -36,7 +36,7 @@ namespace Universe.SceneTask.Runtime
 
         #region Main
 
-        public static void ULoad(this UBehaviour source, TaskData task)
+        public static void ULoadTask(this UBehaviour source, TaskData task)
         {
             if (CheckIfSceneCanBeLoaded(task))
             {
@@ -68,7 +68,7 @@ namespace Universe.SceneTask.Runtime
             }
         }
 
-        public static void UUnload(this UBehaviour source, TaskData task)
+        public static void UUnloadTask(this UBehaviour source, TaskData task)
         {
             if (DicoDoesntContain(task)) return;
             var handle = GetLastHandleOfScene(task);
@@ -108,6 +108,7 @@ namespace Universe.SceneTask.Runtime
         private static void LoadScene(TaskData sceneData)
         {
             var handle = LoadSceneAsync(sceneData.m_assetReference, Additive);
+
             _dicoOfTasks[sceneData].Add(handle);
             _taskHandlesList.Add(handle);
             handle.Completed += OnSceneLoaded;
@@ -128,9 +129,10 @@ namespace Universe.SceneTask.Runtime
         private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete(TaskData task = null)
         {
             var highestScene = GetFocusedScene();
+
             m_focusScene = highestScene;
             
-            if (task) ULoad(null, task);
+            if (task) ULoadTask(null, task);
 
             return null;
         }
@@ -138,12 +140,16 @@ namespace Universe.SceneTask.Runtime
         private static void OnSceneLoaded(AsyncOperationHandle<SceneInstance> go)
         {
             var highestScene = GetFocusedScene();
+            var taskData = GetTaskDataOf(go);
+            var taskManager = GetTaskManagerOf(go);
+
+            taskManager.SetAlwaysUpdated(taskData.m_alwaysUpdated);
             m_focusScene = highestScene;
         }
-        
+
         #endregion
-        
-        
+
+
         #region TaskManager
 
         public static void Register(TaskManager target)
@@ -168,6 +174,15 @@ namespace Universe.SceneTask.Runtime
                 target.gameObject.scene.name == taskManager.gameObject.scene.name);
         }
 
+        private static TaskManager GetTaskManagerOf(AsyncOperationHandle<SceneInstance> go)
+        {
+            var rootGameObjects = new List<GameObject>();
+            go.Result.Scene.GetRootGameObjects(rootGameObjects);
+            var taskManagerRoot = rootGameObjects.Find((GameObject root) => root.name.Contains("[TaskManager]") || root.transform.Find("[TaskManager]"));
+            var taskManager = taskManagerRoot.GetComponentInChildren<TaskManager>();
+
+            return taskManager;
+        }
 
         public static void RegisterUpdate(UBehaviour target)
         {
@@ -199,7 +214,7 @@ namespace Universe.SceneTask.Runtime
             taskManager?.RemoveFromFixedUpdate(target);
         }
 
-        public static void UnRegisterLateUpdate(UBehaviour target)
+        public static void UnregisterLateUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
             taskManager?.RemoveFromLateUpdate(target);
@@ -221,6 +236,14 @@ namespace Universe.SceneTask.Runtime
                     Debug.Log($"       scene index = {j}, sceneHandle = {sceneList[j]}");
                 }
             }
+        }
+
+        private static TaskData GetTaskDataOf(AsyncOperationHandle<SceneInstance> scene)
+        {
+            var entry = _dicoOfTasks.FirstOrDefault((KeyValuePair<TaskData, List<AsyncOperationHandle<SceneInstance>>> entry) => entry.Value.Contains(scene));
+            var taskData = entry.Key;
+
+            return taskData;
         }
 
         #region Load Scene
