@@ -8,6 +8,6 @@ public class GameStarter : MonoBehaviour
     
     void Awake()
     {
-        Task.ULoad(null, taskData);
+        Task.ULoadTask(null, taskData);
     }   
 }

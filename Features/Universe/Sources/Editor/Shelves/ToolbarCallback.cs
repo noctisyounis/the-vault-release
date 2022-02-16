@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 using UnityEngine.Experimental.UIElements;
 #endif
 
-namespace Universe.ToolbarExtention
+namespace Universe.Toolbar.Editor
 {
 	public static class ToolbarCallback
 	{

@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Universe.ToolbarExtention
+namespace Universe.Toolbar.Editor
 {
 	[InitializeOnLoad]
 	public static class ToolbarExtender

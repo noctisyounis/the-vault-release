@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
-using UnityEditor.AddressableAssets.Settings;
 
 using static Unity.EditorCoroutines.Editor.EditorCoroutineUtility;
 using static UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject;
 using static UnityEditor.AssetDatabase;
+using static Universe.UAddressableUtility;
 
 namespace Universe
 {
@@ -140,30 +139,6 @@ namespace Universe
 				RefreshFolderAt(s_currentFolder);
 			}
 		}
-
-		private static void RemoveAaEntry(AddressableAssetSettings aaSettings, string targetGUID)
-        {
-            var e = aaSettings.FindAssetEntry(targetGUID);
-			if(e == null) return;
-			
-			var removedEntry = aaSettings.RemoveAssetEntry(targetGUID, false);
-			aaSettings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryRemoved, removedEntry, true, false);
-        }
-
-		public static void CreateAaEntry(AddressableAssetSettings aaSettings, string targetGUID)
-        {
-            if (aaSettings.DefaultGroup.ReadOnly)
-            {
-                Debug.LogError("Current default group is ReadOnly.  Cannot add addressable assets to it");
-                return;
-            }
-
-            AddressableAssetGroup parentGroup = aaSettings.DefaultGroup;
-			
-			var createdEntry = aaSettings.CreateOrMoveEntry(targetGUID, parentGroup, false, false);
-
-			aaSettings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryCreated, createdEntry, true, false);
-        }
 
 		#endregion
 

@@ -18,6 +18,9 @@ namespace Universe
         public bool IsDebug;
         public bool IsVerbose;
         public bool GizmosVisible;
+
+        [Header("Life time")]
+        public bool UseUpdates = true;
         
         #endregion
         
@@ -35,7 +38,7 @@ namespace Universe
         {
             Task.UnregisterUpdate(this);
             Task.UnregisterFixedUpdate(this);
-            Task.UnRegisterLateUpdate(this);
+            Task.UnregisterLateUpdate(this);
         }
 
         public virtual void OnUpdate(float deltatime) {}
@@ -144,15 +147,35 @@ namespace Universe
         
         #region Tasks
 
-        protected void Load(TaskData task) =>
-            this.ULoad(task);
+        protected void LoadTask(TaskData task) =>
+            this.ULoadTask(task);
 
         protected void UnloadLastTaskAndLoad(TaskData task) =>
             this.UUnloadLastTaskAndLoad(task);
 
-        protected void Unload(TaskData task) =>
-            this.UUnload(task);
+        protected void UnloadTask(TaskData task) =>
+            this.UUnloadTask(task);
         
+        #endregion
+
+
+        #region Level
+
+        protected void LoadLevelAbsolute(LevelData level) =>
+            this.ULoadLevelAbsolute(level);
+
+        protected void LoadLevelOptimized(LevelData level) =>
+            this.ULoadLevelOptimized(level);
+
+        protected void ReloadCurrentLevelAbsolute() =>
+            this.UReloadCurrentLevelAbsolute();
+
+        protected void ReloadCurrentLevelOptimized() =>
+            this.UReloadCurrentLevelOptimized();
+
+        protected void UnloadLevel(LevelData level) =>
+            this.UUnloadLevel(level);
+
         #endregion
 
 

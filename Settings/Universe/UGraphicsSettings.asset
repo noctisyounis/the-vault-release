@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8b154fdd49426e43bd405d994655364, type: 3}
   m_Name: UGraphicsSettings
   m_EditorClassIdentifier: 
-  targetFolder: Assets/_/HD
-  fallbackFolder: Assets/_/Standard
+  m_rootFolder: Assets/_/GraphicsTiers
+  m_targetFolder: Assets/_/GraphicsTiers/SD
+  m_fallbackFolder: Assets/_/GraphicsTiers/Standard
+  m_existingFolders: []
