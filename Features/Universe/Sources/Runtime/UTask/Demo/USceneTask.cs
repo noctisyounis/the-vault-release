@@ -26,7 +26,7 @@ namespace Universe.SceneTask.Runtime
 
         public void GoToScene( TaskData sceneTask )
         {
-            this.Load( sceneTask );
+            this.LoadTask( sceneTask );
         }
 
         public void UnloadPreviousAndGoToScene( TaskData sceneTask )
@@ -36,7 +36,7 @@ namespace Universe.SceneTask.Runtime
 
         public void UnloadScene( TaskData sceneTask )
         {
-            this.Unload( sceneTask );
+            this.UnloadTask( sceneTask );
         }
 
         #endregion

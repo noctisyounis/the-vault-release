@@ -32,11 +32,11 @@ MonoBehaviour:
     - Universe.Runtime
     - Universe.Runtime.EasySave
     - Universe.Plugins.EasySave3
-    - ShapesProvider.Runtime
     - ShapesRuntime
     - CSharpExtensions
     - Sirenix.OdinInspector.CompatibilityLayer
     - ShapesSamples
+    - ShapesProvider.Runtime
     - Plugins.JSONExtension
     - ShapesEditor
     - Sirenix.OdinInspector.CompatibilityLayer.Editor

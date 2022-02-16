@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e33e26d0a8bef04e98697506603ad4f, type: 3}
-  m_Name: SceneTaskData_AdditiveScene01
+  m_Name: SceneTaskData_Level_Demo
   m_EditorClassIdentifier: 
   m_assetReference:
-    m_AssetGUID: b71e72208d1344d4297fdcf14497dfbf
+    m_AssetGUID: b037f5884e665be4bbf3400db213d28d
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  m_priority: 1000
+  m_priority: 0
   m_canBeLoadOnlyOnce: 1
-  m_alwaysUpdated: 0
+  m_alwaysUpdated: 1
