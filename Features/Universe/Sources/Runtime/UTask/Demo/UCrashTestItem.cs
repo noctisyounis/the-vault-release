@@ -17,7 +17,6 @@ namespace Universe.SceneTask.Runtime
 
 		public override void Awake()
 		{
-			SceneManager.MoveGameObjectToScene(gameObject, Task.GetFocusScene());
 			base.Awake();
 		}
 

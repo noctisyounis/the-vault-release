@@ -148,7 +148,8 @@ namespace Universe.Toolbar.Editor
 			}
 		}
 		
-		public static void GUILeft() {
+		public static void GUILeft() 
+		{
 			GUILayout.BeginHorizontal();
 			foreach (var handler in LeftToolbarGUI)
 			{
@@ -157,7 +158,8 @@ namespace Universe.Toolbar.Editor
 			GUILayout.EndHorizontal();
 		}
 		
-		public static void GUIRight() {
+		public static void GUIRight() 
+		{
 			GUILayout.BeginHorizontal();
 			foreach (var handler in RightToolbarGUI)
 			{

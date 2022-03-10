@@ -20,7 +20,7 @@ namespace Universe.Toolbar.Editor
 			var levelPath = PlayerPrefs.GetString(_playerPrefName);
 			_currentLevel = FindAssociatedLevel(levelPath);
 
-			Label("Play on : ", Width(_labelWidth));
+			Label("Current", Width(_labelWidth));
 			_currentLevel = EditorGUILayout.Popup(_currentLevel, _levelNames, Width(_popupWidth));
 
 			levelPath = _levelPaths[_currentLevel];

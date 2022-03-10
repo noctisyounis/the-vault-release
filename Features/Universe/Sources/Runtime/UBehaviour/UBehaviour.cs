@@ -90,6 +90,14 @@ namespace Universe
         protected void Verbose<T>(string message, Dictionary<T, T> values) => 
             this.ULog(message, values);
 
+        [Conditional("DEBUG")]
+        protected void VerboseWarning(string message) =>
+            this.UWarning(message);
+
+        [Conditional("DEBUG")]
+        protected void VerboseError(string message) =>
+            this.UError(message);
+
         #endregion
         
         
@@ -176,10 +184,20 @@ namespace Universe
         protected void UnloadLevel(LevelData level) =>
             this.UUnloadLevel(level);
 
+        protected void LoadNextTask() =>
+            this.ULoadNextTask();
+        protected void LoadLevelTask(int taskIndex) =>
+            this.ULoadLevelTask(taskIndex);
+        protected void ReloadCheckpoint() =>
+            this.UReloadCheckpoint();
+        protected void UnloadPreviousTask() =>
+            this.UUnloadPreviousTask();
+
         #endregion
 
 
         #region Cached Members
+#pragma warning disable 0109
 
         [NonSerialized]
         private Transform _transform;
@@ -240,6 +258,7 @@ namespace Universe
         public new Rigidbody2D rigidbody2D => 
             _rigidbody2D ? _rigidbody2D : _rigidbody2D = GetComponent<Rigidbody2D>();
 
-        #endregion
+        #pragma warning restore 0109
+#endregion
     }
 }

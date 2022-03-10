@@ -39,20 +39,7 @@ namespace Universe.Toolbar.Editor
 
 		private static void LoadSettings()
 		{
-			var fullPath = GetFullPath(_settingsPath);
-
-			if(!IsValidFolder(_settingsFolder)) FolderHelper.CreatePath(_settingsFolder);
-			if(!File.Exists(fullPath))
-			{
-				_settings = ScriptableObject.CreateInstance<UGraphicsSettings>();
-				
-				CreateAsset(_settings, _settingsPath);
-				SaveAssets();
-			}
-			else
-			{
-				_settings = LoadAssetAtPath<UGraphicsSettings>(_settingsPath);
-			}
+			_settings = USettings.GetSettings<UGraphicsSettings>();
 		}
 
 		private static int FindAssociatedTier(string path)
@@ -74,9 +61,7 @@ namespace Universe.Toolbar.Editor
 		private static int _currentTargetGraphicTier;
 		private static int _currentFallbackGraphicTier;
 		private static string[] _graphicsTiers = {"Standard", "HD", "SD"};
-
-		private static string _settingsFolder = "Assets/Settings/Universe";
-		private static string _settingsPath = "Assets/Settings/Universe/UGraphicsSettings.asset";
+		
 		private static UGraphicsSettings _settings;
 
 		#endregion

@@ -11,7 +11,7 @@ namespace Universe.Toolbar.Editor
         Files,
         Database,
         Graphics,
-        Integration,
+        Level,
     }
 
     public enum SIDE
@@ -41,8 +41,8 @@ namespace Universe.Toolbar.Editor
                 case SHELVE.Graphics:
                     DrawGraphics();
                     break;
-                case SHELVE.Integration:
-                    DrawIntegration();
+                case SHELVE.Level:
+                    DrawLevel();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -76,8 +76,7 @@ namespace Universe.Toolbar.Editor
         static void DrawDatabase()
         {
             OpenAddressableButton.Draw();
-            ReloadAddressableButton.Draw();
-            BuildAddressableButton.Draw();
+            ReloadAndBuildAddressable.Draw();
         }
 
         static void DrawGraphics()
@@ -85,12 +84,13 @@ namespace Universe.Toolbar.Editor
             GraphicTierChanger.Draw();
         }
 
-        static void DrawIntegration()
+        static void DrawLevel()
         {
-            CreateLevelButton.Draw();
             SelectStartingLevel.Draw();
             OpenLevel.Draw();
             SwitchLevel.Draw();
+            AddTaskToLevel.Draw();
+            CreateLevelButton.Draw();
         }
 
         private static string _shelvePlayerPrefKey = "shelve";

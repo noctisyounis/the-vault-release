@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Universe.SceneTask.Runtime
@@ -8,7 +9,7 @@ namespace Universe.SceneTask.Runtime
 
 		public TaskData m_blockMeshEnvironment;
 		public TaskData m_artEnvironment;
-		public TaskData m_gameplay;
+		public List<TaskData> m_gameplayTasks = new();
 
 		#endregion
 	}

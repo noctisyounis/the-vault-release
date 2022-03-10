@@ -7,7 +7,7 @@ namespace Universe
     {
         #region Public
         public new abstract string ToString();
-        public Type Type { get; set; }
+        public virtual Type Type { get; set; }
         
         [Header("Editor"), Space(10)]
         public bool m_isFavorite;

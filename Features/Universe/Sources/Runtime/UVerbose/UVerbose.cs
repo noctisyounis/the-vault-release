@@ -77,6 +77,22 @@ namespace Universe
             ULog(source, message + textToShow );
         }
 
+        [Conditional("DEBUG")]
+        public static void UWarning(this UBehaviour source, string message)
+        {
+            if (!source.IsMasterDebug && !source.IsVerbose) return;
+            
+            Warning(message);
+        }
+
+        [Conditional("DEBUG")]
+        public static void UError(this UBehaviour source, string message)
+        {
+            if (!source.IsMasterDebug && !source.IsVerbose) return;
+            
+            Error(message);
+        }
+
         #endregion
         
         
@@ -91,6 +107,18 @@ namespace Universe
         private static void Log(string textToShow)
         {
             Debug.Log( textToShow );
+        }
+
+        [Conditional("DEBUG")]
+        private static void Warning(string textToShow)
+        {
+            Debug.LogWarning(textToShow);
+        }
+
+        [Conditional("DEBUG")]
+        private static void Error(string textToShow)
+        {
+            Debug.LogError(textToShow);
         }
         
         #endregion

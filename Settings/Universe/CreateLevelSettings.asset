@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d896c8b9ee3ccda43acd69d4368236d3, type: 3}
   m_Name: CreateLevelSettings
-  m_EditorClassIdentifier: Universe.Editor:Universe.ToolbarExtention:CreateLevelSettings
+  m_EditorClassIdentifier: 
   m_levelFolder: Assets/_/Content/Levels
   m_blockMeshTaskName: BlockMesh
   m_artTaskName: Art

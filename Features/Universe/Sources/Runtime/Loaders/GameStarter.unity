@@ -179,8 +179,24 @@ PrefabInstance:
       value: GameStarter
       objectReference: {fileID: 0}
     - target: {fileID: 5400534558125289431, guid: 421fcf9f0d92494418100a31279ba464, type: 3}
+      propertyPath: IsDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400534558125289431, guid: 421fcf9f0d92494418100a31279ba464, type: 3}
       propertyPath: taskData
       value: 
       objectReference: {fileID: 11400000, guid: 47de0b9ce928c86409890ed557ca4695, type: 2}
+    - target: {fileID: 5400534558125289431, guid: 421fcf9f0d92494418100a31279ba464, type: 3}
+      propertyPath: UseUpdates
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400534558125289431, guid: 421fcf9f0d92494418100a31279ba464, type: 3}
+      propertyPath: m_taskData
+      value: 
+      objectReference: {fileID: 11400000, guid: 47de0b9ce928c86409890ed557ca4695, type: 2}
+    - target: {fileID: 5400534558125289431, guid: 421fcf9f0d92494418100a31279ba464, type: 3}
+      propertyPath: m_loadTaskOn
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 421fcf9f0d92494418100a31279ba464, type: 3}

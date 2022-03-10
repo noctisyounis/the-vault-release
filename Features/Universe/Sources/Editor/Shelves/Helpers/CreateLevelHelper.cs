@@ -1,5 +1,4 @@
 using System.Collections;
-using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -26,6 +25,11 @@ namespace Universe.Toolbar.Editor
 
 		public static void NewLevel(string name, TaskData blockData, TaskData artData)
         {
+			if(_isGenerating)
+			{
+				Debug.LogWarning("Another level is being generated, wait for its completion before creating another");
+				return;
+			}
             ReadSettings();
 
             _levelName = name;
@@ -37,19 +41,60 @@ namespace Universe.Toolbar.Editor
             EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAssets(blockData, artData));
         }
 
+		public static void AddTask(LevelData level)
+		{
+			if(_isGenerating)
+			{
+				Debug.LogWarning("Another level is being generated, wait for its completion before creating another");
+				return;
+			}
+
+			ReadSettings();
+
+			_levelName				= level.name;
+			_defaultLevelFolder 	= Join(_targetFolder, _levelName);
+			_currentLevelFolder 	= _defaultLevelFolder;
+
+			EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAddedGameplay(level));
+		}
+
         private static IEnumerator GenerateAssets(TaskData blockData, TaskData artData)
         {
-            var level = GenerateLevelAsset();
-            artData ??= GenerateTask(_targetArt, ENVIRONMENT, false);
-            blockData ??= GenerateTask(_targetBlock, ENVIRONMENT, false);
-            var gameplayData = GenerateTask(_targetGameplay, GAMEPLAY, true);
+            var level 			= GenerateLevelAsset();
+            artData 			??= GenerateTask(_targetArt, ENVIRONMENT, false);
+            blockData 			??= GenerateTask(_targetBlock, ENVIRONMENT, false);
+            var gameplayData 	= GenerateTask(_targetGameplay, GAMEPLAY, true);
 
-			yield return new WaitForSecondsRealtime(0.5f);
+			_isGenerating = true;
+			yield return new WaitForSecondsRealtime(2f);
+			_isGenerating = false;
 
             level.m_blockMeshEnvironment = blockData;
             level.m_artEnvironment = artData;
-            level.m_gameplay = gameplayData;
+            level.m_gameplayTasks.Add(gameplayData);
+
+			Debug.Log($"<color=lime>{level.name} generated successfully</color>");
         }
+
+		private static IEnumerator GenerateAddedGameplay(LevelData level)
+		{
+			var taskIndex 	= level.m_gameplayTasks.Count + 1;
+			var gameplayName 	= $"{_levelName}-{_gameplayTaskName}-{taskIndex:00}";
+
+			_currentGameplayFolder = Join(_currentLevelFolder, _gameplayTaskName, gameplayName);
+			_currentGameplayFolder = FolderHelper.CreatePath(_currentGameplayFolder);
+			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
+
+			var gameplayData = GenerateTask(_targetGameplay, GAMEPLAY, true);
+			
+			_isGenerating = true;
+			yield return new WaitForSecondsRealtime(2f);
+			_isGenerating = false;
+
+			level.m_gameplayTasks.Add(gameplayData);
+
+			Debug.Log($"<color=lime>{gameplayName} generated successfully</color>");
+		}
 
         #endregion
 
@@ -74,20 +119,7 @@ namespace Universe.Toolbar.Editor
 
 		private static void LoadSettings()
 		{
-			var fullPath = GetFullPath(_settingsPath);
-
-			if(!IsValidFolder(_settingsFolder)) FolderHelper.CreatePath(_settingsFolder);
-			if(!File.Exists(fullPath))
-			{
-				_settings = ScriptableObject.CreateInstance<CreateLevelSettings>();
-				
-				CreateAsset(_settings, _settingsPath);
-				SaveAssets();
-			}
-			else
-			{
-				_settings = LoadAssetAtPath<CreateLevelSettings>(_settingsPath);
-			}
+			_settings = USettings.GetSettings<CreateLevelSettings>();
 		}
 
         private static void GenerateHierarchy()
@@ -109,11 +141,22 @@ namespace Universe.Toolbar.Editor
 				_helper = AssetDatabase.LoadAssetAtPath<UAddressableGroupHelper>(_targetHelper);
 			}
 
-			_currentLevelFolder = FolderHelper.CreatePath(_defaultLevelFolder);
+			var blockMeshName 	= $"{_levelName}-{_blockMeshTaskName}";
+			var artName			=	$"{_levelName}-{_artTaskName}";
+			var gameplayName 	= $"{_levelName}-{_gameplayTaskName}-01";
 
-			_targetBlock 	= Join(_currentLevelFolder, $"{_levelName}_{_blockMeshTaskName}.unity");
-			_targetArt 		= Join(_currentLevelFolder, $"{_levelName}_{_artTaskName}.unity");
-			_targetGameplay = Join(_currentLevelFolder, $"{_levelName}_{_gameplayTaskName}.unity");
+			_currentBlockMeshFolder = Join(_currentLevelFolder, _blockMeshTaskName);
+			_currentArtFolder 		= Join(_currentLevelFolder, _artTaskName);
+			_currentGameplayFolder 	= Join(_currentLevelFolder, _gameplayTaskName, gameplayName);
+
+			_currentLevelFolder 	= FolderHelper.CreatePath(_defaultLevelFolder);
+			_currentBlockMeshFolder = FolderHelper.CreatePath(_currentBlockMeshFolder);
+			_currentArtFolder		= FolderHelper.CreatePath(_currentArtFolder);
+			_currentGameplayFolder	= FolderHelper.CreatePath(_currentGameplayFolder);
+
+			_targetBlock 	= Join(_currentBlockMeshFolder, $"{blockMeshName}.unity");
+			_targetArt 		= Join(_currentArtFolder, $"{artName}.unity");
+			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
         }
 
 		private static void GenerateAaGroup()
@@ -130,6 +173,10 @@ namespace Universe.Toolbar.Editor
 			CreateAsset(level, path);
 			SaveAssets();
 			level.name = _levelName;
+
+			var levelGuid = GUIDFromAssetPath(path).ToString();
+
+			CreateAaEntry(Settings, levelGuid);
 
 			return level;
 		}
@@ -158,15 +205,19 @@ namespace Universe.Toolbar.Editor
 			}
 			
 			var sceneGuid = GUIDFromAssetPath(path).ToString();
-			CreateAaEntry(Settings, sceneGuid);
-
 			var taskData = ScriptableObject.CreateInstance<TaskData>();
+
 			taskData.m_assetReference		= new AssetReference(sceneGuid);
 			taskData.m_priority				= priority;
 			taskData.m_alwaysUpdated 		= false;
 			taskData.m_canBeLoadOnlyOnce 	= true;
 			CreateAsset(taskData, dataPath);
 			SaveAssets();
+
+			var taskGuid = GUIDFromAssetPath(dataPath).ToString();
+
+			CreateAaEntry(Settings, sceneGuid);
+			CreateAaEntry(Settings, taskGuid);
 
 			return taskData;
 		}
@@ -176,13 +227,14 @@ namespace Universe.Toolbar.Editor
 
 		#region Private
 
-		private static string _settingsFolder = "Assets/Settings/Universe";
-		private static string _settingsPath = Join(_settingsFolder, "CreateLevelSettings.asset");
 		private static CreateLevelSettings _settings;
 		private static string _targetFolder;
 		private static string _levelName;
 		private static string _defaultLevelFolder;
 		private static string _currentLevelFolder;
+		private static string _currentBlockMeshFolder;
+		private static string _currentArtFolder;
+		private static string _currentGameplayFolder;
 		private static string _targetHelper;
 		private static UAddressableGroupHelper _helper;
 		private static string _blockMeshTaskName;
@@ -194,6 +246,7 @@ namespace Universe.Toolbar.Editor
 		private static string _targetGameplay;
 		private static SceneTemplateAsset _sceneTemplate;
 		private static AddressableAssetGroupTemplate _addressableTemplate;
+		private static bool _isGenerating;
 		
 		#endregion
     }

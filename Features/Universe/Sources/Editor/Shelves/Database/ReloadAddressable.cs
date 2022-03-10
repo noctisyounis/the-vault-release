@@ -11,7 +11,7 @@ namespace Universe.Toolbar.Editor
 		public static void Draw()
 		{
 			var tex = IconContent(@"d_Profiler.NetworkOperations").image;
-			if (Button(new GUIContent(" Refresh Addressable", tex, "Focus SceneView when entering play mode")))
+			if (Button(new GUIContent(" Refresh Addressable", tex, "Refresh the addressables with the helpers")))
 			{
 				UGroupHelper.RefreshAaGroups();
 			}

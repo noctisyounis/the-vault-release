@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Universe.SceneTask.Runtime;
+
 using static UnityEngine.AddressableAssets.Addressables;
 
 namespace Universe
@@ -51,11 +53,16 @@ namespace Universe
                 return;
             }
 
-            assetReference.InstantiateAsync().Completed += go =>
+            var taskManager = Task.GetTaskManagerOf(source).transform;
+
+            if(!parent) parent = taskManager;
+
+            assetReference.InstantiateAsync(parent, false).Completed += go =>
             {
                 var tr = go.Result.transform;
+
+                if(parent.Equals(taskManager)) tr.SetParent(null);
                 
-                tr.SetParent(parent);
                 tr.localPosition = position;
                 tr.localRotation = rotation;
 

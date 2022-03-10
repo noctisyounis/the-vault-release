@@ -21,7 +21,9 @@ namespace Universe.Toolbar.Editor
 
 			if(!IsValidPath(currentLevelPath)) return;
 
-			if(Button(new GUIContent("Switch Environment", tex, "Switch between Block mesh and Art environment")))
+			var labelText = IsBlockMesh ? "Load Environment Art" : "Load Block Mesh";
+
+			if(Button(new GUIContent(labelText, tex, "Switch between Block mesh and Art environment")))
 			{
 				Level.CurrentEditorEnvironment = IsBlockMesh ? Environment.ART : Environment.BLOCK_MESH;
 

@@ -28,7 +28,7 @@ namespace Universe.SceneTask.Runtime
 		{
 			for (int i = 0; i < 1000; i++)
 			{
-				Spawn(m_prefab, Random.insideUnitSphere, Quaternion.identity, transform);
+				Spawn(m_prefab, Random.insideUnitSphere, Quaternion.identity);
 			}
 
 			m_amount += 1000;

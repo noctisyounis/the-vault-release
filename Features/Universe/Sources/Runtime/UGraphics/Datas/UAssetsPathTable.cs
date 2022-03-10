@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
+
 using static UnityEditor.AssetDatabase;
 #endif
 
@@ -18,8 +19,8 @@ namespace Universe
         public string m_targetFolder;
 
         [Header("Lists")]
-        public List<string> m_guids;
-        public List<string> m_paths;
+        public List<string> m_guids = new();
+        public List<string> m_paths = new();
 
         #endregion
 
@@ -27,7 +28,7 @@ namespace Universe
         #region Main
 
         [Button("Populate")]
-        private void Populate()
+        public void Populate()
         {
             #if UNITY_EDITOR
 

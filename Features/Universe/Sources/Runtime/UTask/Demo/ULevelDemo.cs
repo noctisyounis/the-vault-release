@@ -34,13 +34,20 @@ namespace Universe.SceneTask.Runtime
 				Level.CurrentEnvironment = IsUsingArtEnvironment ? Environment.BLOCK_MESH : Environment.ART;
 			}
 
+			BeginHorizontal(Width(200.0f));
+			if(Button("Load next")) LoadNextTask();
+			if(Button("Unload Previous")) UnloadPreviousTask();
+			if(Button("Load first")) LoadLevelTask(0);
+			if(Button("Reload Checkpoint")) ReloadCheckpoint();
+			EndHorizontal();
+
 			if(Button("Reload Level")) ReloadCurrentLevelAbsolute();
-			if(Button("Reload Gameplay")) ReloadCurrentLevelOptimized();
+			if(Button("Reset Gameplay")) ReloadCurrentLevelOptimized();
 		}
 
 		public void Start()
 		{
-			LoadLevelAbsolute(m_level1);
+			//LoadLevelAbsolute(m_level1);
 		}
 
 		#endregion

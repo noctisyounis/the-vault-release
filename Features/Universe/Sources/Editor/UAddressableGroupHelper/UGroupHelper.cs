@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 using static Unity.EditorCoroutines.Editor.EditorCoroutineUtility;
 using static UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject;
@@ -15,6 +17,7 @@ namespace Universe
 		#region Public
 
 		public static string s_targetFolder = "Assets/_";
+		public static Action OnRefreshCompleted;
 
 		#endregion
 
@@ -85,6 +88,12 @@ namespace Universe
 
 		private static void RefreshFolderAt(int index)
 		{
+			if(index < 0 || index >= s_folderPaths.Count) 
+			{
+				Debug.LogWarning("[ADDRESSABLE REFRESH] No existing folder to refresh");
+				return;
+			}
+
 			var folderPath = s_folderPaths[index];
 
 			for(var i = s_helperPaths.Count - 1; i >= 0; i--)
@@ -112,7 +121,12 @@ namespace Universe
 
 			s_currentFolder--;
 
-			if(s_currentFolder < 0) return;
+			if(s_currentFolder < 0) 
+			{
+				USettings.GetSettings<UGraphicsSettings>().GetPathTable().Populate();
+				OnRefreshCompleted?.Invoke();
+				return;
+			}
 
 			RefreshFolderAt(s_currentFolder);
 		}

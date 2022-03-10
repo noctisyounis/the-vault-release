@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_blockMeshEnvironment: {fileID: 11400000, guid: 06497b1fa574e814a9965ccc21ec4b35, type: 2}
   m_artEnvironment: {fileID: 11400000, guid: f4c829f790c6a0f4898069f20e303e3f, type: 2}
-  m_gameplay: {fileID: 11400000, guid: 0e0759d82e7f0b04bbeb8ab0ce2bdf60, type: 2}
+  m_gameplayTasks:
+  - {fileID: 11400000, guid: 0e0759d82e7f0b04bbeb8ab0ce2bdf60, type: 2}
+  - {fileID: 11400000, guid: 48ae910fe96d42041a56cf9f89e6c83d, type: 2}

@@ -70,7 +70,7 @@ namespace Universe
 
         #region Private
 
-        public new Type Type => typeof(T);
+        public override Type Type => typeof(T);
 
         public T Value
         {

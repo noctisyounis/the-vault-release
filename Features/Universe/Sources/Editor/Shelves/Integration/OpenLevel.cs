@@ -27,7 +27,7 @@ namespace Universe.Toolbar.Editor
 
 				var level 			= LoadAssetAtPath<LevelData>(currentLevelPath);
 				var blockMeshGuid 	= level.m_blockMeshEnvironment.m_assetReference.AssetGUID;
-				var gameplayGuid	= level.m_gameplay.m_assetReference.AssetGUID;
+				var gameplayGuid	= level.m_gameplayTasks[0].m_assetReference.AssetGUID;
 				var blockMesh 		= GUIDToAssetPath(blockMeshGuid);
 				var gameplay		= GUIDToAssetPath(gameplayGuid);
 

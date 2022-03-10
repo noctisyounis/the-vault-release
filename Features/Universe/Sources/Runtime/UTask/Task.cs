@@ -81,7 +81,7 @@ namespace Universe.SceneTask.Runtime
             if (IsSceneDicoEmpty())
             {
                 m_focusSceneHandle = new AsyncOperationHandle<SceneInstance>();
-                return m_focusSceneHandle.Result;
+                return new SceneInstance();
             }
 
             _orderedKeys = _dicoOfTasks.Keys.OrderByDescending(task => task.m_priority);

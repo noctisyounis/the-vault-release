@@ -20,8 +20,8 @@ namespace Universe.Toolbar.Editor
 		{
 			FlexibleSpace();
 
-			var tex = IconContent(@"d_CreateAddNew").image;
-			if (Button(new GUIContent("New Level", tex, "Add a new level to the project"), commandButtonStyle))
+			var tex = IconContent(@"d_Toolbar Plus").image;
+			if (Button(new GUIContent("New Level", tex, "Add a new level to the project")))
 			{
 				CreateLevelWindow.ShowLevelWindow();
 			}
@@ -33,8 +33,6 @@ namespace Universe.Toolbar.Editor
 		#region Public
 
 		public static CreateLevelSettings m_settings;
-		public static string m_settingsFolder = "Assets/Settings/Universe";
-		public static string m_settingsPath = Path.Join(m_settingsFolder, "CreateLevelSettings.asset");
 
 		public string m_editorWindowText = "Type your level's name: ";
 		public string m_newLevelName 	= "NewLevel";
@@ -168,20 +166,7 @@ namespace Universe.Toolbar.Editor
 
 		private static void LoadSettings()
 		{
-			var fullPath = Path.GetFullPath(m_settingsPath);
-
-			if(!IsValidFolder(m_settingsFolder)) FolderHelper.CreatePath(m_settingsFolder);
-			if(!File.Exists(fullPath))
-			{
-				m_settings = ScriptableObject.CreateInstance<CreateLevelSettings>();
-				
-				CreateAsset(m_settings, m_settingsPath);
-				SaveAssets();
-			}
-			else
-			{
-				m_settings = LoadAssetAtPath<CreateLevelSettings>(m_settingsPath);
-			}
+			m_settings = USettings.GetSettings<CreateLevelSettings>();
 		}
 
 		public bool IsUsingAnyExistingEnvironment 	=> _useExistingArt || _useExistingBlockMesh;

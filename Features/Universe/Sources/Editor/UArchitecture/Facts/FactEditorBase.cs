@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Universe.Editor
 {
-    //[CustomEditor(typeof(FactBase), true)]
+    [CustomEditor(typeof(FactBase), true)]
     public class FactEditorBase : UnityEditor.Editor
     {
         #region Unity API
@@ -59,12 +59,11 @@ namespace Universe.Editor
                 GUILayout.BeginHorizontal();
                 EditorGUIUtility.labelWidth = 50;
                 EditorGUIUtility.fieldWidth = 100;
-                GenericPropertyDrawer.DrawPropertyDrawerLayout(target.GetType(), new GUIContent("Value"), _valueProperty, new GUIContent( "content", "content" ) );
+                GenericPropertyDrawer.DrawObjectPropertyDrawer(Target.Type, new GUIContent("Value"), _valueProperty, new GUIContent( "content", "content" ) );
                 if (selection.m_washOnAwakeAndCompilation)
                 {
-                    GenericPropertyDrawer.DrawPropertyDrawerLayout(target.GetType(), new GUIContent("Wash To:"), _washProperty, new GUIContent( "content", "content" ) );    
+                    GenericPropertyDrawer.DrawObjectPropertyDrawer(Target.Type, new GUIContent("Wash To:"), _washProperty, new GUIContent( "content", "content" ) );    
                 }
-                
                 GUILayout.EndHorizontal();
             
                 GUILayout.EndVertical();

@@ -31,7 +31,7 @@ namespace Universe.SceneTask.Runtime
 		public static void ULoadLevelAbsolute(this UBehaviour source, LevelData level)
 		{
 			var environmentTask = IsUsingArtEnvironment ? level.m_artEnvironment : level.m_blockMeshEnvironment;
-			var gameplayTask = level.m_gameplay;
+			var gameplayTask = level.m_gameplayTasks[0];
 
 			if(HasCurrentLevel)	source.UUnloadLevel(m_currentLevel);
 
@@ -39,6 +39,7 @@ namespace Universe.SceneTask.Runtime
 			source.ULoadTask(gameplayTask);
 
 			m_currentLevel = level;
+			_currentLevelTask = 0;
 		}
 
 		///<summary>
@@ -47,11 +48,11 @@ namespace Universe.SceneTask.Runtime
 		public static void ULoadLevelOptimized(this UBehaviour source, LevelData level)
 		{
 			var environmentTask = IsUsingArtEnvironment ? level.m_artEnvironment : level.m_blockMeshEnvironment;
-			var gameplayTask = level.m_gameplay;
+			var gameplayTask = level.m_gameplayTasks[_currentLevelTask];
 
 			if(IsLoadingCurrentEnvironment(environmentTask)) 
 			{
-				source.UUnloadTask(m_currentLevel.m_gameplay);
+				source.UUnloadTask(m_currentLevel.m_gameplayTasks[_currentLevelTask]);
 			}
 			else
 			{
@@ -62,6 +63,7 @@ namespace Universe.SceneTask.Runtime
 			source.ULoadTask(gameplayTask);
 
 			m_currentLevel = level;
+			_currentLevelTask = 0;
 		}
 
 		public static void UReloadCurrentLevelAbsolute(this UBehaviour source)
@@ -84,20 +86,74 @@ namespace Universe.SceneTask.Runtime
 
 			var artEnvironmentTask = level.m_artEnvironment;
 			var blockMeshEnvironmentTask = level.m_blockMeshEnvironment;
-			var gameplayTask = level.m_gameplay;
+			var gameplayTask = level.m_gameplayTasks[_currentLevelTask];
 
 			source.UUnloadTask(artEnvironmentTask);
 			source.UUnloadTask(blockMeshEnvironmentTask);
 			source.UUnloadTask(gameplayTask);
+			
+			if(IsValidLevelTask(_previousLevelTask))
+			{
+				var previousTask = level.m_gameplayTasks[_previousLevelTask];
 
+				source.UUnloadTask(previousTask);
+			}
+			
 			m_currentLevel = null;
 		}
 
-		#endregion
+		public static void ULoadNextTask(this UBehaviour source)
+        {
+            if (!HasCurrentLevel) return;
+
+            var nextLevelTask = _currentLevelTask + 1;
+			
+			source.ULoadLevelTask(nextLevelTask);
+        }
+
+		public static void ULoadLevelTask(this UBehaviour source, int taskIndex)
+		{
+			if (!HasCurrentLevel) return;
+
+            var currentLevelTask = _currentLevelTask;
+
+            if (!IsValidLevelTask(taskIndex)) return;
+
+            var nextGameplayTask 	= m_currentLevel.m_gameplayTasks[taskIndex];
+
+			source.ULoadTask(nextGameplayTask);
+
+			_currentLevelTask = taskIndex;
+			_previousLevelTask = currentLevelTask;
+		}
+
+		public static void UReloadCheckpoint(this UBehaviour source)
+		{
+			if(!HasCurrentLevel) return;
+
+			var currentLevelTask = m_currentLevel.m_gameplayTasks[_currentLevelTask];
+
+			source.UUnloadTask(currentLevelTask);
+			source.ULoadTask(currentLevelTask);
+		}
+
+		public static void UUnloadPreviousTask(this UBehaviour source)
+		{
+			if(!HasCurrentLevel) return;
+			if(!IsValidLevelTask(_previousLevelTask)) return;
+
+			var previousGameplayTask = m_currentLevel.m_gameplayTasks[_previousLevelTask];
+
+			source.UUnloadTask(previousGameplayTask);
+			_previousLevelTask = -1;
+		}
 
 
-		#region Utils
-		private static bool IsLoadingCurrentEnvironment(TaskData environment) 
+        #endregion
+
+
+        #region Utils
+        private static bool IsLoadingCurrentEnvironment(TaskData environment) 
 		{
 			if(!HasCurrentLevel) return false;
 
@@ -105,6 +161,8 @@ namespace Universe.SceneTask.Runtime
 
 			return current.m_assetReference.Equals(environment.m_assetReference);
 		}
+
+        private static bool IsValidLevelTask(int nextLevelTask) => ((nextLevelTask >= 0) && (nextLevelTask < m_currentLevel.m_gameplayTasks.Count));
 
 		#endregion
 
@@ -116,6 +174,8 @@ namespace Universe.SceneTask.Runtime
 
 		private static Environment _currentEnvironment;
 		private static Environment _currentEditorEnvironment;
+		private static int _currentLevelTask;
+		private static int _previousLevelTask;
 
 		#endregion
 	}
