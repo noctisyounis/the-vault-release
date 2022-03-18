@@ -10,6 +10,12 @@ namespace Universe
 
         public static void UDrawCube(this UBehaviour target, Vector3 position, float size, Color color) =>
             GetGizmosProvider().DrawCube(position, size, color);
+
+        public static void UDrawCube(this UBehaviour target, Vector3 position, Quaternion rotation, float size, Color color) =>
+            GetGizmosProvider().DrawCube(position, rotation, size, color);
+
+        public static void UDrawCuboid(this UBehaviour target, Vector3 position, Quaternion rotation, Vector3 dimension, Color color) =>
+            GetGizmosProvider().DrawCuboid(position, rotation, dimension, color);
         
         public static void UDrawLine(this UBehaviour target, Vector3 start, Vector3 end, Color color) =>
             GetGizmosProvider().DrawLine(start, end, color);

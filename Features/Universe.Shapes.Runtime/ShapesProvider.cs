@@ -19,6 +19,11 @@ namespace Universe.ShapesProvider.Runtime
         
         public override void DrawCube(Vector3 position, float size, Color color) =>
             m_shapesManager.AddGizmos(() => Cube(position, size, color));
+        public override void DrawCube(Vector3 position, Quaternion rotation, float size, Color color) =>
+            m_shapesManager.AddGizmos(() => Cube(position, rotation, size, color));
+
+        public override void DrawCuboid(Vector3 position, Quaternion rotation, Vector3 size, Color color) =>
+            m_shapesManager.AddGizmos(() => Cuboid(position, rotation, size, color));
 
         public override void DrawLine(Vector3 start, Vector3 end, Color color) =>
             m_shapesManager.AddGizmos(() =>Line(start, end, color));
@@ -34,8 +39,13 @@ namespace Universe.ShapesProvider.Runtime
 
         public override void DrawPolyline(List<Vector3> points, bool closed, float thickness, Color color)
         {
-            var path = ConvertToPolylinePath(points);
-            m_shapesManager.AddGizmos(() =>Polyline(path, closed, thickness, color));
+            m_shapesManager.AddGizmos(() => 
+            {
+                using(var p = ConvertToPolylinePath(points))
+                {
+                    Polyline(p, closed, thickness, color);
+                }
+            });
         }
 
         public override void DrawPolygon(List<Vector3> points, Color color)

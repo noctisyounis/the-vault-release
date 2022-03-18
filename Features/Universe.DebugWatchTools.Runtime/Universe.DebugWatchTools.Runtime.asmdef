@@ -1,0 +1,18 @@
+{
+    "name": "Universe.DebugWatchTools.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:85f45ced71d704547b2c6e33cddcb899",
+        "GUID:fdff0c350c873e341913d59f1cba8e63",
+        "GUID:13a6fdc14ca9df84eb8019bc66fa9e5d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

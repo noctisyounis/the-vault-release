@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.AddressableAssets.Settings;
 
-using static Unity.EditorCoroutines.Editor.EditorCoroutineUtility;
 using static UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject;
 using static UnityEditor.AssetDatabase;
 using static Universe.UAddressableUtility;
 
-namespace Universe
+namespace Universe.Editor
 {
 	public static class UGroupHelper
 	{
@@ -27,6 +27,7 @@ namespace Universe
 		[MenuItem("Vault/Adressable/Refresh groups")]
 		public static void RefreshAaGroups()
 		{
+			Debug.Log("Refresh started");
 			RefreshPaths();
 
 			s_currentFolder = s_folderPaths.Count - 1;
@@ -110,13 +111,10 @@ namespace Universe
 					helper.GenerateNewGroup();
 				}
 
-				helper.SetGroupAsDefault();
-				
 				s_waitedHelper = helper;
 				s_helperPaths.Remove(path);
 
-				StartCoroutineOwnerless(WaitForDefaultGroupToBeIn(folderPath));
-				return;
+				RefreshEntriesIn(folderPath, s_waitedHelper.m_group);
 			}
 
 			s_currentFolder--;
@@ -131,7 +129,7 @@ namespace Universe
 			RefreshFolderAt(s_currentFolder);
 		}
 
-		private static void RefreshEntriesIn(string folderPath)
+		private static void RefreshEntriesIn(string folderPath, AddressableAssetGroup parentGroup)
 		{
 			for(var i = s_assetPaths.Count - 1; i >= 0; i--)
 			{
@@ -143,7 +141,7 @@ namespace Universe
 				var guid = GUIDFromAssetPath(path).ToString();
 
 				RemoveAaEntry(Settings, guid);
-				CreateAaEntry(Settings, guid);
+				CreateAaEntry(Settings, guid, parentGroup);
 			}
 
 			s_currentFolder--;
@@ -152,18 +150,6 @@ namespace Universe
 			{
 				RefreshFolderAt(s_currentFolder);
 			}
-		}
-
-		#endregion
-
-
-		#region Coroutines
-
-		private static IEnumerator WaitForDefaultGroupToBeIn(string folderPath)
-		{
-			while(Settings.DefaultGroup.Equals(s_waitedHelper)) yield return null;
-
-			RefreshEntriesIn(folderPath);
 		}
 
 		#endregion

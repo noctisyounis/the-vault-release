@@ -13,6 +13,8 @@ namespace Universe
         #region Exposed
 
         [Header("Settings")] 
+
+        public GameObject m_inputManager;
         public XR m_xr;
         
         [Serializable]
@@ -41,7 +43,7 @@ namespace Universe
 
         public void Update()
         {
-            if (!CanUpdate()) return;
+            if (!CanUpdate) return;
             var deltaTime = DeltaTime;
             var length = _registeredUpdate.Count;
 
@@ -55,11 +57,10 @@ namespace Universe
             }
         }
 
-        
-
         public void FixedUpdate()
         {
-            if (!CanUpdate()) return;
+            SetActiveTaskInput(IsFocused);
+            if (!CanUpdate) return;
             var fixedDeltaTime = FixedDeltaTime;
             var length = _registeredFixedUpdate.Count;
 
@@ -75,7 +76,7 @@ namespace Universe
 
         public void LateUpdate()
         {
-            if (!CanUpdate()) return;
+            if (!CanUpdate) return;
             var deltaTime = DeltaTime;
             var length = _registeredLateUpdate.Count;
 
@@ -180,13 +181,33 @@ namespace Universe
             list.Remove(target);
         }
 
-        public void SetAlwaysUpdated(bool next)
+        public bool IsAlwaysUpdated() => _alwaysUpdated;
+        public void SetAlwaysUpdated(bool next) => _alwaysUpdated = next;
+
+        private bool CanUpdate => _alwaysUpdated || IsFocused;
+        private bool IsFocused => gameObject.scene.name == Task.GetFocusSceneName();
+        
+        #endregion
+
+
+        #region Input Management
+
+        public void SetActiveTaskInput(bool next)
         {
-            _alwaysUpdated = next;
+            if(next)    EnableTaskInputs();
+            else        DisableTaskInputs();
         }
 
-        private bool CanUpdate() => _alwaysUpdated || gameObject.scene.name == Task.GetFocusSceneName();
-        
+        public void DisableTaskInputs()
+        {
+            m_inputManager?.SetActive(false);
+        }
+
+        public void EnableTaskInputs()
+        {
+            m_inputManager?.SetActive(true);
+        }
+
         #endregion
 
 

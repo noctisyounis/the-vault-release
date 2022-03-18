@@ -7,7 +7,7 @@ using static Shapes.Draw;
 
 namespace Universe.ShapesProvider.Runtime
 {
-    public class ShapesManager : MonoBehaviour
+    public class ShapesManager : ImmediateModeShapeDrawer
     {
         #region Public
 
@@ -41,26 +41,21 @@ namespace Universe.ShapesProvider.Runtime
         #endregion
         
         
-        #region Unity API
+        #region Shapes API
         
-        private void Update()
+        public override void DrawShapes(Camera camera)
         {
-            using (Command(Camera))
+            using (Command(camera))
             {
                 for (var i = _gizmos.Count - 1; i >= 0; i--)
                 {
                     var currentGizmos = _gizmos[i];
                     if (currentGizmos == null) continue;
-                    
                     currentGizmos.Invoke();
-                    _gizmos.Remove(currentGizmos);
                 }
-            }
-        }
 
-        private void OnGUI()
-        {
-            GUILayout.Button(_gizmos.Count.ToString());
+                _gizmos.Clear();
+            }
         }
         
         #endregion
@@ -68,7 +63,7 @@ namespace Universe.ShapesProvider.Runtime
         
         #region Private Members
 
-        private List<Action> _gizmos = new();
+        public static List<Action> _gizmos = new();
 
         #endregion
     }

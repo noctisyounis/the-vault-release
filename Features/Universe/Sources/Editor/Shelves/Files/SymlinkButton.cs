@@ -14,7 +14,7 @@ namespace Universe.Toolbar.Editor
 
         private static string SourceDirectoryPath => $"{dataPath}\\..\\..\\Symlinks";
         private static string SourceGraphicsTiersDirectoryPath => $"{SourceDirectoryPath}\\GraphicsTier";
-        private static string TargetDirectoryPath => $"{dataPath}\\_\\";
+        private static string TargetDirectoryPath => $"{dataPath}\\_\\Content\\";
         private static string TargetGraphicsTiersDirectoryPath => $"{TargetDirectoryPath}\\GraphicsTier\\";
 
         #endregion

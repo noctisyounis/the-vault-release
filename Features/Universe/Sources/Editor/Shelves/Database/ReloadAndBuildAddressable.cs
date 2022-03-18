@@ -4,7 +4,7 @@ using UnityEditor.AddressableAssets.Settings;
 using static UnityEditor.EditorGUIUtility;
 using static UnityEngine.GUILayout;
 
-namespace Universe
+namespace Universe.Editor
 {
 	public class ReloadAndBuildAddressable
 	{
@@ -13,8 +13,8 @@ namespace Universe
 			var tex = IconContent(@"d_Profiler.NetworkOperations").image;
 			if (Button(new GUIContent(" Refresh And Build Addressable", tex, "Refresh addressable then rebuild them")))
 			{
-				UGroupHelper.RefreshAaGroups();
 				UGroupHelper.OnRefreshCompleted += RebuildAddressable;
+				UGroupHelper.RefreshAaGroups();
 			}
 		}
 

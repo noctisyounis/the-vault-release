@@ -49,7 +49,7 @@ namespace Universe.SceneTask.Runtime
             }
             else
             {
-                Debug.LogError("ERROR this scene is already loaded and cannot be loaded twice.");
+                Debug.LogError($"ERROR Task: {task.name} is already loaded and cannot be loaded twice.");
             }
         }
 
@@ -94,6 +94,12 @@ namespace Universe.SceneTask.Runtime
 
         public static SceneInstance GetLoadedScene(TaskData from)
         {
+            if(!_dicoOfTasks.ContainsKey(from)) 
+            {
+                Debug.LogError($"Task: {from.name} isn't currently loaded");
+                return default(SceneInstance);
+            }
+
             var task = _dicoOfTasks[from];
             var sceneHandle = task[0];
 
@@ -129,7 +135,9 @@ namespace Universe.SceneTask.Runtime
         private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete(TaskData task = null)
         {
             var highestScene = GetFocusedScene();
+            var taskManager = GetTaskManagerOf(highestScene.Scene);
 
+            taskManager.gameObject.SetActive(true);
             m_focusScene = highestScene;
             
             if (task) ULoadTask(null, task);
@@ -143,7 +151,19 @@ namespace Universe.SceneTask.Runtime
             var taskData = GetTaskDataOf(go);
             var taskManager = GetTaskManagerOf(go);
 
+            if(!string.IsNullOrEmpty(m_focusScene.Scene.name))
+            {
+                var previousTaskManager = GetTaskManagerOf(m_focusScene.Scene);
+                previousTaskManager.DisableTaskInputs();
+                
+                if(!previousTaskManager.IsAlwaysUpdated())
+                {
+                    previousTaskManager.gameObject.SetActive(false);
+                }
+            }
+            
             taskManager.SetAlwaysUpdated(taskData.m_alwaysUpdated);
+
             m_focusScene = highestScene;
         }
 
@@ -176,10 +196,18 @@ namespace Universe.SceneTask.Runtime
 
         private static TaskManager GetTaskManagerOf(AsyncOperationHandle<SceneInstance> go)
         {
+            var scene = go.Result.Scene;
+
+            return GetTaskManagerOf(scene);
+        }
+
+        private static TaskManager GetTaskManagerOf(Scene scene)
+        {
             var rootGameObjects = new List<GameObject>();
-            go.Result.Scene.GetRootGameObjects(rootGameObjects);
+            scene.GetRootGameObjects(rootGameObjects);
+
             var taskManagerRoot = rootGameObjects.Find((GameObject root) => root.name.Contains("[TaskManager]") || root.transform.Find("[TaskManager]"));
-            var taskManager = taskManagerRoot.GetComponentInChildren<TaskManager>();
+            var taskManager = taskManagerRoot.GetComponentInChildren<TaskManager>(true);
 
             return taskManager;
         }

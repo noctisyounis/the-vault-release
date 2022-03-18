@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Universe.SceneTask;
 using Universe.SceneTask.Runtime;
+using Universe.Editor;
 
 using static System.IO.Path;
 using static UnityEditor.AssetDatabase;
@@ -142,7 +143,7 @@ namespace Universe.Toolbar.Editor
 			}
 
 			var blockMeshName 	= $"{_levelName}-{_blockMeshTaskName}";
-			var artName			=	$"{_levelName}-{_artTaskName}";
+			var artName			= $"{_levelName}-{_artTaskName}";
 			var gameplayName 	= $"{_levelName}-{_gameplayTaskName}-01";
 
 			_currentBlockMeshFolder = Join(_currentLevelFolder, _blockMeshTaskName);
@@ -176,7 +177,7 @@ namespace Universe.Toolbar.Editor
 
 			var levelGuid = GUIDFromAssetPath(path).ToString();
 
-			CreateAaEntry(Settings, levelGuid);
+			CreateAaEntry(Settings, levelGuid, _helper.m_group);
 
 			return level;
 		}
@@ -216,8 +217,8 @@ namespace Universe.Toolbar.Editor
 
 			var taskGuid = GUIDFromAssetPath(dataPath).ToString();
 
-			CreateAaEntry(Settings, sceneGuid);
-			CreateAaEntry(Settings, taskGuid);
+			CreateAaEntry(Settings, sceneGuid, _helper.m_group);
+			CreateAaEntry(Settings, taskGuid, _helper.m_group);
 
 			return taskData;
 		}

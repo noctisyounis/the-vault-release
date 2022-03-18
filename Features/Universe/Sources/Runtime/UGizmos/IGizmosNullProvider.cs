@@ -7,6 +7,10 @@ namespace Universe
     {
         public override void DrawCube(Vector3 position, float size, Color color ){}
 
+        public override void DrawCube(Vector3 position, Quaternion rotation, float size, Color color){}
+
+        public override void DrawCuboid(Vector3 position, Quaternion rotation, Vector3 dimension, Color color){}
+
         public override void DrawLine(Vector3 start, Vector3 end, Color color){}
 
         public override void DrawSphere(Vector3 position, float radius, Color color){}

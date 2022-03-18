@@ -6,7 +6,7 @@ namespace Universe.Toolbar.Editor
 {
     public class CreateLevelSettings : ScriptableObject
 	{
-		public string m_levelFolder = "Assets/_/Content/Levels";
+		public string m_levelFolder = "Assets/_/Content/Levels/Gameplay";
 		public string m_blockMeshTaskName = "BlockMesh";
 		public string m_artTaskName = "Art";
 		public string m_gameplayTaskName = "Gameplay";

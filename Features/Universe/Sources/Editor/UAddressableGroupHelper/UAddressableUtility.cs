@@ -16,16 +16,15 @@ namespace Universe
 			aaSettings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryRemoved, removedEntry, true, false);
         }
 
-		public static void CreateAaEntry(AddressableAssetSettings aaSettings, string targetGUID)
+		public static void CreateAaEntry(AddressableAssetSettings aaSettings, string targetGUID, AddressableAssetGroup parentGroup)
         {
-            if (aaSettings.DefaultGroup.ReadOnly)
+            if (parentGroup.ReadOnly)
             {
                 Debug.LogError("Current default group is ReadOnly.  Cannot add addressable assets to it");
                 return;
             }
 
-            AddressableAssetGroup parentGroup = aaSettings.DefaultGroup;
-			
+            //var parentGroup = aaSettings.DefaultGroup;
 			var createdEntry = aaSettings.CreateOrMoveEntry(targetGUID, parentGroup, false, false);
 
 			aaSettings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryCreated, createdEntry, true, false);

@@ -1,12 +1,9 @@
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
+using Universe.Editor;
 
 using static UnityEngine.GUILayout;
 using static System.IO.Path;
-using static UnityEditor.AssetDatabase;
 
 namespace Universe.Toolbar.Editor
 {
@@ -60,7 +57,7 @@ namespace Universe.Toolbar.Editor
 
 		private static int _currentTargetGraphicTier;
 		private static int _currentFallbackGraphicTier;
-		private static string[] _graphicsTiers = {"Standard", "HD", "SD"};
+		private static string[] _graphicsTiers = {"Placeholder", "HD", "SD"};
 		
 		private static UGraphicsSettings _settings;
 

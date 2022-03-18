@@ -19,6 +19,7 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs: []
+    m_Ints: []
     m_Floats:
     - _StencilComp: 8
     - _StencilID: 0
@@ -29,3 +30,4 @@ Material:
     - _ZOffsetUnits: 0
     - _ZTest: 4
     m_Colors: []
+  m_BuildTextureStacks: []

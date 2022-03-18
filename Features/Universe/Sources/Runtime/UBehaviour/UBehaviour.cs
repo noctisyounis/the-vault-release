@@ -104,7 +104,13 @@ namespace Universe
         #region Gizmos
 
         public void DrawCube(Vector3 position, float size, Color color) =>
-            this.UDrawCube(position, size, color);
+            this.UDrawCube(position, Quaternion.identity, size, color);
+        
+        public void DrawCube(Vector3 position, Quaternion rotation, float size, Color color) =>
+            this.UDrawCube(position, rotation, size, color);
+
+        public void DrawCuboid(Vector3 position, Quaternion rotation, Vector3 size, Color color) =>
+            this.UDrawCuboid(position, rotation, size, color);
 
         public void DrawLine(Vector3 start, Vector3 end, Color color) =>
             this.UDrawLine(start, end, color);

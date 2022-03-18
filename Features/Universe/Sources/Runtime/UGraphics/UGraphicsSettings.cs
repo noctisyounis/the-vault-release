@@ -15,9 +15,9 @@ namespace Universe
     {
         #region Public 
 
-        public string m_rootFolder = "Assets/_/GraphicsTier";
-        public string m_targetFolder = "Assets/_/GraphicsTier/HD";
-        public string m_fallbackFolder = "Assets/_/GraphicsTier/Standard";
+        public string m_rootFolder = "Assets/_/Content/Graphics Tiers";
+        public string m_targetFolder = "Assets/_/Content/Graphics Tiers/HD";
+        public string m_fallbackFolder = "Assets/_/Content/Graphics Tiers/Placeholder";
         public UAssetsPathTable m_pathTable;
         public string[] m_existingFolders;
 

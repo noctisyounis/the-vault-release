@@ -8,6 +8,10 @@ namespace Universe
         #region Main
 
         public new abstract void DrawCube(Vector3 position, float size, Color color);
+
+        public new abstract void DrawCube(Vector3 position, Quaternion rotation, float size, Color color);
+
+        public new abstract void DrawCuboid(Vector3 position, Quaternion rotation, Vector3 dimension, Color color);
         
         public new abstract void DrawLine(Vector3 start, Vector3 end, Color color);
 
