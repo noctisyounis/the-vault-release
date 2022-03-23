@@ -65,6 +65,7 @@ namespace Universe
                 
                 tr.localPosition = position;
                 tr.localRotation = rotation;
+                tr.localScale = Vector3.one;
 
                 if(callback != null) callback(go.Result);
             };

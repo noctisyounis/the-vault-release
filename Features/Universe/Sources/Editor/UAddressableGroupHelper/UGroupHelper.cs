@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +15,7 @@ namespace Universe.Editor
 		
 		#region Public
 
-		public static string s_targetFolder = "Assets/_";
+		public static string s_targetFolder = "Assets/_/Content";
 		public static Action OnRefreshCompleted;
 
 		#endregion
@@ -115,14 +114,14 @@ namespace Universe.Editor
 				s_helperPaths.Remove(path);
 
 				RefreshEntriesIn(folderPath, s_waitedHelper.m_group);
+				return;
 			}
 
 			s_currentFolder--;
 
 			if(s_currentFolder < 0) 
 			{
-				USettings.GetSettings<UGraphicsSettings>().GetPathTable().Populate();
-				OnRefreshCompleted?.Invoke();
+				FinalizeRefresh();
 				return;
 			}
 
@@ -149,7 +148,16 @@ namespace Universe.Editor
 			if(s_currentFolder >= 0)
 			{
 				RefreshFolderAt(s_currentFolder);
+				return;
 			}
+
+			FinalizeRefresh();
+		}
+
+		private static void FinalizeRefresh()
+		{
+			USettings.GetSettings<UGraphicsSettings>().GetPathTable().Populate();
+			OnRefreshCompleted?.Invoke();
 		}
 
 		#endregion

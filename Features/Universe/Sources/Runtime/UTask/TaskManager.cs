@@ -200,12 +200,14 @@ namespace Universe
 
         public void DisableTaskInputs()
         {
-            m_inputManager?.SetActive(false);
+            if(!m_inputManager) return;
+            m_inputManager.SetActive(false);
         }
 
         public void EnableTaskInputs()
         {
-            m_inputManager?.SetActive(true);
+            if(!m_inputManager) return;
+            m_inputManager.SetActive(true);
         }
 
         #endregion

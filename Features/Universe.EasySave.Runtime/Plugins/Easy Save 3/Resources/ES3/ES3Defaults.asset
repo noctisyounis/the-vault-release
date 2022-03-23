@@ -30,18 +30,22 @@ MonoBehaviour:
     serializationDepthLimit: 64
     assemblyNames:
     - Universe.Runtime
-    - Universe.Runtime.EasySave
     - Universe.Plugins.EasySave3
     - ShapesRuntime
-    - CSharpExtensions
-    - Sirenix.OdinInspector.CompatibilityLayer
+    - Universe.Runtime.EasySave
     - ShapesSamples
+    - Universe.DebugWatchTools.Runtime
+    - CSharpExtensions
     - ShapesProvider.Runtime
+    - Sirenix.OdinInspector.CompatibilityLayer
     - Plugins.JSONExtension
     - ShapesEditor
-    - Sirenix.OdinInspector.CompatibilityLayer.Editor
+    - PPv2URPConverters
     - Universe.Editor
     - Universe.GoogleDriveSpreadsheetConnector.Editor
+    - Sirenix.OdinInspector.CompatibilityLayer.Editor
+    - UnitTests
+    - Sirenix.OdinInspector.Modules.UnityMathematics
     showAdvancedSettings: 1
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 1
