@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -9,6 +10,7 @@ namespace Universe
 
         [Header("Settings")]
         public AssetReference m_asset;
+        public Action<GameObject> OnAssetLoaded = delegate { };
 
         #endregion
 
@@ -18,7 +20,7 @@ namespace Universe
         private void Start() 
         {
             UpdateAsset();
-            Spawn(_preferedAsset, Vector3.zero, Quaternion.identity, transform, 0);
+            Spawn(_preferedAsset, Vector3.zero, Quaternion.identity, transform, CallbackOnAssetLoaded);
         }
 
         #endregion
@@ -44,6 +46,9 @@ namespace Universe
             }
         }
 
+        private void CallbackOnAssetLoaded(GameObject go) =>
+            OnAssetLoaded.Invoke(go);
+        
         #endregion
 
 
