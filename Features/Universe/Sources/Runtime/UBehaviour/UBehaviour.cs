@@ -4,6 +4,8 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Universe.SceneTask.Runtime;
+using static Universe.SceneTask.Runtime.Task;
+using static Universe.UFile;
 
 namespace Universe
 {
@@ -170,6 +172,21 @@ namespace Universe
         protected void UnloadTask(TaskData task) =>
             this.UUnloadTask(task);
         
+
+        #endregion
+
+
+        #region UFile
+
+        public string GetOrCreateFolderAt( string path ) => 
+            UGetOrCreateFolderAt( path );
+
+        public string GetPathRelativeToProject( string path ) => 
+            UGetPathRelativeToProject( path );
+
+        public string RemoveAssetsPathFrom( string path ) => 
+            URemoveAssetsPathFrom( path );
+
         #endregion
 
 

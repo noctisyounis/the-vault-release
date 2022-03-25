@@ -98,7 +98,7 @@ namespace Universe.Editor
             return content;
         }
 
-        private static void GenerateJSONFact( List<string> paths )
+        public static void GenerateJSONFact( List<string> paths )
         {
             var spreadsheetDico = new Dictionary<string, SpreadsheetData>();
 
@@ -212,7 +212,7 @@ namespace Universe.Editor
             return $"{path}/";
         }
 
-        private static string GetOrCreateFolderAt( string path )
+        public static string GetOrCreateFolderAt( string path )
         {
             var folderPath = $"{_folderOutputPath}/{GetFileNameWithoutExtension( path )}";
 

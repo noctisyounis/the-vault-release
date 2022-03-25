@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5974179382248273041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Game_Name
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Moja gra
+  _defaultValue: 
+--- !u!114 &-1529738680930876098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Loss
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Przegra\u0142e\u015B!"
+  _defaultValue: 
+--- !u!114 &-165101143479998164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test3
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Witaj \u015Bwiecie!"
+  _defaultValue: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b020d7f56165b47bb149bb9885afd4, type: 3}
+  m_Name: POLISH
+  m_EditorClassIdentifier: 
+  m_name: POLISH
+  m_fontSettingsCollection: {fileID: 11400000, guid: ecc9288cfdc725a44810c88d7aea7d22, type: 2}
+  m_localisedTexts:
+  - {fileID: -5974179382248273041}
+  - {fileID: 5387682626953273460}
+  - {fileID: -1529738680930876098}
+  - {fileID: 2515743035841148168}
+  - {fileID: 7150553532275193736}
+  - {fileID: 7232376760018991866}
+  - {fileID: -165101143479998164}
+  - {fileID: 3686780462156217177}
+--- !u!114 &2515743035841148168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Continue
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Kontyntynuj?
+  _defaultValue: 
+--- !u!114 &3686780462156217177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test4
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: To arkusz testowy
+  _defaultValue: 
+--- !u!114 &5387682626953273460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Victory
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Zwyci\u0119stwo!"
+  _defaultValue: 
+--- !u!114 &7150553532275193736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test1
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Test
+  _defaultValue: 
+--- !u!114 &7232376760018991866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test2
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Chc\u0119 je\u015B\u0107 troch\u0119 ciasteczek"
+  _defaultValue: 

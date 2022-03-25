@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7660775612953633010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Game_Name
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Meu jogo
+  _defaultValue: 
+--- !u!114 &-5254566964172951387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Loss
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Voc\xEA perdeu!"
+  _defaultValue: 
+--- !u!114 &-3591765989542710531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test4
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\xC9 uma folha de teste"
+  _defaultValue: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b020d7f56165b47bb149bb9885afd4, type: 3}
+  m_Name: PORTUGESE
+  m_EditorClassIdentifier: 
+  m_name: PORTUGESE
+  m_fontSettingsCollection: {fileID: 11400000, guid: ecc9288cfdc725a44810c88d7aea7d22, type: 2}
+  m_localisedTexts:
+  - {fileID: -7660775612953633010}
+  - {fileID: 3448563157227886458}
+  - {fileID: -5254566964172951387}
+  - {fileID: 2885154108587265470}
+  - {fileID: 4746518883931451599}
+  - {fileID: 3844330193167660109}
+  - {fileID: 7704697115118946936}
+  - {fileID: -3591765989542710531}
+--- !u!114 &2885154108587265470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Continue
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Continuar?
+  _defaultValue: 
+--- !u!114 &3448563157227886458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Victory
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Vit\xF3ria!"
+  _defaultValue: 
+--- !u!114 &3844330193167660109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test2
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Eu quero comer alguns cookies
+  _defaultValue: 
+--- !u!114 &4746518883931451599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test1
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Teste
+  _defaultValue: 
+--- !u!114 &7704697115118946936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test3
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "Ol\xE1 Mundo!"
+  _defaultValue: 

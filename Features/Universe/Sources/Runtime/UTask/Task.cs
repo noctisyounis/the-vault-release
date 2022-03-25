@@ -215,18 +215,21 @@ namespace Universe.SceneTask.Runtime
         public static void RegisterUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
+            if( taskManager == null ) return;
             taskManager.AddToUpdate(target);
         }
 
         public static void RegisterFixedUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
+            if( taskManager == null ) return;
             taskManager.AddToFixedUpdate(target);
         }
 
         public static void RegisterLateUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
+            if( taskManager == null ) return;
             taskManager.AddToLateUpdate(target);
         }
         

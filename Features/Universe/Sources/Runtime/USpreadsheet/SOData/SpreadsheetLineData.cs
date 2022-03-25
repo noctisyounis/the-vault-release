@@ -13,6 +13,9 @@ namespace Universe
 
         public List<SpreadsheetEntry> m_entries;
 
+        [NonSerialized]
+        public static string ERROR_NO_COLUMN = "/!\\ ERROR no column {0} found.";
+
         public override string ToString()
         {
             var toString = $"[SpreadsheetLineData] {name}";
@@ -35,6 +38,11 @@ namespace Universe
             return CheckIfEntriesHaveColumn( columnName );
         }
 
+        public bool DoesntHave( string columnName )
+        {
+            return !CheckIfEntriesHaveColumn( columnName );
+        }
+
         public string Get( string columnName, StringComparison stringComparison = CurrentCultureIgnoreCase )
         {
             return BrowseEntriesToFind( columnName, stringComparison );
@@ -42,7 +50,7 @@ namespace Universe
 
         public string GetIfExist( string columnName )
         {
-            if( !Have( columnName ) ) return "";
+            if( DoesntHave( columnName ) ) return ERROR_NO_COLUMN;
 
             var output = Get( columnName );
             if( string.IsNullOrWhiteSpace(output) )

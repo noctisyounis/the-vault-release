@@ -8,6 +8,7 @@ using static Universe.UTime;
 
 namespace Universe
 {
+    [DefaultExecutionOrder(-50)]
     public class TaskManager : UBehaviour
     {
         #region Exposed

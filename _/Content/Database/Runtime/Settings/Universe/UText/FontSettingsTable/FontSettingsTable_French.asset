@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c8b7925c4c20d4db3af21dac37b8e5, type: 3}
+  m_Name: FontSettingsTable_French
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  m_names:
+  - NORMAL
+  - TITLE
+  - SUBTITLE
+  m_list:
+  - {fileID: 11400000, guid: 3a5f407cea0518242b5e377b80285272, type: 2}
+  - {fileID: 11400000, guid: a20d2c0660265ff4eabce53f5ce47bc8, type: 2}
+  - {fileID: 11400000, guid: 4b8bea6e36d0d4d47845d70e07d071e5, type: 2}

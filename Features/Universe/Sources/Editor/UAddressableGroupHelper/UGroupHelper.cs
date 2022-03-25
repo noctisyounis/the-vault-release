@@ -41,6 +41,7 @@ namespace Universe.Editor
 		private static void ScanFolders()
 		{
 			s_folderPaths = new List<string>();
+			s_folderPaths.Add(s_targetFolder);
 
 			var folders = GetSubFolders(s_targetFolder);
 

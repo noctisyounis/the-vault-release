@@ -78,6 +78,7 @@ namespace Universe.Toolbar.Editor
         {
             OpenAddressableButton.Draw();
             ReloadAndBuildAddressable.Draw();
+            RefreshLocalisation.Draw();
         }
 
         static void DrawGraphics()

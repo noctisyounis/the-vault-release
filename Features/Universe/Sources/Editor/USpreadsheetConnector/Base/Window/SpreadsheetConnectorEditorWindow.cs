@@ -120,7 +120,7 @@ namespace Universe
 
         #region Callback
 
-        private static string OnSpreadsheetGet( USpreadsheetLinkData data, string response )
+        public static string OnSpreadsheetGet( USpreadsheetLinkData data, string response )
         {
             if( _isDebug ) Log( $"response = {response}" );
 
@@ -212,7 +212,7 @@ namespace Universe
             _collectionToDownload[index] = CreateToggleDownload( _collectionToDownload[index] );
         }
 
-        private static void SetTimeStampVariable()
+        public static void SetTimeStampVariable()
         {
             _timestamp = Now.ToString()
                             .Replace( "/", "." )
