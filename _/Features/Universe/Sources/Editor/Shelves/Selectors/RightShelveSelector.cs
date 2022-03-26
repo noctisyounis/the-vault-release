@@ -23,6 +23,8 @@ namespace Universe.Toolbar.Editor
 
         static void OnToolbarGUI()
         {
+            if (EditorApplication.isCompiling) return;
+            
             FlexibleSpace();
             ShelveSelector.Draw(SIDE.Right);
         }
