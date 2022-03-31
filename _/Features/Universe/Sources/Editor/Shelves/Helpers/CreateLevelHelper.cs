@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.IO;
 using UnityEditor;
@@ -22,6 +23,14 @@ namespace Universe.Toolbar.Editor
 {
     static class CreateLevelHelper
 	{
+		#region Events
+
+		public static Action OnLevelCreated;
+		public static Action OnTaskAdded;
+
+		#endregion
+
+
 		#region Main
 
 		public static void NewLevel(string name, TaskData blockData, TaskData artData)
@@ -51,6 +60,7 @@ namespace Universe.Toolbar.Editor
 			}
 
 			ReadSettings();
+			FindHelper();
 
 			_levelName				= level.name;
 			_defaultLevelFolder 	= Join(_targetFolder, _levelName);
@@ -74,6 +84,8 @@ namespace Universe.Toolbar.Editor
             level.m_artEnvironment = artData;
             level.m_gameplayTasks.Add(gameplayData);
 
+			OnLevelCreated?.Invoke();
+
 			Debug.Log($"<color=lime>{level.name} generated successfully</color>");
         }
 
@@ -93,6 +105,8 @@ namespace Universe.Toolbar.Editor
 			_isGenerating = false;
 
 			level.m_gameplayTasks.Add(gameplayData);
+
+			OnTaskAdded?.Invoke();
 
 			Debug.Log($"<color=lime>{gameplayName} generated successfully</color>");
 		}
@@ -125,22 +139,8 @@ namespace Universe.Toolbar.Editor
 
         private static void GenerateHierarchy()
         {
-            var helperFullPath = GetFullPath(_targetHelper);
-
             if (!IsValidFolder(_targetFolder)) FolderHelper.CreatePath(_targetFolder);
-            if (!File.Exists(helperFullPath))
-            {
-                _helper 			= ScriptableObject.CreateInstance<UAddressableGroupHelper>();
-                _helper.m_groupName = "levels";
-				_helper.m_template 	= _addressableTemplate;
-
-                CreateAsset(_helper, _targetHelper);
-                SaveAssets();
-            }
-			else
-			{
-				_helper = AssetDatabase.LoadAssetAtPath<UAddressableGroupHelper>(_targetHelper);
-			}
+            FindHelper();
 
 			var blockMeshName 	= $"{_levelName}-{_blockMeshTaskName}";
 			var artName			= $"{_levelName}-{_artTaskName}";
@@ -159,6 +159,25 @@ namespace Universe.Toolbar.Editor
 			_targetArt 		= Join(_currentArtFolder, $"{artName}.unity");
 			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
         }
+
+		private static void FindHelper()
+		{
+			var helperFullPath = GetFullPath(_targetHelper);
+
+            if (!File.Exists(helperFullPath))
+            {
+                _helper 			= ScriptableObject.CreateInstance<UAddressableGroupHelper>();
+                _helper.m_groupName = "levels";
+				_helper.m_template 	= _addressableTemplate;
+
+                CreateAsset(_helper, _targetHelper);
+                SaveAssets();
+            }
+			else
+			{
+				_helper = AssetDatabase.LoadAssetAtPath<UAddressableGroupHelper>(_targetHelper);
+			}
+		}
 
 		private static void GenerateAaGroup()
 		{
@@ -216,9 +235,10 @@ namespace Universe.Toolbar.Editor
 			SaveAssets();
 
 			var taskGuid = GUIDFromAssetPath(dataPath).ToString();
+			var group = _helper.TryToFindGroup();
 
-			CreateAaEntry(Settings, sceneGuid, _helper.m_group);
-			CreateAaEntry(Settings, taskGuid, _helper.m_group);
+			CreateAaEntry(Settings, sceneGuid, group);
+			CreateAaEntry(Settings, taskGuid, group);
 
 			return taskData;
 		}

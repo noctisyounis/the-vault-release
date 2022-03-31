@@ -41,7 +41,7 @@ namespace Universe
             Settings.DefaultGroup = m_group;
 		}
 
-        private AddressableAssetGroup TryToFindGroup()
+        public AddressableAssetGroup TryToFindGroup()
         {
             var group = Settings.FindGroup(FindByNameEquality);
 
