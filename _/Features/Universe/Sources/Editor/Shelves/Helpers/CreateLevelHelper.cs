@@ -13,15 +13,18 @@ using Universe.SceneTask.Runtime;
 using Universe.Editor;
 
 using static System.IO.Path;
+using static System.IO.File;
+using static UnityEngine.Debug;
 using static UnityEditor.AssetDatabase;
 using static UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject;
 using static UnityEditor.SceneManagement.NewSceneMode;
+using static UnityEditor.SceneManagement.EditorSceneManager;
 using static Universe.UAddressableUtility;
 using static Universe.SceneTask.TaskPriority;
 
 namespace Universe.Toolbar.Editor
 {
-    static class CreateLevelHelper
+    public static class CreateLevelHelper
 	{
 		#region Events
 
@@ -37,7 +40,7 @@ namespace Universe.Toolbar.Editor
         {
 			if(_isGenerating)
 			{
-				Debug.LogWarning("Another level is being generated, wait for its completion before creating another");
+				LogWarning("Another level is being generated, wait for its completion before creating another");
 				return;
 			}
             ReadSettings();
@@ -55,7 +58,7 @@ namespace Universe.Toolbar.Editor
 		{
 			if(_isGenerating)
 			{
-				Debug.LogWarning("Another level is being generated, wait for its completion before creating another");
+				LogWarning("Another level is being generated, wait for its completion before creating another");
 				return;
 			}
 
@@ -77,16 +80,18 @@ namespace Universe.Toolbar.Editor
             var gameplayData 	= GenerateTask(_targetGameplay, GAMEPLAY, true);
 
 			_isGenerating = true;
-			yield return new WaitForSecondsRealtime(2f);
+			yield return 0;
 			_isGenerating = false;
 
             level.m_blockMeshEnvironment = blockData;
             level.m_artEnvironment = artData;
             level.m_gameplayTasks.Add(gameplayData);
+			EditorUtility.SetDirty(level);
 
+			Log($"<color=lime>{level.name} generated successfully</color>");
 			OnLevelCreated?.Invoke();
-
-			Debug.Log($"<color=lime>{level.name} generated successfully</color>");
+			SaveAssets();
+			Refresh();
         }
 
 		private static IEnumerator GenerateAddedGameplay(LevelData level)
@@ -99,16 +104,17 @@ namespace Universe.Toolbar.Editor
 			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
 
 			var gameplayData = GenerateTask(_targetGameplay, GAMEPLAY, true);
-			
+
 			_isGenerating = true;
-			yield return new WaitForSecondsRealtime(2f);
+			yield return 0;
 			_isGenerating = false;
 
 			level.m_gameplayTasks.Add(gameplayData);
 
+			Log($"<color=lime>{gameplayName} generated successfully</color>");
 			OnTaskAdded?.Invoke();
-
-			Debug.Log($"<color=lime>{gameplayName} generated successfully</color>");
+			SaveAssets();
+			Refresh();
 		}
 
         #endregion
@@ -164,18 +170,17 @@ namespace Universe.Toolbar.Editor
 		{
 			var helperFullPath = GetFullPath(_targetHelper);
 
-            if (!File.Exists(helperFullPath))
+            if (!Exists(helperFullPath))
             {
                 _helper 			= ScriptableObject.CreateInstance<UAddressableGroupHelper>();
                 _helper.m_groupName = "levels";
 				_helper.m_template 	= _addressableTemplate;
 
                 CreateAsset(_helper, _targetHelper);
-                SaveAssets();
             }
 			else
 			{
-				_helper = AssetDatabase.LoadAssetAtPath<UAddressableGroupHelper>(_targetHelper);
+				_helper = LoadAssetAtPath<UAddressableGroupHelper>(_targetHelper);
 			}
 		}
 
@@ -191,13 +196,16 @@ namespace Universe.Toolbar.Editor
 			var path 	= Join(_currentLevelFolder, $"{_levelName}.asset");
 
 			CreateAsset(level, path);
-			SaveAssets();
+
 			level.name = _levelName;
 
 			var levelGuid = GUIDFromAssetPath(path).ToString();
 
 			CreateAaEntry(Settings, levelGuid, _helper.m_group);
 
+			EditorUtility.SetDirty(level);
+			SaveAssets();
+			Refresh();
 			return level;
 		}
 
@@ -206,7 +214,7 @@ namespace Universe.Toolbar.Editor
 			var fullPath = GetFullPath(path);
 			var dataPath = path.Replace(".unity", ".asset");
 
-			if(File.Exists(fullPath)) return LoadAssetAtPath<TaskData>(dataPath);
+			if(Exists(fullPath)) return LoadAssetAtPath<TaskData>(dataPath);
 
 			if(_sceneTemplate)
 			{
@@ -215,13 +223,13 @@ namespace Universe.Toolbar.Editor
 			else
 			{
 				var mode 	= isAdditive ? Additive : NewSceneMode.Single;
-				var scene 	= EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, mode);
+				var scene 	= NewScene(NewSceneSetup.EmptyScene, mode);
 				
-				EditorSceneManager.SaveScene(scene, path);
+				SaveScene(scene, path);
 
 				var directory = new DirectoryInfo(path).Name;
 
-				Debug.LogWarning($"No scene template found, an empty scene has been generated for {directory}.");
+				LogWarning($"No scene template found, an empty scene has been generated for {directory}.");
 			}
 			
 			var sceneGuid = GUIDFromAssetPath(path).ToString();
@@ -232,7 +240,6 @@ namespace Universe.Toolbar.Editor
 			taskData.m_alwaysUpdated 		= false;
 			taskData.m_canBeLoadOnlyOnce 	= true;
 			CreateAsset(taskData, dataPath);
-			SaveAssets();
 
 			var taskGuid = GUIDFromAssetPath(dataPath).ToString();
 			var group = _helper.TryToFindGroup();
@@ -240,6 +247,9 @@ namespace Universe.Toolbar.Editor
 			CreateAaEntry(Settings, sceneGuid, group);
 			CreateAaEntry(Settings, taskGuid, group);
 
+			EditorUtility.SetDirty(taskData);
+			SaveAssets();
+			Refresh();
 			return taskData;
 		}
 

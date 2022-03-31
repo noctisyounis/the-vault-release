@@ -1,6 +1,8 @@
+using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
+using static UnityEditor.AssetDatabase;
 using static UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject;
 
 namespace Universe
@@ -20,17 +22,16 @@ namespace Universe
 
 		public AddressableAssetGroup GenerateNewGroup()
 		{
-			m_group = Settings.FindGroup(FindByNameEquality);
+			m_group = TryToFindGroup();
 
-			if(m_group) return m_group;
+			if(!m_group) 
+				m_group = Settings.CreateGroup(m_groupName, false, false, true, null, m_template.GetTypes());
+
+			EditorUtility.SetDirty(this);
+			SaveAssetIfDirty(this);
 			
-			m_group = Settings.CreateGroup(m_groupName, false, false, true, null, m_template.GetTypes());
-			GetSettings(false);
-
 			return m_group;
 		}
-
-		public bool FindByNameEquality(AddressableAssetGroup other) => other.name.Equals(m_groupName);
 
 		public void SetGroupAsDefault()
 		{
@@ -47,10 +48,16 @@ namespace Universe
 
             if (group) return group;
             
-            Debug.LogError($"No existing group found, please create one before setting it as default.");
+            Debug.LogError($"No existing group found", this);
 			return null;
         }
 
         #endregion
+
+
+		#region Utils
+		public bool FindByNameEquality(AddressableAssetGroup other) => other.name.Equals(m_groupName);
+
+		#endregion
 	}
 }
