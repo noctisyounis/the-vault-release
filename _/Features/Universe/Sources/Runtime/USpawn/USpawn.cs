@@ -23,6 +23,9 @@ namespace Universe
         public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, int maxPoolSize = 0) => 
             TrySpawn(source, assetReference, position, rotation, parent, EmptyCallback, maxPoolSize);
         
+        public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Action<GameObject> callback, int maxPoolSize = 0) =>
+            TrySpawn(source, assetReference, position, rotation, null, callback, maxPoolSize);
+        
         public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0) =>
             TrySpawn(source, assetReference, position, rotation, parent, callback, maxPoolSize);
 

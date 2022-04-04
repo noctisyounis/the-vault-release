@@ -61,6 +61,9 @@ namespace Universe
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, Transform parent, int poolSize = 0) =>
             this.USpawn(assetReference, pos, rotation, parent, poolSize);
 
+        protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, Action<GameObject> callback, int poolSize = 0) => 
+            this.USpawn(assetReference, pos, rotation, callback, poolSize);
+        
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, Transform parent, Action<GameObject> callback, int poolSize = 0) => 
             this.USpawn(assetReference, pos, rotation, parent, callback, poolSize);
 

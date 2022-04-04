@@ -39,9 +39,9 @@ namespace Universe
             if (!spawnedObject.TryGetComponent(out PrefabHierarchyHolder holder)) return;
 
             _trackedXRDico.Add( PLAY_AREA, new XRAnchorPulledData(spawnedObject.transform));
-            _trackedXRDico.Add( HEADSET, new XRAnchorPulledData(holder.GetGameObject("Camera").transform));
-            _trackedXRDico.Add( LEFT_CONTROLLER, new XRAnchorPulledData(holder.GetGameObject("LeftHand").transform));
-            _trackedXRDico.Add( RIGHT_CONTROLLER, new XRAnchorPulledData(holder.GetGameObject("RightHand").transform));
+            _trackedXRDico.Add( HEADSET, new XRAnchorPulledData(holder.ReferencesGetGameObject("Camera").transform));
+            _trackedXRDico.Add( LEFT_CONTROLLER, new XRAnchorPulledData(holder.ReferencesGetGameObject("LeftHand").transform));
+            _trackedXRDico.Add( RIGHT_CONTROLLER, new XRAnchorPulledData(holder.ReferencesGetGameObject("RightHand").transform));
         }
 
         private XRAnchorPulledData GetDataOf(XRDeviceType deviceType) =>

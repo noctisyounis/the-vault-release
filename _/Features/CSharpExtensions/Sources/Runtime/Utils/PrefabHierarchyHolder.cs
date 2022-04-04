@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace CSharpExtensions.Runtime
 {
@@ -12,16 +13,23 @@ namespace CSharpExtensions.Runtime
       {
          public string m_name;
          public Object m_reference;
+      }
 
+      [System.Serializable]
+      public struct Addresse
+      {
+         public string m_name;
+         public AssetReference m_reference;
       }
 
       public List<Reference> m_references;
-     
+      public List<Addresse> m_addresses;
+      
       #endregion
       
       #region Main
 
-      public bool Have(string referenceSignature)
+      public bool ReferencesHave(string referenceSignature)
       {
          for (var i = 0; i < m_references.Count; i++)
          {
@@ -34,7 +42,7 @@ namespace CSharpExtensions.Runtime
          return false;
       }
 
-      public Object Get(string referenceSignature)
+      public Object ReferencesGet(string referenceSignature)
       {
          for (var i = 0; i < m_references.Count; i++)
          {
@@ -47,8 +55,36 @@ namespace CSharpExtensions.Runtime
          return null;
       }
       
-      public GameObject GetGameObject(string referenceSignature) =>
-         (GameObject) Get(referenceSignature);
+      public GameObject ReferencesGetGameObject(string referenceSignature) =>
+         (GameObject) ReferencesGet(referenceSignature);
+      
+      
+      
+      public bool AddressesHave(string referenceSignature)
+      {
+         for (var i = 0; i < m_addresses.Count; i++)
+         {
+            if (m_addresses[i].m_name == referenceSignature)
+            {
+               return true;
+            }
+         }
+
+         return false;
+      }
+      
+      public AssetReference AddressesGet(string referenceSignature)
+      {
+         for (var i = 0; i < m_addresses.Count; i++)
+         {
+            if (m_addresses[i].m_name == referenceSignature)
+            {
+               return m_addresses[i].m_reference;
+            }
+         }
+
+         return null;
+      }
       
       #endregion
    }
