@@ -65,9 +65,21 @@ namespace Universe.Toolbar.Editor
 			ReadSettings();
 			FindHelper();
 
-			_levelName				= level.name;
-			_defaultLevelFolder 	= Join(_targetFolder, _levelName);
-			_currentLevelFolder 	= _defaultLevelFolder;
+			var levelPath = GetAssetPath(level);
+
+			_levelName = level.name;
+			
+			if( !string.IsNullOrEmpty( levelPath ) )
+			{
+				var levelFolder = levelPath.Replace( $"{_levelName}.asset", "" );
+				
+				_currentLevelFolder = levelFolder;
+			}
+			else
+			{
+				_defaultLevelFolder = Join( _targetFolder, _levelName );
+				_currentLevelFolder = _defaultLevelFolder;
+			}
 
 			EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAddedGameplay(level));
 		}
@@ -112,6 +124,7 @@ namespace Universe.Toolbar.Editor
 			level.m_gameplayTasks.Add(gameplayData);
 
 			Log($"<color=lime>{gameplayName} generated successfully</color>");
+			EditorUtility.SetDirty( level );
 			OnTaskAdded?.Invoke();
 			SaveAssets();
 			Refresh();

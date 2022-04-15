@@ -57,13 +57,18 @@ namespace Symlink.Editor
             Refresh(ForceUpdate);
         }
         
-        public static void LoadAllSymlink(string[] directories)
+        public static void LoadAllSymlink(string[] directories, string targetPath)
         {
             foreach (var s in directories)
             {
                 var name = GetFileName(s);
-                LoadSymlink(s, $"{dataPath}\\_\\{name}");
+                if (name.Contains("GraphicsTier")) continue;
+
+                var target = $"{targetPath}\\{name}";
+                
+                LoadSymlink(s, target);
             }
+            Refresh(ForceUpdate);
         }
 
         public static void RemoveSymlink(string folderPath)
@@ -76,7 +81,7 @@ namespace Symlink.Editor
             Refresh(ForceUpdate);
         }
         
-        public static void RemoveAllSymlinks([NotNull] string[] directories)
+        public static void RemoveAllSymlinks([NotNull] string[] directories, string targetPath)
         {
             if (directories == null)
             {
@@ -86,10 +91,12 @@ namespace Symlink.Editor
             foreach (var s in directories)
             {
                 var name = GetFileName(s);
-                var folderPath = $"{dataPath}\\_\\{name}";
+                if (name.Contains("GraphicsTier")) continue;
+                var folderPath = $"{targetPath}\\{name}";
                 
-               RemoveSymlink(folderPath);
+                RemoveSymlink(folderPath);
             }
+            Refresh(ForceUpdate);
         }
         
         #endregion

@@ -19,85 +19,85 @@ namespace Universe.SceneTask.Runtime
         public static TaskData m_focusTask;
         public static SceneInstance m_focusScene;
 
-        public static bool IsTheSameAsFocusedScene(TaskData taskData) =>
+        public static bool IsTheSameAsFocusedScene( TaskData taskData ) =>
             m_focusTask.m_assetReference != taskData.m_assetReference;
 
-        public static bool HaveSamePriorityAsFocusScene(TaskData taskData) =>
+        public static bool HaveSamePriorityAsFocusScene( TaskData taskData ) =>
             m_focusTask.m_priority == taskData.m_priority;
 
-        public static Scene GetFocusScene() => 
+        public static Scene GetFocusScene() =>
             m_focusScene.Scene;
-        
-        public static string GetFocusSceneName() => 
+
+        public static string GetFocusSceneName() =>
             m_focusScene.Scene.name;
-        
+
         #endregion
 
 
         #region Main
 
-        public static void ULoadTask(this UBehaviour source, TaskData task)
+        public static void ULoadTask( this UBehaviour source, TaskData task )
         {
-            if (CheckIfSceneCanBeLoaded(task))
+            if( CheckIfSceneCanBeLoaded( task ) )
             {
-                if (DicoDoesntContain(task))
+                if( DicoDoesntContain( task ) )
                 {
-                    InitializeHandleList(task);
+                    InitializeHandleList( task );
                 }
 
-                LoadScene(task);
+                LoadScene( task );
             }
             else
             {
-                Debug.LogError($"ERROR Task: {task.name} is already loaded and cannot be loaded twice.");
+                Debug.LogError( $"ERROR Task: {task.name} is already loaded and cannot be loaded twice." );
             }
         }
 
-        public static void UUnloadLastTaskAndLoad(this UBehaviour source, TaskData task)
+        public static void UUnloadLastTaskAndLoad( this UBehaviour source, TaskData task )
         {
-            if (HaveLoadedOneOrMoreTasks())
+            if( HaveLoadedOneOrMoreTasks() )
             {
-                Debug.LogError("cannot unload previous scene, no scene are loaded.");
-                LoadScene(task);
+                Debug.LogError( "cannot unload previous scene, no scene are loaded." );
+                LoadScene( task );
             }
             else
             {
                 var previous = GetPreviousSceneLoaded();
-                RemoveSceneHandleInDico(previous);
-                UnloadScene(previous, task);
+                RemoveSceneHandleInDico( previous );
+                UnloadScene( previous, task );
             }
         }
 
-        public static void UUnloadTask(this UBehaviour source, TaskData task)
+        public static void UUnloadTask( this UBehaviour source, TaskData task )
         {
-            if (DicoDoesntContain(task)) return;
+            if( DicoDoesntContain( task ) ) return;
             var handle = GetLastHandleOfScene(task);
-            RemoveHandleFromDico(task, handle);
-            UnloadScene(handle);
+            RemoveHandleFromDico( task, handle );
+            UnloadScene( handle );
         }
-        
+
         public static SceneInstance GetFocusedScene()
         {
-            if (IsSceneDicoEmpty())
+            if( IsSceneDicoEmpty() )
             {
                 m_focusSceneHandle = new AsyncOperationHandle<SceneInstance>();
                 return new SceneInstance();
             }
 
-            _orderedKeys = _dicoOfTasks.Keys.OrderByDescending(task => task.m_priority);
-       
+            _orderedKeys = _dicoOfTasks.Keys.OrderByDescending( task => task.m_priority );
+
             m_focusTask = _orderedKeys.First();
             var entry = _dicoOfTasks[m_focusTask];
             m_focusSceneHandle = entry[0];
             return m_focusSceneHandle.Result;
         }
 
-        public static SceneInstance GetLoadedScene(TaskData from)
+        public static SceneInstance GetLoadedScene( TaskData from )
         {
-            if(!_dicoOfTasks.ContainsKey(from)) 
+            if( !_dicoOfTasks.ContainsKey( from ) )
             {
-                Debug.LogError($"Task: {from.name} isn't currently loaded");
-                return default(SceneInstance);
+                Debug.LogError( $"Task: {from.name} isn't currently loaded" );
+                return default( SceneInstance );
             }
 
             var task = _dicoOfTasks[from];
@@ -105,26 +105,26 @@ namespace Universe.SceneTask.Runtime
 
             return sceneHandle.Result;
         }
-        
+
         #endregion
 
 
         #region Main Internal
 
-        private static void LoadScene(TaskData sceneData)
+        private static void LoadScene( TaskData sceneData )
         {
             var handle = LoadSceneAsync(sceneData.m_assetReference, Additive);
 
-            _dicoOfTasks[sceneData].Add(handle);
-            _taskHandlesList.Add(handle);
+            _dicoOfTasks[sceneData].Add( handle );
+            _taskHandlesList.Add( handle );
             handle.Completed += OnSceneLoaded;
         }
 
-        private static void UnloadScene(AsyncOperationHandle<SceneInstance> scene, TaskData sceneToLoadAfter = null)
+        private static void UnloadScene( AsyncOperationHandle<SceneInstance> scene, TaskData sceneToLoadAfter = null )
         {
-            _taskHandlesList.Remove(scene);
-            RemoveSceneHandleInDico(scene);
-            UnloadSceneAsync(scene).Completed += SceneUnloadComplete(sceneToLoadAfter);
+            _taskHandlesList.Remove( scene );
+            RemoveSceneHandleInDico( scene );
+            UnloadSceneAsync( scene ).Completed += SceneUnloadComplete( sceneToLoadAfter );
         }
 
         #endregion
@@ -132,37 +132,37 @@ namespace Universe.SceneTask.Runtime
 
         #region Callbacks
 
-        private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete(TaskData task = null)
+        private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete( TaskData task = null )
         {
             var highestScene = GetFocusedScene();
             var taskManager = GetTaskManagerOf(highestScene.Scene);
 
-            taskManager.gameObject.SetActive(true);
+            taskManager.gameObject.SetActive( true );
             m_focusScene = highestScene;
-            
-            if (task) ULoadTask(null, task);
+
+            if( task ) ULoadTask( null, task );
 
             return null;
         }
-        
-        private static void OnSceneLoaded(AsyncOperationHandle<SceneInstance> go)
+
+        private static void OnSceneLoaded( AsyncOperationHandle<SceneInstance> go )
         {
             var highestScene = GetFocusedScene();
             var taskData = GetTaskDataOf(go);
             var taskManager = GetTaskManagerOf(go);
 
-            if(!string.IsNullOrEmpty(m_focusScene.Scene.name))
+            if( !string.IsNullOrEmpty( m_focusScene.Scene.name ) )
             {
                 var previousTaskManager = GetTaskManagerOf(m_focusScene.Scene);
                 previousTaskManager.DisableTaskInputs();
-                
-                if(!previousTaskManager.IsAlwaysUpdated())
+
+                if( !previousTaskManager.IsAlwaysUpdated() )
                 {
-                    previousTaskManager.gameObject.SetActive(false);
+                    previousTaskManager.gameObject.SetActive( false );
                 }
             }
-            
-            taskManager.SetAlwaysUpdated(taskData.m_alwaysUpdated);
+
+            taskManager.SetAlwaysUpdated( taskData.m_alwaysUpdated );
 
             m_focusScene = highestScene;
         }
@@ -172,18 +172,26 @@ namespace Universe.SceneTask.Runtime
 
         #region TaskManager
 
-        public static void Register(TaskManager target)
+        public static void Register( TaskManager target )
         {
-            if ( _taskManagers.Contains(target) ) return;
-            
-            _taskManagers.Add(target);
+            if( _taskManagers.Contains( target ) ) return;
+
+            _taskManagers.Add( target );
         }
 
-        public static void Unregister(TaskManager target)
+        public static void Unregister( TaskManager target )
         {
-            if ( !_taskManagers.Contains(target) ) return;
+            if( !_taskManagers.Contains( target ) ) return;
 
-            _taskManagers.Remove(target);
+            _taskManagers.Remove( target );
+        }
+
+        public static TaskManager GetFocusedTaskManager()
+        {
+            var focusedScene = GetFocusScene();
+
+            return _taskManagers.FirstOrDefault( taskManager =>
+                 focusedScene.name == taskManager.gameObject.scene.name );
         }
 
         public static TaskManager GetTaskManagerOf(UBehaviour target)

@@ -25,7 +25,7 @@ namespace Universe.Toolbar.Editor
 
 			if(Button(new GUIContent(labelText, tex, "Switch between Block mesh and Art environment")))
 			{
-				Level.CurrentEditorEnvironment = IsBlockMesh ? Environment.ART : Environment.BLOCK_MESH;
+				Level.CurrentEnvironment = IsBlockMesh ? Environment.ART : Environment.BLOCK_MESH;
 
 				var level 			= LoadAssetAtPath<LevelData>(currentLevelPath);
 				var blockMeshGuid 	= level.m_blockMeshEnvironment.m_assetReference.AssetGUID;
@@ -57,7 +57,7 @@ namespace Universe.Toolbar.Editor
 			return Exists(fullPath);
 		}
 
-		private static bool IsBlockMesh => Level.CurrentEditorEnvironment == Environment.BLOCK_MESH;
+		private static bool IsBlockMesh => Level.CurrentEnvironment == Environment.BLOCK_MESH;
 
 		#endregion
 

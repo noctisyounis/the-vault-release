@@ -23,7 +23,7 @@ namespace Universe.Toolbar.Editor
 
 			if(Button(new GUIContent("Open", tex, "Open selected level")))
 			{
-				Level.CurrentEditorEnvironment = Environment.BLOCK_MESH;
+				Level.CurrentEnvironment = Environment.BLOCK_MESH;
 
 				var level 			= LoadAssetAtPath<LevelData>(currentLevelPath);
 				var blockMeshGuid 	= level.m_blockMeshEnvironment.m_assetReference.AssetGUID;

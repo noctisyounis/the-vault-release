@@ -14,6 +14,25 @@ namespace Universe
     {
         #region Public API
 
+        public static void USpawnOnFocused( AssetReference assetReference, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, Vector3.zero, Quaternion.identity, null, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, null, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, parent, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, null, callback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, parent, callback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Transform parent, Action<GameObject> callback = null, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, Vector3.zero, Quaternion.identity, parent, callback, maxPoolSize );
+
+
         public static void USpawn(this UBehaviour source, AssetReference assetReference, int maxPoolSize = 0) =>
             TrySpawn(source, assetReference, Vector3.zero, Quaternion.identity, null, EmptyCallback, maxPoolSize);
         
@@ -31,6 +50,13 @@ namespace Universe
 
         public static void USpawn(this UBehaviour source, AssetReference assetReference, Transform parent, Action<GameObject> callback = null, int maxPoolSize = 0) =>
             TrySpawn(source, assetReference, Vector3.zero, Quaternion.identity, parent, callback, maxPoolSize);
+
+        
+        public static void UDespawn(this UBehaviour source) =>
+            TryDespawn(source, source.gameObject);
+        
+        public static void UDespawn(this UBehaviour source, GameObject target) =>
+            TryDespawn(source, target);
 
         #endregion
         
@@ -56,7 +82,13 @@ namespace Universe
                 return;
             }
 
-            var taskManager = Task.GetTaskManagerOf(source).transform;
+            Transform taskManager;
+
+            if( source )
+                taskManager = Task.GetTaskManagerOf( source ).transform;
+            else
+                taskManager = Task.GetFocusedTaskManager().transform;
+            
 
             if(!parent) parent = taskManager;
 
@@ -72,6 +104,12 @@ namespace Universe
 
                 if(callback != null) callback(go.Result);
             };
+        }
+
+        private static void TryDespawn(UBehaviour source, GameObject gameObject)
+        {
+            if(!gameObject) return;
+            ReleaseInstance(gameObject);
         }
 
         private static void EmptyCallback(GameObject gameObject){}

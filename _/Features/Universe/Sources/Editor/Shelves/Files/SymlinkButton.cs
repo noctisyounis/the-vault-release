@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UnityEngine;
 using static System.IO.Directory;
 using static System.IO.Path;
 using static Symlink.Editor.SymlinkEditor;
@@ -14,8 +15,8 @@ namespace Universe.Toolbar.Editor
 
         private static string SourceDirectoryPath => $"{dataPath}\\..\\..\\Symlinks";
         private static string SourceGraphicsTiersDirectoryPath => $"{SourceDirectoryPath}\\GraphicsTier";
-        private static string TargetDirectoryPath => $"{dataPath}\\_\\Content\\";
-        private static string TargetGraphicsTiersDirectoryPath => $"{TargetDirectoryPath}\\GraphicsTier\\";
+        private static string TargetDirectoryPath => $"{dataPath}\\_\\Content";
+        private static string TargetGraphicsTiersDirectoryPath => $"{TargetDirectoryPath}\\GraphicsTier";
 
         #endregion
         
@@ -32,8 +33,8 @@ namespace Universe.Toolbar.Editor
             var directories = GetDirectories(SourceDirectoryPath);
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
             
-            if (Button("Load All")) LoadAllSymlink(directories);
-            if (Button("Unload All")) RemoveAllSymlinks(directories);
+            if (Button("Load All")) LoadAllSymlink(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
+            if (Button("Unload All")) RemoveAllSymlinks(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
 
             DrawAllToggleButtons(directories, TargetDirectoryPath);
             DrawAllToggleButtons(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
@@ -59,7 +60,7 @@ namespace Universe.Toolbar.Editor
                 var fileName = GetFileName(s);
                 if (fileName.Contains("GraphicsTier")) continue;
                 
-                var target = $"{targetPath}{fileName}";
+                var target = $"{targetPath}\\{fileName}";
 
                 DrawToggleButton(s, fileName, target);
             }
@@ -77,7 +78,10 @@ namespace Universe.Toolbar.Editor
                 return;
             }
 
-            if (Button($"Load {fileName}")) LoadSymlink(path, targetPath);
+            if (Button($"Load {fileName}")) 
+            {
+                LoadSymlink(path, targetPath);
+            }
         }
         
         #endregion

@@ -13,13 +13,7 @@ namespace Universe.SceneTask.Runtime
 			get => _currentEnvironment;
 			set => _currentEnvironment = value;
 		}
-
-		public static Environment CurrentEditorEnvironment
-		{
-			get => _currentEditorEnvironment;
-			set => _currentEditorEnvironment = value;
-		}
-
+		
 		#endregion
 
 
@@ -173,7 +167,6 @@ namespace Universe.SceneTask.Runtime
 		private static bool HasCurrentLevel			=> m_currentLevel;
 
 		private static Environment _currentEnvironment;
-		private static Environment _currentEditorEnvironment;
 		private static int _currentLevelTask;
 		private static int _previousLevelTask;
 
