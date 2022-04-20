@@ -1,0 +1,18 @@
+{
+    "name": "CSharpExtensions.Editor",
+    "rootNamespace": "CSharpExtension.Editor",
+    "references": [
+        "GUID:85f45ced71d704547b2c6e33cddcb899"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
