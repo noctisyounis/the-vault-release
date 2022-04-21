@@ -54,25 +54,48 @@ namespace Universe
 
         protected void Spawn(AssetReference assetReference, int poolSize = 0) => 
             this.USpawn(assetReference, poolSize);
+
+        protected void Spawn( AssetReference assetReference, Transform parent, Action<GameObject> callback ) =>
+            this.USpawn( assetReference, parent, callback ); 
         
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, int poolSize = 0 ) =>
             this.USpawn(assetReference, pos, rotation, poolSize);
 
+        protected void Spawn( AssetReference assetReference, Vector3 pos, Quaternion rotation, Vector3 scale, int poolSize = 0 ) =>
+            this.USpawn( assetReference, pos, rotation, scale, poolSize );
+
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, Transform parent, int poolSize = 0) =>
             this.USpawn(assetReference, pos, rotation, parent, poolSize);
 
+        protected void Spawn( AssetReference assetReference, Vector3 pos, Quaternion rotation, Vector3 scale, Transform parent, int poolSize = 0 ) =>
+            this.USpawn( assetReference, pos, rotation, scale, parent, poolSize );
+
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, Action<GameObject> callback, int poolSize = 0) => 
             this.USpawn(assetReference, pos, rotation, callback, poolSize);
-        
+
+        protected void Spawn( AssetReference assetReference, Vector3 pos, Quaternion rotation, Vector3 scale, Action<GameObject> callback, int poolSize = 0 ) =>
+            this.USpawn( assetReference, pos, rotation, scale, callback, poolSize );
+
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, Transform parent, Action<GameObject> callback, int poolSize = 0) => 
             this.USpawn(assetReference, pos, rotation, parent, callback, poolSize);
 
-        protected void Spawn(AssetReference assetReference, Transform parent, Action<GameObject> callback) =>
-            this.USpawn(assetReference, parent, callback);
-        
+        protected void Spawn( AssetReference assetReference, Vector3 pos, Quaternion rotation, Vector3 scale, Transform parent, Action<GameObject> callback, int poolSize = 0 ) =>
+            this.USpawn( assetReference, pos, rotation, scale, parent, callback, poolSize );
+
         #endregion
-        
-        
+
+
+        #region Despawn
+
+        protected void Despawn() =>
+            this.UDespawn();
+
+        protected void Despawn( GameObject target ) =>
+            this.UDespawn( target );
+
+        #endregion
+
+
         #region Verbose
 
         [Conditional("DEBUG")]

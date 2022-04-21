@@ -15,41 +15,65 @@ namespace Universe
         #region Public API
 
         public static void USpawnOnFocused( AssetReference assetReference, int maxPoolSize = 0 ) =>
-            TrySpawn( null, assetReference, Vector3.zero, Quaternion.identity, null, EmptyCallback, maxPoolSize );
-
-        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, int maxPoolSize = 0 ) =>
-            TrySpawn( null, assetReference, position, rotation, null, EmptyCallback, maxPoolSize );
-
-        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, int maxPoolSize = 0 ) =>
-            TrySpawn( null, assetReference, position, rotation, parent, EmptyCallback, maxPoolSize );
-
-        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Action<GameObject> callback, int maxPoolSize = 0 ) =>
-            TrySpawn( null, assetReference, position, rotation, null, callback, maxPoolSize );
-
-        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0 ) =>
-            TrySpawn( null, assetReference, position, rotation, parent, callback, maxPoolSize );
+            TrySpawn( null, assetReference, Vector3.zero, Quaternion.identity, Vector3.one, null, EmptyCallback, maxPoolSize );
 
         public static void USpawnOnFocused( AssetReference assetReference, Transform parent, Action<GameObject> callback = null, int maxPoolSize = 0 ) =>
-            TrySpawn( null, assetReference, Vector3.zero, Quaternion.identity, parent, callback, maxPoolSize );
+            TrySpawn( null, assetReference, Vector3.zero, Quaternion.identity, Vector3.one, parent, callback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, Vector3.one, null, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, scale, null, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, Vector3.one, parent, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Transform parent, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, scale, parent, EmptyCallback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, Vector3.one, null, callback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, scale, null, callback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, Vector3.one, parent, callback, maxPoolSize );
+
+        public static void USpawnOnFocused( AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Transform parent, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( null, assetReference, position, rotation, scale, parent, callback, maxPoolSize );
 
 
         public static void USpawn(this UBehaviour source, AssetReference assetReference, int maxPoolSize = 0) =>
-            TrySpawn(source, assetReference, Vector3.zero, Quaternion.identity, null, EmptyCallback, maxPoolSize);
-        
+            TrySpawn(source, assetReference, Vector3.zero, Quaternion.identity, Vector3.one, null, EmptyCallback, maxPoolSize);
+
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Transform parent, Action<GameObject> callback = null, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, Vector3.zero, Quaternion.identity, Vector3.one, parent, callback, maxPoolSize );
+
         public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, int maxPoolSize = 0) =>
-            TrySpawn(source, assetReference, position, rotation, null, EmptyCallback, maxPoolSize);
+            TrySpawn(source, assetReference, position, rotation, Vector3.one, null, EmptyCallback, maxPoolSize);
 
-        public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, int maxPoolSize = 0) => 
-            TrySpawn(source, assetReference, position, rotation, parent, EmptyCallback, maxPoolSize);
-        
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, position, rotation, Vector3.one, parent, EmptyCallback, maxPoolSize );
+
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, position, rotation, scale, null, EmptyCallback, maxPoolSize );
+
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Transform parent, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, position, rotation, scale, parent, EmptyCallback, maxPoolSize );
+
         public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Action<GameObject> callback, int maxPoolSize = 0) =>
-            TrySpawn(source, assetReference, position, rotation, null, callback, maxPoolSize);
-        
-        public static void USpawn(this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0) =>
-            TrySpawn(source, assetReference, position, rotation, parent, callback, maxPoolSize);
+            TrySpawn(source, assetReference, position, rotation, Vector3.one, null, callback, maxPoolSize);
 
-        public static void USpawn(this UBehaviour source, AssetReference assetReference, Transform parent, Action<GameObject> callback = null, int maxPoolSize = 0) =>
-            TrySpawn(source, assetReference, Vector3.zero, Quaternion.identity, parent, callback, maxPoolSize);
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, position, rotation, Vector3.one, parent, callback, maxPoolSize );
+
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, position, rotation, scale, null, callback, maxPoolSize );
+
+        public static void USpawn( this UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Transform parent, Action<GameObject> callback, int maxPoolSize = 0 ) =>
+            TrySpawn( source, assetReference, position, rotation, scale, parent, callback, maxPoolSize );
 
         
         public static void UDespawn(this UBehaviour source) =>
@@ -63,7 +87,7 @@ namespace Universe
         
         #region Main
 
-        private static void TrySpawn(UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Transform parent, Action<GameObject> callback, int maxPoolSize = 0)
+        private static void TrySpawn(UBehaviour source, AssetReference assetReference, Vector3 position, Quaternion rotation, Vector3 scale, Transform parent, Action<GameObject> callback, int maxPoolSize = 0)
         {
             if (!_isAdressableReady)
             {
@@ -73,6 +97,7 @@ namespace Universe
                     m_assetReference = assetReference,
                     m_position = position,
                     m_quaternion = rotation,
+                    m_scale = scale,
                     m_transform = parent,
                     callback = callback,
                     maxPoolSize = maxPoolSize
@@ -100,7 +125,7 @@ namespace Universe
                 
                 tr.localPosition = position;
                 tr.localRotation = rotation;
-                tr.localScale = Vector3.one;
+                tr.localScale = scale;
 
                 if(callback != null) callback(go.Result);
             };
@@ -130,7 +155,7 @@ namespace Universe
 
             foreach (var d in _delayedSpawn)
             {
-                USpawn(d.m_source, d.m_assetReference, d.m_position, d.m_quaternion, d.m_transform, d.callback,
+                USpawn(d.m_source, d.m_assetReference, d.m_position, d.m_quaternion, d.m_scale, d.m_transform, d.callback,
                     d.maxPoolSize);
             }
         }
@@ -152,6 +177,7 @@ namespace Universe
         public AssetReference m_assetReference;
         public Vector3 m_position;
         public Quaternion m_quaternion;
+        public Vector3 m_scale;
         public Transform m_transform;
         public Action<GameObject> callback;
         public int maxPoolSize;

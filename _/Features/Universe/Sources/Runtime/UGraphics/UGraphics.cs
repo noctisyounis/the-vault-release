@@ -4,6 +4,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Universe
 {
+
     public class UGraphics : UBehaviour
     {
         #region Public
@@ -12,15 +13,29 @@ namespace Universe
         public AssetReference m_asset;
         public Action<GameObject> OnAssetLoaded = delegate { };
 
+        [Space(15.0f)]
+        public bool m_overrideSpawnTransform;
+        public VertexInfo m_spawnOverride;
+
+        [Space(15.0f)]
+        public Color m_gizmosColor   = Color.blue;
+
         #endregion
 
-
+        
         #region Unity API
 
         private void Start() 
         {
             UpdateAsset();
-            Spawn(_preferedAsset, Vector3.zero, Quaternion.identity, transform, CallbackOnAssetLoaded);
+            
+            if( m_overrideSpawnTransform )
+            {
+                Spawn( _preferedAsset, m_spawnOverride.m_position, Quaternion.Euler( m_spawnOverride.m_rotation ), m_spawnOverride.m_scale, transform, CallbackOnAssetLoaded );
+                return;
+            }
+            
+            Spawn( _preferedAsset, Vector3.zero, Quaternion.identity, Vector3.one, transform, CallbackOnAssetLoaded );
         }
 
         #endregion
@@ -48,7 +63,31 @@ namespace Universe
 
         private void CallbackOnAssetLoaded(GameObject go) =>
             OnAssetLoaded.Invoke(go);
-        
+
+        #endregion
+
+
+        #region Debug and Tools
+
+        public void OnDrawGizmosSelected()
+        {
+            if( !GizmosVisible )
+                return;
+
+            var position = transform.position;
+            var positionOverride = m_overrideSpawnTransform ? m_spawnOverride.m_position : Vector3.zero;
+            var offsetPosition = position + positionOverride;
+            var rotationOverride = m_overrideSpawnTransform ? m_spawnOverride.m_rotation : Vector3.zero;
+            var offsetForward = Quaternion.Euler(rotationOverride) * transform.forward;
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine( position, offsetPosition );
+
+            Gizmos.color = m_gizmosColor;
+            Gizmos.DrawLine( offsetPosition, offsetPosition + offsetForward );
+            Gizmos.DrawSphere( offsetPosition, 0.02f );
+        }
+
         #endregion
 
 
