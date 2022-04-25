@@ -34,6 +34,13 @@ namespace Universe.SceneTask.Runtime
         #endregion
 
 
+        #region Events
+
+        public static Action<TaskData> OnTaskLoaded;
+
+        #endregion
+
+
         #region Main
 
         public static void ULoadTask( this UBehaviour source, TaskData task )
@@ -164,6 +171,7 @@ namespace Universe.SceneTask.Runtime
 
             taskManager.SetAlwaysUpdated( taskData.m_alwaysUpdated );
 
+            OnTaskLoaded?.Invoke( taskData );
             m_focusScene = highestScene;
         }
 
