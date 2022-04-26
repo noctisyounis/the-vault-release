@@ -1,10 +1,17 @@
 using System;
+using System.Linq;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+using static UnityEngine.Color;
+using static UnityEngine.Gizmos;
+using static UnityEngine.Quaternion;
+using static UnityEngine.Vector3;
+using static Universe.UGraphicsManager;
+
 namespace Universe
 {
-
     public class UGraphics : UBehaviour
     {
         #region Public
@@ -12,13 +19,15 @@ namespace Universe
         [Header("Settings")]
         public AssetReference m_asset;
         public Action<GameObject> OnAssetLoaded = delegate { };
+        [Tooltip("When true, this UGraphics will find the parent UGraphics to fire the event OnAssetLoaded instead of here.")]
+        public bool m_propagateEventUpwards = false;
 
-        [Space(15.0f)]
+        [Header("Spawn Transform Override"), Space(15.0f)]
         public bool m_overrideSpawnTransform;
         public VertexInfo m_spawnOverride;
 
         [Space(15.0f)]
-        public Color m_gizmosColor   = Color.blue;
+        public Color m_gizmosColor   = blue;
 
         #endregion
 
@@ -27,28 +36,28 @@ namespace Universe
 
         private void Start() 
         {
-            UpdateAsset();
+            ConvertAssetReferenceToPreferredGraphicTier();
             
+            var callback = GetDesiredCallback();
             if( m_overrideSpawnTransform )
             {
-                Spawn( _preferedAsset, m_spawnOverride.m_position, Quaternion.Euler( m_spawnOverride.m_rotation ), m_spawnOverride.m_scale, transform, CallbackOnAssetLoaded );
+                Spawn( _preferredAsset, m_spawnOverride.m_position, Euler( m_spawnOverride.m_rotation ), m_spawnOverride.m_scale, transform, callback );
                 return;
             }
             
-            Spawn( _preferedAsset, Vector3.zero, Quaternion.identity, Vector3.one, transform, CallbackOnAssetLoaded );
+            Spawn( _preferredAsset, zero, identity, one, transform, callback );
         }
 
         #endregion
-
-
-        #region Utils
-
-        private void UpdateAsset()
+        
+        #region Main
+        
+        private void ConvertAssetReferenceToPreferredGraphicTier()
         {
-            _preferedAsset = m_asset;
+            _preferredAsset = m_asset;
 
-            var pathTable = UGraphicsManager.GetPathTable();
-            var settings = UGraphicsManager.GetSettings();
+            var pathTable = GetPathTable();
+            var settings = GetSettings();
             var path = pathTable.GUIDToPath(m_asset.AssetGUID);
 
             path = path.Replace(settings.m_fallbackFolder, settings.m_targetFolder);
@@ -57,9 +66,27 @@ namespace Universe
 
             if(targetGuid.Length != 0)
             {
-                _preferedAsset = new AssetReference(targetGuid);
+                _preferredAsset = new AssetReference(targetGuid);
             }
         }
+
+        private Action<GameObject> GetDesiredCallback()
+        {
+            if (!m_propagateEventUpwards) return CallbackOnAssetLoaded;
+
+            var parentCallback = GetComponentsInParent<UGraphics>();
+            if (parentCallback.Length > 0)
+            {
+                return  parentCallback.Last().OnAssetLoaded;
+            }
+
+            throw new NullReferenceException($"UGraphcs {name} tried to propagate event upwards but no parent have UGraphics available");
+        }
+        
+        #endregion
+
+
+        #region Utils
 
         private void CallbackOnAssetLoaded(GameObject go) =>
             OnAssetLoaded.Invoke(go);
@@ -71,19 +98,18 @@ namespace Universe
 
         public void OnDrawGizmosSelected()
         {
-            if( !GizmosVisible )
-                return;
+            if( !GizmosVisible ) return;
 
             var position = transform.position;
-            var positionOverride = m_overrideSpawnTransform ? m_spawnOverride.m_position : Vector3.zero;
+            var positionOverride = m_overrideSpawnTransform ? m_spawnOverride.m_position : zero;
             var offsetPosition = position + positionOverride;
-            var rotationOverride = m_overrideSpawnTransform ? m_spawnOverride.m_rotation : Vector3.zero;
-            var offsetForward = Quaternion.Euler(rotationOverride) * transform.forward;
+            var rotationOverride = m_overrideSpawnTransform ? m_spawnOverride.m_rotation : zero;
+            var offsetForward = Euler(rotationOverride) * transform.forward;
 
-            Gizmos.color = Color.white;
+            color = white;
             Gizmos.DrawLine( position, offsetPosition );
 
-            Gizmos.color = m_gizmosColor;
+            color = m_gizmosColor;
             Gizmos.DrawLine( offsetPosition, offsetPosition + offsetForward );
             Gizmos.DrawSphere( offsetPosition, 0.02f );
         }
@@ -93,7 +119,7 @@ namespace Universe
 
         #region Private
 
-        private AssetReference _preferedAsset;
+        private AssetReference _preferredAsset;
 
         #endregion
     }
