@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -14,7 +13,7 @@ namespace Universe
 {
     public class UGraphics : UBehaviour
     {
-        #region Public
+        #region Exposed
 
         [Header("Settings")]
         public AssetReference m_asset;

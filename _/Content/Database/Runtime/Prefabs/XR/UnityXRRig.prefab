@@ -285,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CameraFloorOffsetObject: {fileID: 5433772630823438556}
   m_RequestedTrackingMode: 0
-  m_TrackingOriginMode: 1
+  m_TrackingOriginMode: 2
   m_TrackingSpace: 0
   m_CameraYOffset: 1.36144
 --- !u!114 &22866053810352309
@@ -307,3 +307,4 @@ MonoBehaviour:
     m_reference: {fileID: 1395256131}
   - m_name: RightHand
     m_reference: {fileID: 1379543413}
+  m_addresses: []

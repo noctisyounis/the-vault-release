@@ -123,7 +123,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LeftController_YTriangleButton",
+                    "name": "LeftController_XSquareButton",
                     "type": "Button",
                     "id": "ee13c5a2-d26c-4b86-baf6-cb026b8349b7",
                     "expectedControlType": "Button",
@@ -132,7 +132,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LeftController_XSquareButton",
+                    "name": "LeftController_YTriangleButton",
                     "type": "Button",
                     "id": "53b67b2b-e883-46fd-ad1d-346f19f66048",
                     "expectedControlType": "Button",
@@ -353,72 +353,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "keyboard_arrows",
-                    "id": "950120e0-ff03-4e7a-be76-595737d2f4bd",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RightController_ThumbstickAxis",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "cf29747f-e696-4b49-8354-5536a8681b44",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "RightController_ThumbstickAxis",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "956782a2-5242-4066-8559-fad26e3bbc76",
-                    "path": "<Keyboard>/downArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "RightController_ThumbstickAxis",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "1494363e-6edf-4cc3-a679-410cc76b9fb5",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "RightController_ThumbstickAxis",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "27e0f85d-aff1-4573-a991-fc5ebb623da0",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "RightController_ThumbstickAxis",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "f1297313-2aaa-4a81-8b14-03c64e9a2d75",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "Press(pressPoint=0.5)",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "RightController_ThumbstickAxis",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "",
                     "id": "1bbd8e54-f7f5-466e-82c4-b1285c29fc99",
                     "path": "<XRController>{LeftHand}/triggerPressed",
@@ -469,7 +403,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_YTriangleButton",
+                    "action": "LeftController_XSquareButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -480,7 +414,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_YTriangleButton",
+                    "action": "LeftController_XSquareButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -491,7 +425,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_XSquareButton",
+                    "action": "LeftController_YTriangleButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -502,7 +436,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_XSquareButton",
+                    "action": "LeftController_YTriangleButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -718,7 +652,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LeftController_YTriangleButton",
+                    "name": "LeftController_XSquareButton",
                     "type": "Button",
                     "id": "87bb5264-012a-4136-85b6-07d19115cb89",
                     "expectedControlType": "Button",
@@ -727,7 +661,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LeftController_XSquareButton",
+                    "name": "LeftController_YTriangleButton",
                     "type": "Button",
                     "id": "6fdd50d0-9757-42ca-9461-25b269236ad4",
                     "expectedControlType": "Button",
@@ -1027,7 +961,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_YTriangleButton",
+                    "action": "LeftController_XSquareButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1038,7 +972,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_YTriangleButton",
+                    "action": "LeftController_XSquareButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1049,7 +983,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_XSquareButton",
+                    "action": "LeftController_YTriangleButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1060,7 +994,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "LeftController_XSquareButton",
+                    "action": "LeftController_YTriangleButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

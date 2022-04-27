@@ -44,6 +44,8 @@ namespace Universe.DebugWatch.Runtime
 			var column = m_columns[nextColumn];
 			var newEntry = Instantiate<DebugArrayEntry>(m_entryTemplate, column);
 
+			UpdateColumn( column );
+
 			newEntry.name = name;
 			newEntry.m_computing = valueComputer;
 
@@ -57,13 +59,18 @@ namespace Universe.DebugWatch.Runtime
 			if(!existing) return;
 
 			_entries.Remove(existing);
-			Destroy(existing.gameObject);
+			DestroyImmediate(existing.gameObject);
+
+			foreach( var column in m_columns )
+			{
+				UpdateColumn( column );
+			}
 		}
 
 		#endregion
 
 
-		#region Private Properties
+		#region Utils
 
 		private int GetNextColumn()
 		{
@@ -76,6 +83,17 @@ namespace Universe.DebugWatch.Runtime
 			}
 
 			return -1;
+		}
+
+		private void UpdateColumn( Transform target )
+		{
+			var rectColumn = (RectTransform) target;
+			var rectEntry = m_entryTemplate.GetComponent<RectTransform>();
+			var currentSize = rectColumn.sizeDelta;
+			var childCount = rectColumn.childCount;
+
+			currentSize.y = childCount * rectEntry.sizeDelta.y;
+			rectColumn.sizeDelta = currentSize;
 		}
 
 		#endregion

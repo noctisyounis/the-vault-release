@@ -12,10 +12,15 @@ namespace Universe.DebugWatch.Runtime
     {
         #region Public Members
 
+        [Header("Generation")]
         public static DebugMenuRoot m_instance;
         public DebugMenuData        m_bakedData;
         public string               m_debugMenuName;
         public AssetReference       m_debugMenuPanel;
+
+        [Header("Inputs")]
+        public AxisToButtonConverter m_selection;
+        public AxisToButtonConverter m_submission;
 
         #endregion
 
@@ -39,6 +44,9 @@ namespace Universe.DebugWatch.Runtime
             _menus          = new Dictionary<string, DebugPanel>();
             _bufferedPaths  = new();
 
+            m_selection.OnAxisPressed += UpdateSelection;
+            m_submission.OnAxisPressed += (value) => Submit();
+
             StartGeneration();
         }
 
@@ -49,12 +57,16 @@ namespace Universe.DebugWatch.Runtime
 
         public void SelectionAxisChanged(CallbackContext context)
         {
-            if(!(context.interaction is PressInteraction)) return;
-            
             var value = context.ReadValue<Vector2>();
 
-            if(value.y < 0) SelectNextButton();
-            if(value.y > 0) SelectPreviousButton();
+            m_selection.Evaluate( value.y );
+        }
+
+        public void SubmissionAxisChanged( CallbackContext context )
+        {
+            var value = context.ReadValue<float>();
+
+            m_submission.Evaluate( value );
         }
 
         public void SelectNextButton() => CurrentMenu.SelectNextButton();
@@ -165,6 +177,21 @@ namespace Universe.DebugWatch.Runtime
 
             GeneratePanel(rootedPaths, 0);
             _generated = true;
+        }
+
+        private void UpdateSelection( float value )
+        {
+            if( value < 0 )
+            {
+                SelectNextButton();
+                return;
+            }
+
+            if( value > 0 )
+            {
+                SelectPreviousButton();
+                return;
+            }
         }
 
         #endregion

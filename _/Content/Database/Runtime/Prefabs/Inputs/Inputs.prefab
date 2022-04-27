@@ -77,6 +77,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -130,6 +134,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -217,6 +225,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -342,6 +354,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -395,6 +411,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -485,6 +505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -571,6 +595,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -624,6 +652,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -677,6 +709,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -730,6 +766,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -783,6 +823,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -836,6 +880,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -922,6 +970,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -975,6 +1027,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1028,6 +1084,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1081,6 +1141,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1134,6 +1198,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1187,6 +1255,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1240,6 +1312,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1293,6 +1369,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc913c3413cf70147a76563204433ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDebug: 0
+  IsVerbose: 0
+  GizmosVisible: 0
+  UseUpdates: 1
   OnKey:
     m_PersistentCalls:
       m_Calls: []
@@ -1611,8 +1691,8 @@ MonoBehaviour:
     m_ActionName: Player/LeftController_GripButton
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1360440260913402395}
-        m_TargetAssemblyTypeName: InputReceiver, InputSystem.Runtime
+      - m_Target: {fileID: 8694631835547742193}
+        m_TargetAssemblyTypeName: Universe.InputReceiver, Universe.Runtime
         m_MethodName: ReceiveOnKeyEvent
         m_Mode: 0
         m_Arguments:
@@ -1627,8 +1707,8 @@ MonoBehaviour:
     m_ActionName: Player/LeftController_YTriangleButton
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8694631835547742193}
-        m_TargetAssemblyTypeName: InputReceiver, InputSystem.Runtime
+      - m_Target: {fileID: 1360440260913402395}
+        m_TargetAssemblyTypeName: Universe.InputReceiver, Universe.Runtime
         m_MethodName: ReceiveOnKeyEvent
         m_Mode: 0
         m_Arguments:
@@ -1931,8 +2011,8 @@ MonoBehaviour:
     m_ActionName: UI/LeftController_GripButton
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1360440260913402395}
-        m_TargetAssemblyTypeName: TigerBlade.Input.Runtime.InputReceiver, InputSystem.Runtime
+      - m_Target: {fileID: 8694631835547742193}
+        m_TargetAssemblyTypeName: Universe.InputReceiver, Universe.Runtime
         m_MethodName: ReceiveOnKeyEvent
         m_Mode: 0
         m_Arguments:
@@ -1947,8 +2027,8 @@ MonoBehaviour:
     m_ActionName: UI/LeftController_YTriangleButton
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8694631835547742193}
-        m_TargetAssemblyTypeName: TigerBlade.Input.Runtime.InputReceiver, InputSystem.Runtime
+      - m_Target: {fileID: 1360440260913402395}
+        m_TargetAssemblyTypeName: Universe.InputReceiver, Universe.Runtime
         m_MethodName: ReceiveOnKeyEvent
         m_Mode: 0
         m_Arguments:

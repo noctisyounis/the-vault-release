@@ -15,5 +15,7 @@ MonoBehaviour:
   m_targetFolder: Assets/_/Content/GraphicsTier
   m_guids:
   - b26f749a2976de040954ffb4bf7e6530
+  - ab93f77aa68f72446ba05f0b11c5af28
   m_paths:
-  - Assets/_/GraphicsTier/UAssetsPathTable.asset
+  - Assets/_/Content/GraphicsTier/UAssetsPathTable.asset
+  - Assets/_/Content/GraphicsTier/PlaceHolder/RotatingCube.prefab

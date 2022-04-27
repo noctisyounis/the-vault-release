@@ -44,7 +44,13 @@ namespace Universe.DebugWatch.Runtime
 
         public DebugButton CurrentButton
         {
-            get => _currentButton;
+            get
+            {
+                if(!_currentButton)
+                    UpdateButtons();
+                    
+                return _currentButton;
+            }
             set => _currentButton = value;
         }
 
