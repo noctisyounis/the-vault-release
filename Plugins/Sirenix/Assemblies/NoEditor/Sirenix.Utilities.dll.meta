@@ -17,7 +17,7 @@ PluginImporter:
       enabled: 0
       settings:
         Exclude Android: 0
-        Exclude Editor: 0
+        Exclude Editor: 1
         Exclude Linux64: 0
         Exclude OSXUniversal: 0
         Exclude PS5: 0
@@ -102,7 +102,7 @@ PluginImporter:
   - first:
       PS5: PS5
     second:
-      enabled: 0
+      enabled: 1
       settings: {}
   - first:
       Standalone: Linux64
