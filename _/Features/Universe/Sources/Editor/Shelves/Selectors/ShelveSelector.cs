@@ -4,6 +4,7 @@ using Universe.Editor;
 
 using static UnityEngine.GUILayout;
 using static UnityEngine.PlayerPrefs;
+using static Universe.SceneTask.Runtime.Environment;
 
 namespace Universe.Toolbar.Editor
 {
@@ -12,7 +13,8 @@ namespace Universe.Toolbar.Editor
         Files,
         Database,
         Graphics,
-        Level,
+        Level_Management,
+        Level_Loading
     }
 
     public enum SIDE
@@ -42,8 +44,11 @@ namespace Universe.Toolbar.Editor
                 case SHELVE.Graphics:
                     DrawGraphics();
                     break;
-                case SHELVE.Level:
-                    DrawLevel();
+                case SHELVE.Level_Management:
+                    DrawLevelManagement();
+                    break;
+                case SHELVE.Level_Loading:
+                    DrawLevelLoading();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -57,7 +62,14 @@ namespace Universe.Toolbar.Editor
 			
             if (HasKey(side + _shelvePlayerPrefKey))
             {
-                currentShelve = (SHELVE)Enum.Parse(typeof(SHELVE), GetString( side + _shelvePlayerPrefKey) );
+                try
+                {
+                    currentShelve = (SHELVE)Enum.Parse( typeof( SHELVE ), GetString( side + _shelvePlayerPrefKey ) );
+                }
+                catch
+                {
+                    currentShelve = SHELVE.Database;
+                }
             }
 
             return currentShelve;
@@ -86,13 +98,19 @@ namespace Universe.Toolbar.Editor
             GraphicTierChanger.Draw();
         }
 
-        static void DrawLevel()
+        static void DrawLevelManagement()
         {
-            SelectStartingLevel.Draw();
-            OpenLevel.Draw();
-            SwitchLevel.Draw();
-            AddTaskToLevel.Draw();
+            SelectLevel.Draw( "Play: ", "PlaymodeLevelPath", true );
+            SelectTask.Draw( " On: ", "PlaymodeLevelPath", true );
             CreateLevelButton.Draw();
+            AddTaskToLevel.Draw();
+        }
+
+        static void DrawLevelLoading()
+        {
+            ToggleEnvironment.Draw( "EditorLevelPath", BLOCK_MESH );
+            ToggleEnvironment.Draw( "EditorLevelPath", ART );
+            OpenLevel.Draw();
         }
 
         private static string _shelvePlayerPrefKey = "shelve";

@@ -17,6 +17,16 @@ namespace Universe
             }
         }
 
+        public static bool GreaterThan<T>( this List<T> source, int index )
+        {
+            var count = source.Count;
+
+            if( index < 0 ) return false;
+            if( index >= count ) return false;
+
+            return true;
+        }
+
         #endregion
     }
 }

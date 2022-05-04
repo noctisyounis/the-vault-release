@@ -153,7 +153,7 @@ namespace Universe.Toolbar.Editor
 
 		private static void LoadSettings()
 		{
-			_settings = USettings.GetSettings<CreateLevelSettings>();
+			_settings = USettingsHelper.GetSettings<CreateLevelSettings>();
 		}
 
         private static void GenerateHierarchy()

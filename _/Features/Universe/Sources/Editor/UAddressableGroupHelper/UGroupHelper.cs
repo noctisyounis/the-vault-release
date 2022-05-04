@@ -157,7 +157,7 @@ namespace Universe.Editor
 
 		private static void FinalizeRefresh()
 		{
-			USettings.GetSettings<UGraphicsSettings>().GetPathTable().Populate();
+			USettingsHelper.GetSettings<UGraphicsSettings>().GetPathTable().Populate();
 			OnRefreshCompleted?.Invoke();
 		}
 

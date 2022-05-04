@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c69075eca996d3843bdda9242b9e635b, type: 3}
-  m_Name: UAssetsPathTable
+  m_Script: {fileID: 11500000, guid: 832306289c24cdc45bab21626c0725f0, type: 3}
+  m_Name: LevelSettings
   m_EditorClassIdentifier: 
-  m_targetFolder: Assets/_/Content/GraphicsTier
-  m_guids: []
-  m_paths: []
+  m_startingLevel: {fileID: 11400000, guid: 637653885911e9648a3464708728f144, type: 2}
+  m_startingEnvironment: 3
+  m_startingTask: 0

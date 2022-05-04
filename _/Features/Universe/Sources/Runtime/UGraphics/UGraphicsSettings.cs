@@ -1,9 +1,6 @@
 using UnityEngine;
 
 #if UNITY_EDITOR
-using System.IO;
-using UnityEditor;
-
 using static System.IO.Path;
 using static System.IO.File;
 using static UnityEditor.AssetDatabase;
@@ -11,7 +8,7 @@ using static UnityEditor.AssetDatabase;
 
 namespace Universe
 {
-    public class UGraphicsSettings : ScriptableObject
+    public class UGraphicsSettings : USettings
     {
         #region Public 
 
@@ -37,7 +34,7 @@ namespace Universe
 
         public void FindPathTable()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
 
             var path        = Join(m_rootFolder, $"{nameof(UAssetsPathTable)}.asset");
             var fullPath    = GetFullPath(path);
@@ -56,11 +53,11 @@ namespace Universe
 
             Debug.LogWarning($"UAssetPathTable missing, {m_pathTable.name} was created in {m_rootFolder}");
 
-            #else
+#else
 
             Debug.LogError($"UAssetPathTable missing");
 
-            #endif
+#endif
         }
 
         #endregion

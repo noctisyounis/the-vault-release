@@ -15,10 +15,18 @@ namespace Universe.SceneTask.Runtime
 			set => _currentEnvironment = value;
 		}
 
-		public static TaskData CurrentEnvironmentTask =>
-			GetCurrentEnvironmentTask( m_currentLevel );
+		public static TaskData CurrentBlockMeshTask =>
+			m_currentLevel.m_blockMeshEnvironment;
+		public static TaskData CurrentArtTask =>
+			m_currentLevel.m_artEnvironment;
+		public static TaskData CurrentGameplayTask =>
+			m_currentLevel.m_gameplayTasks[_currentTaskIndex];
+		public static int CurrentTaskIndex =>
+			_currentTaskIndex;
 
-		public static bool IsFullyLoaded => _environmentTaskLoaded && _gameplayTaskLoaded;
+		public static bool CanLoadArt => ( CurrentEnvironment & Environment.ART ) != 0;
+		public static bool CanLoadBlockMesh => ( CurrentEnvironment & Environment.BLOCK_MESH ) != 0;
+		public static bool IsFullyLoaded => _blockMeshTaskLoaded && _artTaskLoaded && _gameplayTaskLoaded;
 
 
 		#endregion
@@ -36,86 +44,115 @@ namespace Universe.SceneTask.Runtime
 		///<summary>
 		///Load all the compound tasks of the level.
 		///</summary>
-		public static void ULoadLevelAbsolute( this UBehaviour source, LevelData level )
-		{
-			var environmentTask = GetCurrentEnvironmentTask(level);
-			var gameplayTask = level.m_gameplayTasks[0];
 
+		public static void ULoadLevelAbsolute( this UBehaviour source, LevelData level ) =>
+			source.ULoadLevelAbsolute( level, 0 );
+		
+
+		public static void ULoadLevelAbsolute( this UBehaviour source, LevelData level, int task )
+		{
 			if( HasCurrentLevel )
 				source.UUnloadLevel( m_currentLevel );
 
-			_environmentTaskLoaded = false;
-			_gameplayTaskLoaded = false;
-
-			source.ULoadTask( environmentTask );
-			Task.OnTaskLoaded += OnEnvironmentTaskLoaded;
-			source.ULoadTask( gameplayTask );
-			Task.OnTaskLoaded += OnGameplayTaskLoaded;
-
 			m_currentLevel = level;
-			_currentLevelTask = 0;
+
+			TryLoadBlockMeshTask(source);
+			TryLoadArtTask(source);
+			LoadGameplayTask(source, task);
 		}
 
 		///<summary>
 		///Load the tasks that are different from the current level.
 		///</summary>
-		public static void ULoadLevelOptimized( this UBehaviour source, LevelData level )
-		{
-			var environmentTask = GetCurrentEnvironmentTask(level);
-			var gameplayTask = level.m_gameplayTasks[_currentLevelTask];
 
-			if( IsLoadingCurrentEnvironment( environmentTask ) )
+		public static void ULoadLevelOptimized( this UBehaviour source, LevelData level ) =>
+			source.ULoadLevelOptimized( level, 0 );
+
+		public static void ULoadLevelOptimized( this UBehaviour source, LevelData level, int task )
+		{
+			var blockMeshTask = level.m_blockMeshEnvironment;
+			var artTask = level.m_artEnvironment;
+			var gameplayTask = level.m_gameplayTasks[task];
+
+			var needBlockMesh = false;
+			var needArt = false;
+
+			if( !HasCurrentLevel )
 			{
-				source.UUnloadTask( m_currentLevel.m_gameplayTasks[_currentLevelTask] );
+				needBlockMesh = true;
+				needArt = true;
 			}
 			else
 			{
-				source.UUnloadLevel( m_currentLevel );
-				source.ULoadTask( environmentTask );
-				Task.OnTaskLoaded += OnEnvironmentTaskLoaded;
+				if(!IsCurrentBlockMeshEquals( blockMeshTask ) )
+				{
+					source.UUnloadTask( CurrentBlockMeshTask );
+					needBlockMesh = true;
+				}
+				if(!IsCurrentArtEquals( artTask ) )
+				{
+					source.UUnloadTask( CurrentArtTask );
+					needArt = true;
+				}
+
+				source.UUnloadTask( CurrentGameplayTask );
 			}
 
-			source.ULoadTask( gameplayTask );
-			Task.OnTaskLoaded += OnGameplayTaskLoaded;
-
 			m_currentLevel = level;
-			_currentLevelTask = 0;
+
+			if( needBlockMesh )
+				TryLoadBlockMeshTask( source );
+			if( needArt )
+				TryLoadArtTask( source );
+
+			LoadGameplayTask( source, task );
 		}
 
-		public static void UReloadCurrentLevelAbsolute( this UBehaviour source )
+		public static void UReloadCurrentLevelAbsolute( this UBehaviour source ) =>
+			source.UReloadCurrentLevelAbsolute( 0 );
+
+		public static void UReloadCurrentLevelAbsolute( this UBehaviour source, int at )
 		{
 			if( !HasCurrentLevel )
 				return;
 
-			source.ULoadLevelAbsolute( m_currentLevel );
+			source.ULoadLevelAbsolute( m_currentLevel, at);
 		}
 
-		public static void UReloadCurrentLevelOptimized( this UBehaviour source )
+		public static void UReloadCurrentLevelOptimized( this UBehaviour source) =>
+			source.UReloadCurrentLevelOptimized( 0 );
+
+		public static void UReloadCurrentLevelOptimized( this UBehaviour source, int at )
 		{
 			if( !HasCurrentLevel )
 				return;
 
-			source.ULoadLevelOptimized( m_currentLevel );
+			source.ULoadLevelOptimized( m_currentLevel, at );
 		}
 
 		public static void UUnloadLevel( this UBehaviour source, LevelData level )
 		{
 			if( !HasCurrentLevel )
 				return;
+			if( !level.Equals( m_currentLevel ) )
+				throw new Exception( $"{level.name} isn't currently loaded" );
+			
 
-			var artEnvironmentTask = level.m_artEnvironment;
-			var blockMeshEnvironmentTask = level.m_blockMeshEnvironment;
-			var gameplayTask = level.m_gameplayTasks[_currentLevelTask];
+			var blockMeshEnvironmentTask = CurrentBlockMeshTask;
+			var artEnvironmentTask = CurrentArtTask;
+			var gameplayTasks = level.m_gameplayTasks;
+			var gameplayTask = CurrentGameplayTask;
 
 			source.UUnloadTask( artEnvironmentTask );
 			source.UUnloadTask( blockMeshEnvironmentTask );
 			source.UUnloadTask( gameplayTask );
 
-			if( IsValidLevelTask( _previousLevelTask ) )
+			if( gameplayTasks.GreaterThan( _previousLevelTaskIndex ))
 			{
-				var previousTask = level.m_gameplayTasks[_previousLevelTask];
+				var previousTask = level.m_gameplayTasks[_previousLevelTaskIndex];
 
 				source.UUnloadTask( previousTask );
+				_previousLevelTaskIndex = -1;
 			}
 
 			m_currentLevel = null;
@@ -126,7 +163,7 @@ namespace Universe.SceneTask.Runtime
 			if( !HasCurrentLevel )
 				return;
 
-			var nextLevelTask = _currentLevelTask + 1;
+			var nextLevelTask = _currentTaskIndex + 1;
 
 			source.ULoadLevelTask( nextLevelTask );
 		}
@@ -136,17 +173,17 @@ namespace Universe.SceneTask.Runtime
 			if( !HasCurrentLevel )
 				return;
 
-			var currentLevelTask = _currentLevelTask;
-
-			if( !IsValidLevelTask( taskIndex ) )
+			var currentLevelTaskIndex = _currentTaskIndex;
+			var tasks = m_currentLevel.m_gameplayTasks;
+			if( !tasks.GreaterThan( taskIndex ))
 				return;
 
-			var nextGameplayTask    = m_currentLevel.m_gameplayTasks[taskIndex];
+			var nextGameplayTask = tasks[taskIndex];
 
 			source.ULoadTask( nextGameplayTask );
 
-			_currentLevelTask = taskIndex;
-			_previousLevelTask = currentLevelTask;
+			_currentTaskIndex = taskIndex;
+			_previousLevelTaskIndex = currentLevelTaskIndex;
 		}
 
 		public static void UReloadCheckpoint( this UBehaviour source )
@@ -154,23 +191,32 @@ namespace Universe.SceneTask.Runtime
 			if( !HasCurrentLevel )
 				return;
 
-			var currentLevelTask = m_currentLevel.m_gameplayTasks[_currentLevelTask];
+			var tasks = m_currentLevel.m_gameplayTasks;
+			if( !tasks.GreaterThan( _currentTaskIndex ) )
+				return;
+
+			var currentLevelTask = tasks[_currentTaskIndex];
 
 			source.UUnloadTask( currentLevelTask );
 			source.ULoadTask( currentLevelTask );
 		}
 
-		public static void UUnloadPreviousTask( this UBehaviour source )
+		public static void UUnloadPreviousTask( this UBehaviour source ) =>
+			source.UUnloadLevelTask( _previousLevelTaskIndex );
+
+		public static void UUnloadLevelTask( this UBehaviour source, int taskIndex )
 		{
 			if( !HasCurrentLevel )
 				return;
-			if( !IsValidLevelTask( _previousLevelTask ) )
+			var tasks = m_currentLevel.m_gameplayTasks;
+			if( !tasks.GreaterThan( taskIndex ) )
 				return;
 
-			var previousGameplayTask = m_currentLevel.m_gameplayTasks[_previousLevelTask];
+			var gameplayTask = tasks[taskIndex];
+			source.UUnloadTask( gameplayTask );
 
-			source.UUnloadTask( previousGameplayTask );
-			_previousLevelTask = -1;
+			if( taskIndex == _previousLevelTaskIndex )
+				_previousLevelTaskIndex = -1;
 		}
 
 
@@ -179,17 +225,66 @@ namespace Universe.SceneTask.Runtime
 
 		#region Utils
 
-		private static TaskData GetCurrentEnvironmentTask( LevelData of ) =>
-			IsUsingArtEnvironment ? of.m_artEnvironment : of.m_blockMeshEnvironment;
-
-		private static void OnEnvironmentTaskLoaded( TaskData environment )
+		private static void TryLoadBlockMeshTask(UBehaviour source)
 		{
-			var current = CurrentEnvironmentTask;
+			if( CanLoadBlockMesh )
+			{
+				_blockMeshTaskLoaded = false;
+				source.ULoadTask( m_currentLevel.m_blockMeshEnvironment );
+				Task.OnTaskLoaded += OnBlockMeshTaskLoaded;
+			}
+
+			_blockMeshTaskLoaded = true;
+		}
+
+		private static void TryLoadArtTask( UBehaviour source )
+		{
+			if( CanLoadArt )
+			{
+				_artTaskLoaded = false;
+				source.ULoadTask( m_currentLevel.m_artEnvironment );
+				Task.OnTaskLoaded += OnArtTaskLoaded;
+			}
+
+			_artTaskLoaded = true;
+		}
+
+		private static void LoadGameplayTask( UBehaviour source, int index )
+		{
+			var tasks = m_currentLevel.m_gameplayTasks;
+			if( !tasks.GreaterThan( index ) ) return;
+
+			var current = tasks[index];
+
+			_currentTaskIndex = index;
+			_gameplayTaskLoaded = false;
+			source.ULoadTask( current );
+			Task.OnTaskLoaded += OnGameplayTaskLoaded;
+		}
+
+		private static void OnBlockMeshTaskLoaded( TaskData environment )
+		{
+			var current = CurrentBlockMeshTask;
 			if( !environment.Equals( current ) )
 				return;
 
-			_environmentTaskLoaded = true;
-			Task.OnTaskLoaded -= OnEnvironmentTaskLoaded;
+			_blockMeshTaskLoaded = true;
+			Task.OnTaskLoaded -= OnBlockMeshTaskLoaded;
+
+			if( !IsFullyLoaded )
+				return;
+
+			OnLevelLoaded?.Invoke( m_currentLevel );
+		}
+
+		private static void OnArtTaskLoaded( TaskData environment )
+		{
+			var current = CurrentArtTask;
+			if( !environment.Equals( current ) )
+				return;
+
+			_artTaskLoaded = true;
+			Task.OnTaskLoaded -= OnBlockMeshTaskLoaded;
 
 			if( !IsFullyLoaded )
 				return;
@@ -199,7 +294,7 @@ namespace Universe.SceneTask.Runtime
 
 		private static void OnGameplayTaskLoaded( TaskData gameplay )
 		{
-			var current = m_currentLevel.m_gameplayTasks[_currentLevelTask];
+			var current = m_currentLevel.m_gameplayTasks[_currentTaskIndex];
 
 			if( !gameplay.Equals( current ) )
 				return;
@@ -213,17 +308,29 @@ namespace Universe.SceneTask.Runtime
 			OnLevelLoaded?.Invoke( m_currentLevel );
 		}
 
-		private static bool IsLoadingCurrentEnvironment( TaskData environment )
+		private static bool IsCurrentBlockMeshEquals( TaskData to )
 		{
 			if( !HasCurrentLevel )
 				return false;
 
-			var current = GetCurrentEnvironmentTask(m_currentLevel);
+			var current = CurrentBlockMeshTask;
+			var currentAssetReference = current.m_assetReference;
+			var otherAssetReference = to.m_assetReference;
 
-			return current.m_assetReference.Equals( environment.m_assetReference );
+			return currentAssetReference.Equals( otherAssetReference );
 		}
 
-		private static bool IsValidLevelTask( int nextLevelTask ) => ( ( nextLevelTask >= 0 ) && ( nextLevelTask < m_currentLevel.m_gameplayTasks.Count ) );
+		private static bool IsCurrentArtEquals( TaskData to )
+		{
+			if( !HasCurrentLevel )
+				return false;
+
+			var current = CurrentArtTask;
+			var currentAssetReference = current.m_assetReference;
+			var otherAssetReference = to.m_assetReference;
+
+			return currentAssetReference.Equals( otherAssetReference );
+		}
 
 		#endregion
 
@@ -233,12 +340,13 @@ namespace Universe.SceneTask.Runtime
 		private static bool IsUsingArtEnvironment => CurrentEnvironment == Environment.ART;
 		private static bool HasCurrentLevel => m_currentLevel;
 
-		private static bool _environmentTaskLoaded;
+		private static bool _artTaskLoaded;
+		private static bool _blockMeshTaskLoaded;
 		private static bool _gameplayTaskLoaded;
 
 		private static Environment _currentEnvironment;
-		private static int _currentLevelTask;
-		private static int _previousLevelTask;
+		private static int _currentTaskIndex;
+		private static int _previousLevelTaskIndex;
 
 		#endregion
 	}

@@ -55,8 +55,8 @@ namespace Universe
         protected void Spawn(AssetReference assetReference, int poolSize = 0) => 
             this.USpawn(assetReference, poolSize);
 
-        protected void Spawn( AssetReference assetReference, Transform parent, Action<GameObject> callback ) =>
-            this.USpawn( assetReference, parent, callback ); 
+        protected void Spawn( AssetReference assetReference, Transform parent, Action<GameObject> callback, int poolSize = 0 ) =>
+            this.USpawn( assetReference, parent, callback, poolSize); 
         
         protected void Spawn(AssetReference assetReference, Vector3 pos, Quaternion rotation, int poolSize = 0 ) =>
             this.USpawn(assetReference, pos, rotation, poolSize);
@@ -220,19 +220,24 @@ namespace Universe
 
         protected void LoadLevelAbsolute(LevelData level) =>
             this.ULoadLevelAbsolute(level);
-
+        protected void LoadLevelAbsolute( LevelData level, int taskIndex ) =>
+            this.ULoadLevelAbsolute( level, taskIndex );
         protected void LoadLevelOptimized(LevelData level) =>
             this.ULoadLevelOptimized(level);
-
+        protected void LoadLevelOptimized( LevelData level, int taskIndex ) =>
+            this.ULoadLevelOptimized( level, taskIndex );
+        
         protected void ReloadCurrentLevelAbsolute() =>
             this.UReloadCurrentLevelAbsolute();
-
+        protected void ReloadCurrentLevelAbsolute(int taskIndex ) =>
+            this.UReloadCurrentLevelAbsolute( taskIndex );
         protected void ReloadCurrentLevelOptimized() =>
             this.UReloadCurrentLevelOptimized();
-
+        protected void ReloadCurrentLevelOptimized( int taskIndex ) =>
+            this.UReloadCurrentLevelOptimized( taskIndex );
+        
         protected void UnloadLevel(LevelData level) =>
             this.UUnloadLevel(level);
-
         protected void LoadNextTask() =>
             this.ULoadNextTask();
         protected void LoadLevelTask(int taskIndex) =>
@@ -241,6 +246,8 @@ namespace Universe
             this.UReloadCheckpoint();
         protected void UnloadPreviousTask() =>
             this.UUnloadPreviousTask();
+        protected void UnloadLevelTask( int taskIndex ) =>
+            this.UUnloadLevelTask( taskIndex );
 
         #endregion
 

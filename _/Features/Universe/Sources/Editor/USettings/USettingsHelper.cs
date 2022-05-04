@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace Universe.Editor
 {
-	public static class USettings
+	public static class USettingsHelper
 	{
 		#region Main
 
-		public static T GetSettings<T>() where T : ScriptableObject
+		public static T GetSettings<T>() where T : USettings
 		{
 			return ScriptableHelper.GetScriptable<T>(_settingsFolder);
 		}	

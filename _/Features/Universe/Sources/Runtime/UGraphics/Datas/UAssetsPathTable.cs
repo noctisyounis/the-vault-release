@@ -48,7 +48,9 @@ namespace Universe
                 m_guids.Add(guid);
             }
 
-            #endif
+            EditorUtility.SetDirty( this );
+            SaveAssetIfDirty( this );
+#endif
         }
 
         public string PathToGUID(string path)

@@ -57,13 +57,14 @@ namespace Universe.SceneTask.Runtime
         
         public void Load()
         {
-            
+
 #if UNITY_EDITOR
 
-            var startLevelPath = PlayerPrefs.GetString(_startLevelPlayerPref);
-            var startLevelData = LoadAssetAtPath<LevelData>(startLevelPath);
+            var settings = LevelManager.Settings;
+            var startLevelData = settings.m_startingLevel;
+            var startLevelTask = settings.m_startingTask;
 
-            LoadLevelAbsolute(startLevelData);
+            LoadLevelAbsolute(startLevelData, startLevelTask);
 
             return;
 #else
