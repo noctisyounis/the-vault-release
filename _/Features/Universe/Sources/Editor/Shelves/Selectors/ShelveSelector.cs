@@ -101,8 +101,10 @@ namespace Universe.Toolbar.Editor
 
         static void DrawLevelManagement()
         {
-            if( !SelectLevel.Draw( "Play: ", "PlaymodeLevelPath", true ) ) return;
-            SelectTask.Draw( " On: ", "PlaymodeLevelPath", true );
+            if( SelectLevel.Draw( "Play: ", "PlaymodeLevelPath", true ) )
+            {
+                SelectTask.Draw( " On: ", "PlaymodeLevelPath", true );
+            }
             CreateLevelButton.Draw();
             AddTaskToLevel.Draw();
         }
