@@ -22,16 +22,28 @@ namespace Universe.Toolbar.Editor
 
         #region Main
 
-        public static void Draw( string playerPref ) =>
+        public static bool Draw( string playerPref ) =>
 			Draw( "Level", playerPref );
 
-		public static void Draw( string label, string playerPref ) =>
+		public static bool Draw( string label, string playerPref ) =>
 			Draw( label, playerPref, false);
-		public static void Draw(string label, string playerPref, bool saveInSettings = false)
+		public static bool Draw(string label, string playerPref, bool saveInSettings = false)
 		{
 			FindLevelDatas();
 
+			if( _levelPaths.Length == 0 )
+			{
+				Label( "No existing level found." );
+				return false;
+			}
+
 			var levelPath = GetString(playerPref);
+
+			if( string.IsNullOrEmpty( levelPath ) )
+			{
+				levelPath = _levelPaths[0];
+				SetString( playerPref, levelPath );
+			}
 
 			_currentLevel	= FindAssociatedLevel(levelPath);
 
@@ -41,17 +53,19 @@ namespace Universe.Toolbar.Editor
 			_currentLevel	= Popup(_currentLevel, _levelNames, Width(s_width));
 			levelPath		= _levelPaths[_currentLevel];
 
-			if( !EndChangeCheck() ) return;
+			if( !EndChangeCheck() ) return true;
 			
 			SetString(playerPref, levelPath);
 
-			if( !saveInSettings ) return;
+			if( !saveInSettings ) return true;
 
 			var settings	= USettingsHelper.GetSettings<LevelSettings>();
 			var level		= LoadAssetAtPath<LevelData>(levelPath);
 
 			settings.m_startingLevel = level;
 			settings.Save();
+
+			return true;
 		}
 
 		#endregion

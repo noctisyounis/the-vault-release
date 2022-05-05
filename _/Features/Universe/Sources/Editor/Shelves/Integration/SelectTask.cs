@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using Universe;
 using Universe.Editor;
 using Universe.SceneTask.Runtime;
@@ -27,6 +28,7 @@ public class SelectTask
 	public static void Draw( string label, string levelPlayerPref, bool saveInSettings = false )
 	{
 		var levelPath = GetString( levelPlayerPref );
+
 		UpdateLevel( levelPath );
 
 		BeginChangeCheck();
@@ -50,7 +52,7 @@ public class SelectTask
 
 	private static void UpdateLevel( string path )
 	{
-		if( path.Equals( _currentPath ) ) return;
+		if( path.Equals( _currentPath ) && _currentLevel) return;
 
 		_currentPath = path;
 		_currentLevel = LoadAssetAtPath<LevelData>( path );

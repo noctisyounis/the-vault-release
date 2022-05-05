@@ -1,5 +1,6 @@
 using System;
 using UnityEditor;
+using UnityEngine;
 using Universe.Editor;
 
 using static UnityEngine.GUILayout;
@@ -100,7 +101,7 @@ namespace Universe.Toolbar.Editor
 
         static void DrawLevelManagement()
         {
-            SelectLevel.Draw( "Play: ", "PlaymodeLevelPath", true );
+            if( !SelectLevel.Draw( "Play: ", "PlaymodeLevelPath", true ) ) return;
             SelectTask.Draw( " On: ", "PlaymodeLevelPath", true );
             CreateLevelButton.Draw();
             AddTaskToLevel.Draw();
