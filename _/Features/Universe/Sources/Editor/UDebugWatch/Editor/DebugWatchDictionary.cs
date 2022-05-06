@@ -17,6 +17,9 @@ namespace Universe.DebugWatch.Editor
             DebugMenuRegistry.InitializeMethods();
             
             bakeTarget.OnValidate();
+
+            EditorUtility.SetDirty( bakeTarget );
+            AssetDatabase.SaveAssetIfDirty( bakeTarget );
         }
 
         #endregion

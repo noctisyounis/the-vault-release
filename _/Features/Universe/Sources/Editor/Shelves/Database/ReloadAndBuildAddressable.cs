@@ -13,23 +13,28 @@ namespace Universe.Editor
 		#region Main
 		
 		public static void Draw()
-		{
-			var tex = IconContent(_iconContext).image;
-			if (!Button(new GUIContent(_buttonText, tex, _buttonTooltip))) return;
-			
-			OnRefreshCompleted += RebuildAddressable;
-			RefreshAaGroups();
-		}
-		
-		#endregion
-		
-		
-		#region Utils
+        {
+            var tex = IconContent(_iconContext).image;
+            if( !Button( new GUIContent( _buttonText, tex, _buttonTooltip ) ) ) return;
 
-		public static void RebuildAddressable()
+            Execute();
+        }
+
+        private static void Execute()
+        {
+            DebugWatchDictionary.TryValidate();
+            OnRefreshCompleted += RebuildAddressable;
+            RefreshAaGroups();
+        }
+
+        #endregion
+
+
+        #region Utils
+
+        public static void RebuildAddressable()
 		{
 			BuildPlayerContent();
-			DebugWatchDictionary.TryValidate();
 			OnRefreshCompleted -= RebuildAddressable;
 		}
 		
