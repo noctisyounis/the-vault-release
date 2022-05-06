@@ -31,7 +31,7 @@ namespace Universe.Toolbar.Editor
             FlexibleSpace();
 
             var currentShelve = GetPlayerPrefShelveOrDefault(side);
-            currentShelve = (SHELVE)EditorGUILayout.EnumPopup("", currentShelve, Width(100));
+            currentShelve = (SHELVE)EditorGUILayout.EnumPopup("", currentShelve, Width(130));
             SetPlayerPrefShelve(currentShelve, side);
 
             switch (currentShelve)

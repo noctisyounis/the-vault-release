@@ -14,7 +14,7 @@ public class SelectTask
 {
 	#region Exposed
 
-	public static float s_width = 200.0f;
+	public static float s_width = 150.0f;
 
     #endregion
 

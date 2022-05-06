@@ -1,13 +1,5 @@
 using UnityEngine;
 
-#if UNITY_EDITOR
-
-using UnityEditor;
-
-using static UnityEditor.AssetDatabase;
-
-#endif
-
 namespace Universe.SceneTask.Runtime
 {
     public class GameStarter : UBehaviour
@@ -84,13 +76,6 @@ namespace Universe.SceneTask.Runtime
         
         private bool IsOnEnable() => m_loadLevelOn == UnityMessage.OnEnable;
         
-        #endregion
-
-
-        #region Private Members
-
-        private static string _startLevelPlayerPref = "PlaymodeLevelPath";
-
         #endregion
     }
 }
