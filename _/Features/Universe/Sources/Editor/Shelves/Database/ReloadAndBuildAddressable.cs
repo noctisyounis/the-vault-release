@@ -20,7 +20,7 @@ namespace Universe.Editor
             Execute();
         }
 
-        private static void Execute()
+        public static void Execute()
         {
             DebugWatchDictionary.TryValidate();
             OnRefreshCompleted += RebuildAddressable;
