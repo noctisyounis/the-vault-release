@@ -37,7 +37,7 @@ namespace Universe.Editor
         private const string BUILD_LOG_PATH = "..\\BuildLog.txt";
         private const string BUILD_VERSION_PATH = "..\\..\\{Application.productName}_LastBuildVersion.txt";
         private const string BUILD_ZIPPER_PATH = "..\\Jenkins_Slack_Uploader.bat";
-        private const string BUILD_STEAM_MOVER_PATH = "..\\MoveBuildToSteam.bat";
+        private const string BUILD_STEAM_MOVER_PATH = "..\\Jenkins_Steam_Mover.bat";
 
         //.bat relative
         private const string UPLOAD_PATH = ".\\SlackUpload";
@@ -314,7 +314,7 @@ namespace Universe.Editor
 
             using (var sw = File.AppendText(BUILD_STEAM_MOVER_PATH))
             {
-                var moveShip = $"copy {copiedZipPath} {steamContentZipPath}";
+                var moveShip = $"copy \"{copiedZipPath}\" \"{steamContentZipPath}\"";
 
                 sw.WriteLine(moveShip);
             }
