@@ -208,10 +208,10 @@ namespace Universe.Editor
                         versionBundleText = sr.ReadLine();
                         androidVersionBundleCode = int.Parse(sr.ReadLine());
                     }
-                    catch (Exception e) { }
+                    catch { }
                 }
             }
-            catch (Exception e) { }
+            catch { }
 
             if (string.IsNullOrEmpty(versionBundleText))
             {
@@ -308,9 +308,8 @@ namespace Universe.Editor
                 sw.WriteLine(copyToUploadFolder);
             }
 
-            if (developmentBuild) return;
-
-            var steamContentZipPath = $"{STEAM_CONTENT_BUILDER_PATH}\\{fullName}.zip";
+            var steamContentSubPath = developmentBuild ? "debug" : "release";
+            var steamContentZipPath = $"{STEAM_CONTENT_BUILDER_PATH}\\{steamContentSubPath}\\{fullName}.zip";
 
             using (var sw = File.AppendText(BUILD_STEAM_MOVER_PATH))
             {
@@ -327,12 +326,12 @@ namespace Universe.Editor
 
         public static void ClearSteamMover()
         {
-            File.WriteAllText(BUILD_STEAM_MOVER_PATH, string.Empty);
+            File.WriteAllText(BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}");
         }
 
         #endregion
 
-
+        /*
         #region OLD
 
         public static void BuildPicoReady()
@@ -549,7 +548,7 @@ namespace Universe.Editor
 
         private static void Build(BuildTarget buildTarget, string fileExtention)
         {
-            var path = "Builds/TigerBlade" + "_" + Enum.GetName(typeof(BuildTarget), buildTarget) + "_" + PlayerSettings.bundleVersion;
+            var path = "Builds/" + "_" + Enum.GetName(typeof(BuildTarget), buildTarget) + "_" + PlayerSettings.bundleVersion;
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -610,6 +609,7 @@ namespace Universe.Editor
         }
 
         #endregion
+        */
 
 
         #region Private
