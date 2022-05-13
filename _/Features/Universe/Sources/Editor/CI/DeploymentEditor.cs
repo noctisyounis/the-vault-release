@@ -295,7 +295,7 @@ namespace Universe.Editor
             {
                 var createTmpIfNotExists = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
                 var isolateDoNotShip = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
-                var zipping = $"7z a -tzip \"{zipPath}\" \"{path}\"";
+                var zipping = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
                 var recoverDoNotShip = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
                 var copyToUploadFolder = $"copy \"{zipPath}\" \"{copiedZipPath}\"";
