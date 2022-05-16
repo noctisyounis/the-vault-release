@@ -36,6 +36,7 @@ namespace Universe.DebugWatch.Runtime
 
         public override void OnUpdate(float deltaTime)
         {
+            if (!Debug.isDebugBuild) return;
             if(IsCloseKeyDown)  TryHideDebugMenu();
             if(IsOpenKeyDown)   TryShowDebugMenuOnClick();
 
