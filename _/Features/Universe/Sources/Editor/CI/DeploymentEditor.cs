@@ -326,7 +326,7 @@ namespace Universe.Editor
 
         public static void ClearSteamMover()
         {
-            File.WriteAllText(BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}");
+            File.WriteAllText(BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n");
         }
 
         #endregion
