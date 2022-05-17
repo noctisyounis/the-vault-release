@@ -35,7 +35,7 @@ namespace Universe.Editor
         private const string TASK_GAME_STARTER_PATH = "Assets\\_\\GameStarter\\GameStarter.unity";
         private const string BUILD_PATH = "..\\Builds";
         private const string BUILD_LOG_PATH = "..\\BuildLog.txt";
-        private const string BUILD_VERSION_PATH = "..\\..\\{Application.productName}_LastBuildVersion.txt";
+        private const string BUILD_VERSION_PATH = "..\\..\\{productName}_{platform}_LastBuildVersion.txt";
         private const string BUILD_SLACK_MOVER_PATH = "..\\Jenkins_Slack_Uploader.bat";
         private const string BUILD_STEAM_MOVER_PATH = "..\\Jenkins_Steam_Mover.bat";
 
@@ -48,9 +48,11 @@ namespace Universe.Editor
         private const string DO_NOT_SHIP_SUFFIX = "_BurstDebugInformation_DoNotShip";
 
         private const string PLATFORM_DISPLAY_NAME_PC = "Win64";
-        private const string PLATFORM_EXTENSION_PC = "exe";
+        private const string PLATFORM_EXTENSION_PC = ".exe";
         private const string PLATFORM_DISPLAY_NAME_ANDROID = "Android";
-        private const string PLATFORM_EXTENSION_ANDROID = "apk";
+        private const string PLATFORM_EXTENSION_ANDROID = ".apk";
+        private const string PLATFORM_DISPLAY_NAME_PS5 = "PS5";
+        private const string PLATFORM_EXTENSION_PS5 = "\\";
 
         private const string MANAGERS_PARENT_NAME = "Managers";
         private const string OCULUS_MANAGER_NAME = "OculusManager";
@@ -109,6 +111,26 @@ namespace Universe.Editor
             ReloadAndBuildAddressable.Execute();
         }
 
+        [MenuItem("Vault/CI/Build PS5")]
+        public static void RequestPS5Builds()
+        {
+            _sw = File.AppendText(BUILD_LOG_PATH);
+            _sw.WriteLine($"[{DateTime.Now}] PS5 Build Requested");
+            UpgradeVersionBundle();
+            _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
+            UpdateRuntimeVersion();
+            _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
+
+            CleanPlayerContent();
+
+            var directories = GetDirectories(SourceDirectoryPath);
+            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
+
+            SymlinkEditor.LoadAllSymlink(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
+            OnRefreshCompleted += StartPS5Builds;
+            ReloadAndBuildAddressable.Execute();
+        }
+
         private static void StartWin64Builds()
         {
             var target = BuildTarget.StandaloneWindows64;
@@ -116,13 +138,11 @@ namespace Universe.Editor
             OnRefreshCompleted -= StartWin64Builds;
             _sw.WriteLine($"[{DateTime.Now}] PC Builds Pending");
 
-            ClearZipper();
+            ClearSlackMover();
             ClearSteamMover();
 
             StartBuild(target, true);
             StartBuild(target, false);
-
-            //TryStartNextBuild();
 
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
@@ -143,13 +163,35 @@ namespace Universe.Editor
             OnRefreshCompleted -= StartAndroidBuilds;
             _sw.WriteLine($"[{DateTime.Now}] Android Builds Pending");
 
-            ClearZipper();
-            ClearSteamMover();
+            ClearSlackMover();
 
             StartBuild(target, true);
             StartBuild(target, false);
 
-            //TryStartNextBuild();
+            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
+
+            _sw.WriteLine($"[{DateTime.Now}] Build Finished");
+            Debug.Log($"[{DateTime.Now}] Build Finished");
+
+            SymlinkEditor.RemoveAllSymlinks(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
+            _sw.WriteLine($"[{DateTime.Now}] Symlink unloaded");
+            _sw.WriteLine($"[{DateTime.Now}] Stream Closed");
+            _sw.WriteLine($"------------------------------------------------------------");
+            _sw.Close();
+        }
+
+        private static void StartPS5Builds()
+        {
+            var target = BuildTarget.PS5;
+
+            OnRefreshCompleted -= StartPS5Builds;
+            _sw.WriteLine($"[{DateTime.Now}] PS5 Builds Pending");
+
+            ClearSlackMover();
+            ClearSteamMover();
+
+            StartBuild(target, true);
+            StartBuild(target, false);
 
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
@@ -188,7 +230,7 @@ namespace Universe.Editor
             var option = new BuildPlayerOptions
             {
                 scenes = new string[] { TASK_GAME_STARTER_PATH },
-                locationPathName = $"{folderPath}\\{name}.{extension}",
+                locationPathName = $"{folderPath}\\{name}{extension}",
                 target = target,
                 options = developmentBuild ? BuildOptions.Development : 0
             };
@@ -249,6 +291,7 @@ namespace Universe.Editor
             {
                 case BuildTarget.StandaloneWindows64: return PLATFORM_DISPLAY_NAME_PC;
                 case BuildTarget.Android: return PLATFORM_DISPLAY_NAME_ANDROID;
+                case BuildTarget.PS5: return PLATFORM_DISPLAY_NAME_PS5;
                 default: return target.ToString();
             }
         }
@@ -259,6 +302,7 @@ namespace Universe.Editor
             {
                 case BuildTarget.StandaloneWindows64: return PLATFORM_EXTENSION_PC;
                 case BuildTarget.Android: return PLATFORM_EXTENSION_ANDROID;
+                case BuildTarget.PS5: return PLATFORM_EXTENSION_PS5;
                 default: return target.ToString();
             }
         }
@@ -266,10 +310,15 @@ namespace Universe.Editor
         [MenuItem("Vault/Build/Upgrade Version Bundle")]
         private static void UpgradeVersionBundle()
         {
+            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_PC);
+        }
+
+        private static void UpgradeVersionBundle(string platform)
+        {
             var incrementUpAt = 9; //if this is set to 9, then 1.0.9 will become 1.1.0
             var versionBundleText = PlayerSettings.bundleVersion;
             var androidVersionBundleCode = PlayerSettings.Android.bundleVersionCode;
-            var buildVersionPath = BUILD_VERSION_PATH.Replace("{Application.productName}", productName);
+            var buildVersionPath = BUILD_VERSION_PATH.Replace("{productName}", productName).Replace("{platform}", platform);
 
             try
             {
@@ -349,7 +398,7 @@ namespace Universe.Editor
             version.Save();
         }
 
-        public static void PrepareWin64Package(string platform, string name, string version, bool developmentBuild)
+        private static void PrepareWin64Package(string platform, string name, string version, bool developmentBuild)
         {
 
             var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
@@ -357,26 +406,23 @@ namespace Universe.Editor
             var batRelativeBuildPath = BUILD_PATH.Replace("..", ".");
             var fullName = $"{prefix}{name}_{platform}_{version}";
             var path = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
-            var zipPath = $"{path}.zip";
-            var copiedZipPath = $"{UPLOAD_PATH}\\{fullName}.zip";
+            var zipPath = $"{UPLOAD_PATH}\\{fullName}.zip";
             var doNotShipPath = $"{path}\\{doNotShipName}";
-            var isolationPath = $"{batRelativeBuildPath}\\tmp\\{prefix}\\{doNotShipName}";
+            var isolationPath = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipName}";
 
             using (var sw = File.AppendText(BUILD_SLACK_MOVER_PATH))
             {
                 var createTmpIfNotExists = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
+                var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
                 var isolateDoNotShip = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
                 var zipping = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
                 var recoverDoNotShip = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
-                var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var copyToUploadFolder = $"copy \"{zipPath}\" \"{copiedZipPath}\"";
 
                 sw.WriteLine(createTmpIfNotExists);
+                sw.WriteLine(createUploadIfNotExists);
                 sw.WriteLine(isolateDoNotShip);
                 sw.WriteLine(zipping);
                 sw.WriteLine(recoverDoNotShip);
-                sw.WriteLine(createUploadIfNotExists);
-                sw.WriteLine(copyToUploadFolder);
             }
 
             var steamContentSubPath = developmentBuild ? "debug" : "release";
@@ -384,13 +430,13 @@ namespace Universe.Editor
 
             using (var sw = File.AppendText(BUILD_STEAM_MOVER_PATH))
             {
-                var moveShip = $"copy \"{copiedZipPath}\" \"{steamContentZipPath}\"";
+                var moveShip = $"copy \"{zipPath}\" \"{steamContentZipPath}\"";
 
                 sw.WriteLine(moveShip);
             }
         }
 
-        public static void PrepareAndroidPackage(string platform, string name, string version, bool developmentBuild)
+        private static void PrepareAndroidPackage(string platform, string name, string version, bool developmentBuild)
         {
 
             var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
@@ -410,12 +456,40 @@ namespace Universe.Editor
             }
         }
 
-        public static void ClearZipper()
+        private static void PreparePS5Package(string platform, string name, string version, bool developmentBuild)
+        {
+            var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var doNotShipName = $"{name}{DO_NOT_SHIP_SUFFIX}";
+            var batRelativeBuildPath = BUILD_PATH.Replace("..", ".");
+            var fullName = $"{prefix}{name}_{platform}_{version}";
+            var path = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
+            var zipPath = $"{UPLOAD_PATH}\\{fullName}.zip";
+            var doNotShipPath = $"{path}\\{doNotShipName}";
+            var isolationPath = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipName}";
+
+            using (var sw = File.AppendText(BUILD_SLACK_MOVER_PATH))
+            {
+                var createTmpIfNotExists = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
+                var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
+                var isolateDoNotShip = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
+                var zipping = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
+                var recoverDoNotShip = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
+
+                sw.WriteLine(createTmpIfNotExists);
+                sw.WriteLine(createUploadIfNotExists);
+                sw.WriteLine(isolateDoNotShip);
+                sw.WriteLine(zipping);
+                sw.WriteLine(recoverDoNotShip);
+            }
+        }
+
+
+        private static void ClearSlackMover()
         {
             File.WriteAllText(BUILD_SLACK_MOVER_PATH, string.Empty);
         }
 
-        public static void ClearSteamMover()
+        private static void ClearSteamMover()
         {
             File.WriteAllText(BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n");
         }
