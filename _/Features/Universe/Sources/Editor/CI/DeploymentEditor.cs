@@ -54,6 +54,9 @@ namespace Universe.Editor
         private const string PLATFORM_DISPLAY_NAME_PS5 = "PS5";
         private const string PLATFORM_EXTENSION_PS5 = "\\";
 
+        private const string PS5_WORKSPACE_DEVELOPMENT = "workspace2";
+        private const string PS5_WORKSPACE_RELEASE = "workspace1";
+
         private const string MANAGERS_PARENT_NAME = "Managers";
         private const string OCULUS_MANAGER_NAME = "OculusManager";
         private const string STEAM_MANAGER_NAME = "SteamManager";
@@ -235,7 +238,7 @@ namespace Universe.Editor
                 options = developmentBuild ? BuildOptions.Development : 0
             };
 
-            switch(target)
+            switch (target)
             {
                 case BuildTarget.StandaloneWindows64:
                 {
@@ -249,9 +252,14 @@ namespace Universe.Editor
                 }
                 case BuildTarget.PS5:
                 {
-                    PreparePS5Package( targetName, name, version, developmentBuild );
+                    PreparePS5Package(targetName, name, version, developmentBuild);
                     break;
                 }
+            }
+
+            if (target == BuildTarget.PS5)
+            {
+                UpdateWorkspace(developmentBuild);
             }
 
             _sw.WriteLine($"[{DateTime.Now}] {fullName} Build Started");
@@ -272,9 +280,21 @@ namespace Universe.Editor
 
         public void OnPostprocessBuild(BuildReport report)
         {
-            var deltaTime = report.summary.buildEndedAt - report.summary.buildStartedAt;
+            var name = productName;
+            var path = report.summary.outputPath;
+            var workspace = $"workspace{(Debug.isDebugBuild ? "2" : "1")}";
+            var deployPath = $"{path}\\{name}\\{name}_Deploy.bat";
+            var deployAndRunPath = $"{path}\\{name}\\{name}_DeployAndRun.bat";
 
-            EditorCoroutineUtility.StartCoroutineOwnerless(WaitForNextBuild());
+            if (!File.Exists(deployPath)) return;
+            var adaptedDeploy = File.ReadAllText(deployPath);
+            var adaptedDeployAndRun = File.ReadAllText(deployAndRunPath);
+
+            adaptedDeploy = adaptedDeploy.Replace("workspaceX", workspace);
+            adaptedDeployAndRun = adaptedDeployAndRun.Replace("workspaceX", workspace);
+
+            File.WriteAllText(deployPath, adaptedDeploy);
+            File.WriteAllText(deployAndRunPath, adaptedDeployAndRun);
         }
 
         private static IEnumerator WaitForNextBuild()
@@ -486,6 +506,11 @@ namespace Universe.Editor
                 sw.WriteLine(zipping);
                 sw.WriteLine(recoverDoNotShip);
             }
+        }
+
+        private static void UpdateWorkspace(bool developmentBuild)
+        {
+            
         }
 
 
