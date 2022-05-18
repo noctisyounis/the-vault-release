@@ -282,9 +282,9 @@ namespace Universe.Editor
         {
             var name = productName;
             var path = report.summary.outputPath;
-            var workspace = $"workspace{(Debug.isDebugBuild ? "2" : "1")}";
-            var deployPath = $"{path}\\{name}\\{name}_Deploy.bat";
-            var deployAndRunPath = $"{path}\\{name}\\{name}_DeployAndRun.bat";
+            var workspace = Debug.isDebugBuild ? PS5_WORKSPACE_DEVELOPMENT : PS5_WORKSPACE_RELEASE;
+            var deployPath = $"{path}{name}_Deploy.bat";
+            var deployAndRunPath = $"{path}{name}_DeployAndRun.bat";
 
             if (!File.Exists(deployPath)) return;
             var adaptedDeploy = File.ReadAllText(deployPath);
