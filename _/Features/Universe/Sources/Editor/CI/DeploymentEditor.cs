@@ -76,7 +76,7 @@ namespace Universe.Editor
         {
             _sw = File.AppendText(BUILD_LOG_PATH);
             _sw.WriteLine($"[{DateTime.Now}] PC Build Requested");
-            UpgradeVersionBundle();
+            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_PC);
             _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
             UpdateRuntimeVersion();
             _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
@@ -96,7 +96,7 @@ namespace Universe.Editor
         {
             _sw = File.AppendText(BUILD_LOG_PATH);
             _sw.WriteLine($"[{DateTime.Now}] Android Build Requested");
-            UpgradeVersionBundle();
+            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_ANDROID);
             _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
             UpdateRuntimeVersion();
             _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
@@ -116,7 +116,7 @@ namespace Universe.Editor
         {
             _sw = File.AppendText(BUILD_LOG_PATH);
             _sw.WriteLine($"[{DateTime.Now}] PS5 Build Requested");
-            UpgradeVersionBundle();
+            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_PS5);
             _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
             UpdateRuntimeVersion();
             _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
