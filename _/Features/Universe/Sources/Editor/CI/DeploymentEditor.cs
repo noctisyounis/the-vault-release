@@ -247,6 +247,11 @@ namespace Universe.Editor
                     PrepareAndroidPackage(targetName, name, version, developmentBuild);
                     break;
                 }
+                case BuildTarget.PS5:
+                {
+                    PreparePS5Package( targetName, name, version, developmentBuild );
+                    break;
+                }
             }
 
             _sw.WriteLine($"[{DateTime.Now}] {fullName} Build Started");
