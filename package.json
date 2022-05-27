@@ -1,6 +1,6 @@
 {
   "name": "com.noctisyounis.the-vault",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "displayName": "The Vault",
   "description": "This is the vault",
   
@@ -13,4 +13,11 @@
     "name": "Open Source - Cherif Younis",
     "email": "cherifyounis@gmail.com"
   }
+  "samples":[
+        {
+            "displayName": "Content",
+            "description": "Contains all the base hierarchy used by the Vault",
+            "path": "Samples~/_"
+        }
+  ]
 }
