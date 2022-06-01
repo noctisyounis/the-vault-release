@@ -39,7 +39,7 @@ namespace Sirenix.OdinInspector.Editor
             var assemblyDir = new DirectoryInfo(SirenixAssetPaths.SirenixAssembliesPath).FullName;
             var projectAssetsPath = Directory.GetCurrentDirectory().TrimEnd('\\', '/');
 
-            var isPackage = true; //PathUtilities.HasSubDirectory(new DirectoryInfo(projectAssetsPath), new DirectoryInfo(assemblyDir)) == false;
+            var isPackage = PathUtilities.HasSubDirectory(new DirectoryInfo(projectAssetsPath), new DirectoryInfo(assemblyDir)) == false;
 
             var aotDirPath = assemblyDir + "NoEmitAndNoEditor/";
             var jitDirPath = assemblyDir + "NoEditor/";
