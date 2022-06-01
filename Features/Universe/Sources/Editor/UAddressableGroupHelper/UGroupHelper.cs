@@ -53,6 +53,11 @@ namespace Universe.Editor
 
 		private static void ScanFoldersRecursive(string folder)
 		{
+			if( folder.Contains( "/Editor/", StringComparison.InvariantCultureIgnoreCase ) )
+				return;
+			if( folder.Contains( "\\Editor\\", StringComparison.InvariantCultureIgnoreCase ) )
+				return;
+
 			s_folderPaths.Add(folder);
 
 			var folders = GetSubFolders(folder);
@@ -74,7 +79,11 @@ namespace Universe.Editor
             
             foreach (var path in allPaths)
             {
-                if(!path.Contains(s_targetFolder)) continue;
+				if( path.Contains( "/Editor/", StringComparison.InvariantCultureIgnoreCase ) ) 
+					continue;
+				if( path.Contains( "\\Editor\\", StringComparison.InvariantCultureIgnoreCase ) )
+					continue;
+				if(!path.Contains(s_targetFolder)) continue;
                 if(IsValidFolder(path)) continue;
 
 				if(GetMainAssetTypeAtPath(path).Equals(typeof(UAddressableGroupHelper)))

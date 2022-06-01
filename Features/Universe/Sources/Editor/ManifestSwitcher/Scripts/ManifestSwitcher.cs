@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Universe.Editor
@@ -12,26 +13,36 @@ namespace Universe.Editor
         
         public int callbackOrder { get; }
 
+
         [InitializeOnLoadMethod]
         public static void Initialize()
         {
-
-            InitializePackageVariant();
-            SavePreviousManifestToVariant(BuildTarget.NoTarget);
-            LoadNewManifestFromVariant(EditorUserBuildSettings.activeBuildTarget);
+            Events.registeredPackages += UpdateCurrentBufferedManifest;
         }
         
         public void OnActiveBuildTargetChanged(BuildTarget previousTarget, BuildTarget newTarget)
         {
-            InitializePackageVariant();
-            SavePreviousManifestToVariant(previousTarget);
-            LoadNewManifestFromVariant(newTarget);
+            UpdateManifests( previousTarget, newTarget );
         }
-        
+
         #endregion
-        
-        
+
+
         #region Main
+
+        public static void UpdateCurrentBufferedManifest( PackageRegistrationEventArgs packageRegistrationEventArgs )
+        {
+            var currentTarget = EditorUserBuildSettings.activeBuildTarget;
+
+            UpdateManifests( currentTarget, currentTarget );
+        }
+
+        public static void UpdateManifests( BuildTarget previousTarget, BuildTarget newTarget )
+        {
+            InitializePackageVariant();
+            SavePreviousManifestToVariant( previousTarget );
+            LoadNewManifestFromVariant( newTarget );
+        }
         
         public static void InitializePackageVariant()
         {

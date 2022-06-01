@@ -29,7 +29,12 @@ public class SelectTask
 	{
 		var levelPath = GetString( levelPlayerPref );
 
-		UpdateLevel( levelPath );
+		UpdateLevel( levelPath, saveInSettings );
+
+		if( _taskNames.Count < 1 )
+		{
+			PopulateTaskNames();
+		}
 
 		BeginChangeCheck();
 
@@ -50,20 +55,23 @@ public class SelectTask
 
 	#region Utils
 
-	private static void UpdateLevel( string path )
+	private static void UpdateLevel( string path, bool saveInSettings )
 	{
 		if( path.Equals( _currentPath ) && _currentLevel) return;
 
 		_currentPath = path;
 		_currentLevel = LoadAssetAtPath<LevelData>( path );
+		_currentTaskIndex = 0;
 		PopulateTaskNames();
 
+		if( !saveInSettings ) return;
 		var settings = USettingsHelper.GetSettings<LevelSettings>();
 
 		_currentTaskIndex = settings.m_startingTask;
 		if( _taskNames.GreaterThan( _currentTaskIndex ) ) return;
 
 		_currentTaskIndex = 0;
+		settings.m_startingLevel = _currentLevel;
 		settings.m_startingTask = 0;
 		settings.Save();
 	}
@@ -73,7 +81,6 @@ public class SelectTask
 		var tasks = _currentLevel.m_gameplayTasks;
 
 		_taskNames = new ();
-
 		foreach( var task in tasks)
 		{
 			var taskName = task.GetTrimmedName();

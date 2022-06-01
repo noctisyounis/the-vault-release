@@ -15,6 +15,8 @@ namespace Universe.SceneTask.Runtime
 			set => _currentEnvironment = value;
 		}
 
+		public static TaskData CurrentAudioTask =>
+			m_currentLevel.m_audio;
 		public static TaskData CurrentBlockMeshTask =>
 			m_currentLevel.m_blockMeshEnvironment;
 		public static TaskData CurrentArtTask =>
@@ -26,7 +28,7 @@ namespace Universe.SceneTask.Runtime
 
 		public static bool CanLoadArt => ( CurrentEnvironment & Environment.ART ) != 0;
 		public static bool CanLoadBlockMesh => ( CurrentEnvironment & Environment.BLOCK_MESH ) != 0;
-		public static bool IsFullyLoaded => _blockMeshTaskLoaded && _artTaskLoaded && _gameplayTaskLoaded;
+		public static bool IsFullyLoaded => _audioTaskLoaded && _blockMeshTaskLoaded && _artTaskLoaded && _gameplayTaskLoaded;
 
 
 		#endregion
@@ -56,6 +58,7 @@ namespace Universe.SceneTask.Runtime
 
 			m_currentLevel = level;
 
+			LoadAudioTask(source);
 			TryLoadBlockMeshTask(source);
 			TryLoadArtTask(source);
 			LoadGameplayTask(source, task);
@@ -70,20 +73,28 @@ namespace Universe.SceneTask.Runtime
 
 		public static void ULoadLevelOptimized( this UBehaviour source, LevelData level, int task )
 		{
+			var audioTask = level.m_audio;
 			var blockMeshTask = level.m_blockMeshEnvironment;
 			var artTask = level.m_artEnvironment;
 			var gameplayTask = level.m_gameplayTasks[task];
 
+			var needAudio = false;
 			var needBlockMesh = false;
 			var needArt = false;
 
 			if( !HasCurrentLevel )
 			{
+				needAudio = true;
 				needBlockMesh = true;
 				needArt = true;
 			}
 			else
 			{
+				if( !IsCurrentAudioEquals( audioTask ) )
+				{
+					source.UUnloadTask( CurrentAudioTask );
+					needAudio = true;
+				}
 				if(!IsCurrentBlockMeshEquals( blockMeshTask ) )
 				{
 					source.UUnloadTask( CurrentBlockMeshTask );
@@ -100,6 +111,8 @@ namespace Universe.SceneTask.Runtime
 
 			m_currentLevel = level;
 
+			if( needAudio )
+				LoadAudioTask( source );
 			if( needBlockMesh )
 				TryLoadBlockMeshTask( source );
 			if( needArt )
@@ -136,13 +149,14 @@ namespace Universe.SceneTask.Runtime
 				return;
 			if( !level.Equals( m_currentLevel ) )
 				throw new Exception( $"{level.name} isn't currently loaded" );
-			
 
+			var audioTask = CurrentAudioTask;
 			var blockMeshEnvironmentTask = CurrentBlockMeshTask;
 			var artEnvironmentTask = CurrentArtTask;
 			var gameplayTasks = level.m_gameplayTasks;
 			var gameplayTask = CurrentGameplayTask;
 
+			source.UUnloadTask( audioTask );
 			source.UUnloadTask( artEnvironmentTask );
 			source.UUnloadTask( blockMeshEnvironmentTask );
 			source.UUnloadTask( gameplayTask );
@@ -225,6 +239,13 @@ namespace Universe.SceneTask.Runtime
 
 		#region Utils
 
+		private static void LoadAudioTask( UBehaviour source )
+		{
+			_audioTaskLoaded = false;
+			source.ULoadTask( m_currentLevel.m_audio );
+			Task.OnTaskLoaded += OnAudioTaskLoaded;
+		}
+
 		private static void TryLoadBlockMeshTask(UBehaviour source)
 		{
 			if( CanLoadBlockMesh )
@@ -260,6 +281,21 @@ namespace Universe.SceneTask.Runtime
 			_gameplayTaskLoaded = false;
 			source.ULoadTask( current );
 			Task.OnTaskLoaded += OnGameplayTaskLoaded;
+		}
+
+		private static void OnAudioTaskLoaded( TaskData audio )
+		{
+			var current = CurrentAudioTask;
+			if( !audio.Equals( current ) )
+				return;
+			
+			_audioTaskLoaded = true;
+			Task.OnTaskLoaded -= OnAudioTaskLoaded;
+
+			if( !IsFullyLoaded )
+				return;
+
+			OnLevelLoaded?.Invoke( m_currentLevel );
 		}
 
 		private static void OnBlockMeshTaskLoaded( TaskData environment )
@@ -308,6 +344,18 @@ namespace Universe.SceneTask.Runtime
 			OnLevelLoaded?.Invoke( m_currentLevel );
 		}
 
+		private static bool IsCurrentAudioEquals( TaskData to )
+		{
+			if( !HasCurrentLevel )
+				return false;
+
+			var current = CurrentAudioTask;
+			var currentAssetReference = current.m_assetReference;
+			var otherAssetReference = to.m_assetReference;
+
+			return currentAssetReference.Equals( otherAssetReference );
+		}
+
 		private static bool IsCurrentBlockMeshEquals( TaskData to )
 		{
 			if( !HasCurrentLevel )
@@ -337,11 +385,11 @@ namespace Universe.SceneTask.Runtime
 
 		#region Private
 
-		private static bool IsUsingArtEnvironment => CurrentEnvironment == Environment.ART;
 		private static bool HasCurrentLevel => m_currentLevel;
 
-		private static bool _artTaskLoaded;
+		private static bool _audioTaskLoaded;
 		private static bool _blockMeshTaskLoaded;
+		private static bool _artTaskLoaded;
 		private static bool _gameplayTaskLoaded;
 
 		private static Environment _currentEnvironment;

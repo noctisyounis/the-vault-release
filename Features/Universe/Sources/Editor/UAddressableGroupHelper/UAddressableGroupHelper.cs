@@ -37,7 +37,8 @@ namespace Universe
 		{
 			m_group = TryToFindGroup();
 
-			if(!m_group) return;
+			if( !m_group )
+				m_group = GenerateNewGroup();
 
             Settings.DefaultGroup = m_group;
 		}
@@ -48,7 +49,7 @@ namespace Universe
 
             if (group) return group;
             
-            Debug.LogError($"No existing group found", this);
+            Debug.LogWarning($"No existing group found, creating one", this);
 			return null;
         }
 

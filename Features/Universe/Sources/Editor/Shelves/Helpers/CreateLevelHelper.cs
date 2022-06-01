@@ -36,7 +36,7 @@ namespace Universe.Toolbar.Editor
 
 		#region Main
 
-		public static void NewLevel(string name, TaskData blockData, TaskData artData)
+		public static void NewLevel(string name, TaskData audioData, TaskData blockData, TaskData artData)
         {
 			if(_isGenerating)
 			{
@@ -51,7 +51,7 @@ namespace Universe.Toolbar.Editor
 
             GenerateHierarchy();
             GenerateAaGroup();
-            EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAssets(blockData, artData));
+            EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAssets(audioData, blockData, artData));
         }
 
 		public static void AddTask(LevelData level)
@@ -84,17 +84,19 @@ namespace Universe.Toolbar.Editor
 			EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAddedGameplay(level));
 		}
 
-        private static IEnumerator GenerateAssets(TaskData blockData, TaskData artData)
+        private static IEnumerator GenerateAssets(TaskData audioData, TaskData blockData, TaskData artData)
         {
             var level 			= GenerateLevelAsset();
-            artData 			??= GenerateTask(_targetArt, ENVIRONMENT, false);
-            blockData 			??= GenerateTask(_targetBlock, ENVIRONMENT, false);
+			audioData			??= GenerateTask(_targetAudio, AUDIO, false);
+            blockData 			??= GenerateTask(_targetBlock, ENVIRONMENT, true);
+            artData 			??= GenerateTask(_targetArt, ENVIRONMENT, true);
             var gameplayData 	= GenerateTask(_targetGameplay, GAMEPLAY, true);
 
 			_isGenerating = true;
 			yield return 0;
 			_isGenerating = false;
 
+			level.m_audio = audioData;
             level.m_blockMeshEnvironment = blockData;
             level.m_artEnvironment = artData;
             level.m_gameplayTasks.Add(gameplayData);
@@ -144,6 +146,7 @@ namespace Universe.Toolbar.Editor
 			var helperName = _settings.m_addressableGroupHelperName;
 			_targetHelper = Join(_targetFolder, $"{helperName}.asset");
 
+			_audioTaskName			= _settings.m_audioTaskName;
 			_blockMeshTaskName 		= _settings.m_blockMeshTaskName;
 			_artTaskName			= _settings.m_artTaskName;
 			_gameplayTaskName		= _settings.m_gameplayTaskName;
@@ -161,19 +164,23 @@ namespace Universe.Toolbar.Editor
             if (!IsValidFolder(_targetFolder)) FolderHelper.CreatePath(_targetFolder);
             FindHelper();
 
+			var audioName       = $"{_levelName}-{_audioTaskName}";
 			var blockMeshName 	= $"{_levelName}-{_blockMeshTaskName}";
 			var artName			= $"{_levelName}-{_artTaskName}";
 			var gameplayName 	= $"{_levelName}-{_gameplayTaskName}-01";
 
+			_currentAudioFolder		= Join( _currentLevelFolder, _audioTaskName );
 			_currentBlockMeshFolder = Join(_currentLevelFolder, _blockMeshTaskName);
 			_currentArtFolder 		= Join(_currentLevelFolder, _artTaskName);
 			_currentGameplayFolder 	= Join(_currentLevelFolder, _gameplayTaskName, gameplayName);
 
 			_currentLevelFolder 	= FolderHelper.CreatePath(_defaultLevelFolder);
+			_currentAudioFolder		= FolderHelper.CreatePath(_currentAudioFolder);
 			_currentBlockMeshFolder = FolderHelper.CreatePath(_currentBlockMeshFolder);
 			_currentArtFolder		= FolderHelper.CreatePath(_currentArtFolder);
 			_currentGameplayFolder	= FolderHelper.CreatePath(_currentGameplayFolder);
 
+			_targetAudio	= Join(_currentAudioFolder, $"{audioName}.unity");
 			_targetBlock 	= Join(_currentBlockMeshFolder, $"{blockMeshName}.unity");
 			_targetArt 		= Join(_currentArtFolder, $"{artName}.unity");
 			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
@@ -250,7 +257,7 @@ namespace Universe.Toolbar.Editor
 
 			taskData.m_assetReference		= new AssetReference(sceneGuid);
 			taskData.m_priority				= priority;
-			taskData.m_alwaysUpdated 		= false;
+			taskData.m_alwaysUpdated 		= (priority == AUDIO) ? true : false;
 			taskData.m_canBeLoadOnlyOnce 	= true;
 			CreateAsset(taskData, dataPath);
 
@@ -276,15 +283,18 @@ namespace Universe.Toolbar.Editor
 		private static string _levelName;
 		private static string _defaultLevelFolder;
 		private static string _currentLevelFolder;
+		private static string _currentAudioFolder;
 		private static string _currentBlockMeshFolder;
 		private static string _currentArtFolder;
 		private static string _currentGameplayFolder;
 		private static string _targetHelper;
 		private static UAddressableGroupHelper _helper;
+		private static string _audioTaskName;
 		private static string _blockMeshTaskName;
 		private static string _artTaskName;
 		private static string _gameplayTaskName;
 		private static string _addressableGroupHelperName;
+		private static string _targetAudio;
 		private static string _targetBlock;
 		private static string _targetArt;
 		private static string _targetGameplay;

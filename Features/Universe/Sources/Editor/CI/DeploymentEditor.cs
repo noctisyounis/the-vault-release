@@ -1,26 +1,20 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Symlink.Editor;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using UnityEditor;
-using Unity.EditorCoroutines.Editor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEditor.Callbacks;
-using UnityEngine;
-using Universe;
-using Universe.Editor;
 
+using static System.DateTime;
+using static System.IO.File;
 using static System.IO.Directory;
+using static UnityEditor.BuildTarget;
+using static UnityEditor.BuildOptions;
+using static UnityEditor.BuildPipeline;
 using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
+using static UnityEngine.Debug;
 using static UnityEngine.Application;
 using static Universe.Editor.UGroupHelper;
-
-using Debug = UnityEngine.Debug;
-
+using static Universe.Editor.USettingsHelper;
+using static Symlink.Editor.SymlinkEditor;
 
 namespace Universe.Editor
 {
@@ -33,9 +27,9 @@ namespace Universe.Editor
 
         //Project relative
         private const string TASK_GAME_STARTER_PATH = "Assets\\_\\GameStarter\\GameStarter.unity";
-        private const string BUILD_PATH = "..\\Builds";
-        private const string BUILD_LOG_PATH = "..\\BuildLog.txt";
-        private const string BUILD_VERSION_PATH = "..\\..\\{productName}_{platform}_LastBuildVersion.txt";
+        private const string BUILD_PATH             = "..\\Builds";
+        private const string BUILD_LOG_PATH         = "..\\BuildLog.txt";
+        private const string BUILD_VERSION_PATH     = "..\\..\\{productName}_{platform}_LastBuildVersion.txt";
         private const string BUILD_SLACK_MOVER_PATH = "..\\Jenkins_Slack_Uploader.bat";
         private const string BUILD_STEAM_MOVER_PATH = "..\\Jenkins_Steam_Mover.bat";
 
@@ -43,19 +37,19 @@ namespace Universe.Editor
         private const string UPLOAD_PATH = ".\\SlackUpload";
 
         //static names
-        private const string DEVELOPMENT_BUILD_PREFIX = "[DEV]";
-        private const string RELEASE_BUILD_PREFIX = "[Release]";
-        private const string DO_NOT_SHIP_SUFFIX = "_BurstDebugInformation_DoNotShip";
+        private const string DEVELOPMENT_BUILD_PREFIX   = "[DEV]";
+        private const string RELEASE_BUILD_PREFIX       = "[Release]";
+        private const string DO_NOT_SHIP_SUFFIX         = "_BurstDebugInformation_DoNotShip";
 
-        private const string PLATFORM_DISPLAY_NAME_PC = "Win64";
-        private const string PLATFORM_EXTENSION_PC = ".exe";
-        private const string PLATFORM_DISPLAY_NAME_ANDROID = "Android";
-        private const string PLATFORM_EXTENSION_ANDROID = ".apk";
-        private const string PLATFORM_DISPLAY_NAME_PS5 = "PS5";
-        private const string PLATFORM_EXTENSION_PS5 = "\\";
+        private const string PLATFORM_DISPLAY_NAME_PC       = "Win64";
+        private const string PLATFORM_EXTENSION_PC          = ".exe";
+        private const string PLATFORM_DISPLAY_NAME_ANDROID  = "Android";
+        private const string PLATFORM_EXTENSION_ANDROID     = ".apk";
+        private const string PLATFORM_DISPLAY_NAME_PS5      = "PS5";
+        private const string PLATFORM_EXTENSION_PS5         = "\\";
 
-        private const string PS5_WORKSPACE_DEVELOPMENT = "workspace2";
-        private const string PS5_WORKSPACE_RELEASE = "workspace1";
+        private const string PS5_WORKSPACE_DEVELOPMENT  = "workspace2";
+        private const string PS5_WORKSPACE_RELEASE      = "workspace1";
 
         private const string MANAGERS_PARENT_NAME = "Managers";
         private const string OCULUS_MANAGER_NAME = "OculusManager";
@@ -74,235 +68,211 @@ namespace Universe.Editor
 
         #region Build
 
-        [MenuItem("Vault/CI/Build PC")]
+        [MenuItem( "Vault/CI/Build PC" )]
         public static void RequestWin64Builds()
         {
-            _sw = File.AppendText(BUILD_LOG_PATH);
-            _sw.WriteLine($"[{DateTime.Now}] PC Build Requested");
-            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_PC);
-            _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
+            _sw = AppendText( BUILD_LOG_PATH );
+            _sw.WriteLine( $"[{Now}] PC Build Requested" );
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PC );
+            _sw.WriteLine( $"[{Now}] Editor Version Updated" );
             UpdateRuntimeVersion();
-            _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
+            _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
             CleanPlayerContent();
 
-            var directories = GetDirectories(SourceDirectoryPath);
+            var directories         = GetDirectories(SourceDirectoryPath);
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
-            SymlinkEditor.LoadAllSymlink(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
+            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
             OnRefreshCompleted += StartWin64Builds;
             ReloadAndBuildAddressable.Execute();
         }
 
-        [MenuItem("Vault/CI/Build Android")]
+        [MenuItem( "Vault/CI/Build Android" )]
         public static void RequestAndroidBuilds()
         {
-            _sw = File.AppendText(BUILD_LOG_PATH);
-            _sw.WriteLine($"[{DateTime.Now}] Android Build Requested");
-            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_ANDROID);
-            _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
+            _sw = AppendText( BUILD_LOG_PATH );
+            _sw.WriteLine( $"[{Now}] Android Build Requested" );
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_ANDROID );
+            _sw.WriteLine( $"[{Now}] Editor Version Updated" );
             UpdateRuntimeVersion();
-            _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
+            _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
             CleanPlayerContent();
 
-            var directories = GetDirectories(SourceDirectoryPath);
+            var directories         = GetDirectories(SourceDirectoryPath);
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
-            SymlinkEditor.LoadAllSymlink(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
+            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
             OnRefreshCompleted += StartAndroidBuilds;
             ReloadAndBuildAddressable.Execute();
         }
 
-        [MenuItem("Vault/CI/Build PS5")]
+        [MenuItem( "Vault/CI/Build PS5" )]
         public static void RequestPS5Builds()
         {
-            _sw = File.AppendText(BUILD_LOG_PATH);
-            _sw.WriteLine($"[{DateTime.Now}] PS5 Build Requested");
-            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_PS5);
-            _sw.WriteLine($"[{DateTime.Now}] Editor Version Updated");
+            _sw = AppendText( BUILD_LOG_PATH );
+            _sw.WriteLine( $"[{Now}] PS5 Build Requested" );
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PS5 );
+            _sw.WriteLine( $"[{Now}] Editor Version Updated" );
             UpdateRuntimeVersion();
-            _sw.WriteLine($"[{DateTime.Now}] Runtime Version Updated");
+            _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
             CleanPlayerContent();
 
-            var directories = GetDirectories(SourceDirectoryPath);
+            var directories         = GetDirectories(SourceDirectoryPath);
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
-            SymlinkEditor.LoadAllSymlink(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
+            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
             OnRefreshCompleted += StartPS5Builds;
             ReloadAndBuildAddressable.Execute();
         }
 
         private static void StartWin64Builds()
         {
-            var target = BuildTarget.StandaloneWindows64;
+            var target = StandaloneWindows64;
 
             OnRefreshCompleted -= StartWin64Builds;
-            _sw.WriteLine($"[{DateTime.Now}] PC Builds Pending");
+            _sw.WriteLine( $"[{Now}] PC Builds Pending" );
 
             ClearSlackMover();
             ClearSteamMover();
 
-            StartBuild(target, true);
-            StartBuild(target, false);
+            StartBuild( target, false );
+            StartBuild( target, true );
 
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
-            _sw.WriteLine($"[{DateTime.Now}] Build Finished");
-            Debug.Log($"[{DateTime.Now}] Build Finished");
+            _sw.WriteLine( $"[{Now}] Build Finished" );
+            Log( $"[{Now}] Build Finished" );
 
-            SymlinkEditor.RemoveAllSymlinks(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
-            _sw.WriteLine($"[{DateTime.Now}] Symlink unloaded");
-            _sw.WriteLine($"[{DateTime.Now}] Stream Closed");
-            _sw.WriteLine($"------------------------------------------------------------");
+            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
+            _sw.WriteLine( $"[{Now}] Symlink unloaded" );
+            _sw.WriteLine( $"[{Now}] Stream Closed" );
+            _sw.WriteLine( $"------------------------------------------------------------" );
             _sw.Close();
         }
 
         private static void StartAndroidBuilds()
         {
-            var target = BuildTarget.Android;
+            var target = Android;
 
             OnRefreshCompleted -= StartAndroidBuilds;
-            _sw.WriteLine($"[{DateTime.Now}] Android Builds Pending");
+            _sw.WriteLine( $"[{Now}] Android Builds Pending" );
 
             ClearSlackMover();
 
-            StartBuild(target, true);
-            StartBuild(target, false);
+            StartBuild( target, true );
+            StartBuild( target, false );
 
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
-            _sw.WriteLine($"[{DateTime.Now}] Build Finished");
-            Debug.Log($"[{DateTime.Now}] Build Finished");
+            _sw.WriteLine( $"[{Now}] Build Finished" );
+            Log( $"[{Now}] Build Finished" );
 
-            SymlinkEditor.RemoveAllSymlinks(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
-            _sw.WriteLine($"[{DateTime.Now}] Symlink unloaded");
-            _sw.WriteLine($"[{DateTime.Now}] Stream Closed");
-            _sw.WriteLine($"------------------------------------------------------------");
+            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
+            _sw.WriteLine( $"[{Now}] Symlink unloaded" );
+            _sw.WriteLine( $"[{Now}] Stream Closed" );
+            _sw.WriteLine( $"------------------------------------------------------------" );
             _sw.Close();
         }
 
         private static void StartPS5Builds()
         {
-            var target = BuildTarget.PS5;
+            var target = PS5;
 
             OnRefreshCompleted -= StartPS5Builds;
-            _sw.WriteLine($"[{DateTime.Now}] PS5 Builds Pending");
+            _sw.WriteLine( $"[{Now}] PS5 Builds Pending" );
 
             ClearSlackMover();
             ClearSteamMover();
 
-            StartBuild(target, true);
-            StartBuild(target, false);
+            StartBuild( target, true );
+            StartBuild( target, false );
 
             var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
 
-            _sw.WriteLine($"[{DateTime.Now}] Build Finished");
-            Debug.Log($"[{DateTime.Now}] Build Finished");
+            _sw.WriteLine( $"[{Now}] Build Finished" );
+            Log( $"[{Now}] Build Finished" );
 
-            SymlinkEditor.RemoveAllSymlinks(graphicsDirectories, TargetGraphicsTiersDirectoryPath);
-            _sw.WriteLine($"[{DateTime.Now}] Symlink unloaded");
-            _sw.WriteLine($"[{DateTime.Now}] Stream Closed");
-            _sw.WriteLine($"------------------------------------------------------------");
+            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
+            _sw.WriteLine( $"[{Now}] Symlink unloaded" );
+            _sw.WriteLine( $"[{Now}] Stream Closed" );
+            _sw.WriteLine( $"------------------------------------------------------------" );
             _sw.Close();
         }
 
-        private static bool TryStartNextBuild()
+        private static void StartBuild( BuildTarget target, bool developmentBuild )
         {
-            var count = _pendingBuilds.Count;
-            if (count == 0) return false;
-
-            var build = _pendingBuilds[0];
-            build.Invoke();
-
-            _pendingBuilds.Remove(build);
-
-            return true;
-        }
-
-        private static void StartBuild(BuildTarget target, bool developmentBuild)
-        {
-            var targetName = TargetNameConverter(target);
-            var extension = TargetExtensionConverter(target);
-            var version = PlayerSettings.bundleVersion;
-            var name = productName;
-            var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
-            var fullName = $"{prefix}{name}_{targetName}_{version}";
-            var folderPath = $"{BUILD_PATH}\\{targetName}\\{fullName}";
-            var option = new BuildPlayerOptions
+            var targetName  = TargetNameConverter(target);
+            var extension   = TargetExtensionConverter(target);
+            var version     = PlayerSettings.bundleVersion;
+            var name        = productName;
+            var prefix      = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var fullName    = $"{prefix}{name}_{targetName}_{version}";
+            var folderPath  = $"{BUILD_PATH}\\{targetName}\\{fullName}";
+            var option      = new BuildPlayerOptions
             {
-                scenes = new string[] { TASK_GAME_STARTER_PATH },
-                locationPathName = $"{folderPath}\\{name}{extension}",
-                target = target,
-                options = developmentBuild ? BuildOptions.Development : 0
+                scenes              = new string[] { TASK_GAME_STARTER_PATH },
+                locationPathName    = $"{folderPath}\\{name}{extension}",
+                target              = target,
+                options             = developmentBuild ? Development : 0
             };
 
-            switch (target)
+            switch( target )
             {
-                case BuildTarget.StandaloneWindows64:
+                case StandaloneWindows64:
                 {
-                    PrepareWin64Package(targetName, name, version, developmentBuild);
+                    PrepareWin64Package( targetName, name, version, developmentBuild );
                     break;
                 }
-                case BuildTarget.Android:
+                case Android:
                 {
-                    PrepareAndroidPackage(targetName, name, version, developmentBuild);
+                    PrepareAndroidPackage( targetName, name, version, developmentBuild );
                     break;
                 }
-                case BuildTarget.PS5:
+                case PS5:
                 {
-                    PreparePS5Package(targetName, name, version, developmentBuild);
+                    PreparePS5Package( targetName, name, version, developmentBuild );
                     break;
                 }
             }
 
-            if (target == BuildTarget.PS5)
-            {
-                UpdateWorkspace(developmentBuild);
-            }
+            _sw.WriteLine( $"[{Now}] {fullName} Build Started" );
 
-            _sw.WriteLine($"[{DateTime.Now}] {fullName} Build Started");
-
-            BuildPipeline.BuildPlayer(option);
+            BuildPlayer( option );
         }
 
-        public void OnPreprocessBuild(BuildReport report)
+        public void OnPreprocessBuild( BuildReport report )
         {
-            var summary = report.summary;
-            var platform = summary.platform;
-            var path = summary.outputPath;
-            var isDevelopment = (summary.options & BuildOptions.Development) != 0;
+            var summary         = report.summary;
+            var platform        = summary.platform;
+            var path            = summary.outputPath;
+            var isDevelopment   = (summary.options & Development) != 0;
 
-            _sw.WriteLine($"[{DateTime.Now}] Preparing build for {platform} in {path} for {(isDevelopment ? "Development" : "Release")}");
-            Debug.Log($"[{DateTime.Now}] Preparing build for {platform} in {path} for {(isDevelopment ? "Development" : "Release")}");
+            _sw.WriteLine( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
+            Log( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
         }
 
-        public void OnPostprocessBuild(BuildReport report)
+        public void OnPostprocessBuild( BuildReport report )
         {
-            var name = productName;
-            var path = report.summary.outputPath;
-            var workspace = Debug.isDebugBuild ? PS5_WORKSPACE_DEVELOPMENT : PS5_WORKSPACE_RELEASE;
-            var deployPath = $"{path}{name}_Deploy.bat";
-            var deployAndRunPath = $"{path}{name}_DeployAndRun.bat";
+            var name                = productName;
+            var path                = report.summary.outputPath;
+            var workspace           = isDebugBuild ? PS5_WORKSPACE_DEVELOPMENT : PS5_WORKSPACE_RELEASE;
+            var deployPath          = $"{path}{name}_Deploy.bat";
+            var deployAndRunPath    = $"{path}{name}_DeployAndRun.bat";
 
-            if (!File.Exists(deployPath)) return;
-            var adaptedDeploy = File.ReadAllText(deployPath);
-            var adaptedDeployAndRun = File.ReadAllText(deployAndRunPath);
+            if( !File.Exists( deployPath ) )
+                return;
 
-            adaptedDeploy = adaptedDeploy.Replace("workspaceX", workspace);
-            adaptedDeployAndRun = adaptedDeployAndRun.Replace("workspaceX", workspace);
+            var adaptedDeploy       = ReadAllText(deployPath);
+            var adaptedDeployAndRun = ReadAllText(deployAndRunPath);
 
-            File.WriteAllText(deployPath, adaptedDeploy);
-            File.WriteAllText(deployAndRunPath, adaptedDeployAndRun);
-        }
+            adaptedDeploy = adaptedDeploy.Replace( "workspaceX", workspace );
+            adaptedDeployAndRun = adaptedDeployAndRun.Replace( "workspaceX", workspace );
 
-        private static IEnumerator WaitForNextBuild()
-        {
-            while (BuildPipeline.isBuildingPlayer)
-            {
-                yield return 0;
-            }
+            WriteAllText( deployPath, adaptedDeploy );
+            WriteAllText( deployAndRunPath, adaptedDeployAndRun );
         }
 
         #endregion
@@ -310,56 +280,64 @@ namespace Universe.Editor
 
         #region Utils
 
-        private static string TargetNameConverter(BuildTarget target)
+        private static string TargetNameConverter( BuildTarget target )
         {
-            switch (target)
+            switch( target )
             {
-                case BuildTarget.StandaloneWindows64: return PLATFORM_DISPLAY_NAME_PC;
-                case BuildTarget.Android: return PLATFORM_DISPLAY_NAME_ANDROID;
-                case BuildTarget.PS5: return PLATFORM_DISPLAY_NAME_PS5;
-                default: return target.ToString();
+                case StandaloneWindows64:
+                    return PLATFORM_DISPLAY_NAME_PC;
+                case Android:
+                    return PLATFORM_DISPLAY_NAME_ANDROID;
+                case PS5:
+                    return PLATFORM_DISPLAY_NAME_PS5;
+                default:
+                    return target.ToString();
             }
         }
 
-        private static string TargetExtensionConverter(BuildTarget target)
+        private static string TargetExtensionConverter( BuildTarget target )
         {
-            switch (target)
+            switch( target )
             {
-                case BuildTarget.StandaloneWindows64: return PLATFORM_EXTENSION_PC;
-                case BuildTarget.Android: return PLATFORM_EXTENSION_ANDROID;
-                case BuildTarget.PS5: return PLATFORM_EXTENSION_PS5;
-                default: return target.ToString();
+                case StandaloneWindows64:
+                    return PLATFORM_EXTENSION_PC;
+                case Android:
+                    return PLATFORM_EXTENSION_ANDROID;
+                case PS5:
+                    return PLATFORM_EXTENSION_PS5;
+                default:
+                    return target.ToString();
             }
         }
 
-        [MenuItem("Vault/Build/Upgrade Version Bundle")]
+        [MenuItem( "Vault/Build/Upgrade Version Bundle" )]
         private static void UpgradeVersionBundle()
         {
-            UpgradeVersionBundle(PLATFORM_DISPLAY_NAME_PC);
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PC );
         }
 
-        private static void UpgradeVersionBundle(string platform)
+        private static void UpgradeVersionBundle( string platform )
         {
-            var incrementUpAt = 9; //if this is set to 9, then 1.0.9 will become 1.1.0
-            var versionBundleText = PlayerSettings.bundleVersion;
-            var androidVersionBundleCode = PlayerSettings.Android.bundleVersionCode;
-            var buildVersionPath = BUILD_VERSION_PATH.Replace("{productName}", productName).Replace("{platform}", platform);
+            var incrementUpAt               = 9; //if this is set to 9, then 1.0.9 will become 1.1.0
+            var versionBundleText           = PlayerSettings.bundleVersion;
+            var androidVersionBundleCode    = PlayerSettings.Android.bundleVersionCode;
+            var buildVersionPath            = BUILD_VERSION_PATH.Replace("{productName}", productName).Replace("{platform}", platform);
 
             try
             {
-                using (var sr = File.OpenText(buildVersionPath))
+                using( var sr = OpenText( buildVersionPath ) )
                 {
                     try
                     {
                         versionBundleText = sr.ReadLine();
-                        androidVersionBundleCode = int.Parse(sr.ReadLine());
+                        androidVersionBundleCode = int.Parse( sr.ReadLine() );
                     }
                     catch { }
                 }
             }
             catch { }
 
-            if (string.IsNullOrEmpty(versionBundleText))
+            if( string.IsNullOrEmpty( versionBundleText ) )
             {
                 versionBundleText = "0.0.1";
             }
@@ -372,439 +350,146 @@ namespace Universe.Editor
                 var minorVersion = 0;
                 var subMinorVersion = 0;
 
-                if (lines.Length > 0) majorVersion = int.Parse(lines[0]);
-                if (lines.Length > 1) minorVersion = int.Parse(lines[1]);
-                if (lines.Length > 2) subMinorVersion = int.Parse(lines[2]);
+                if( lines.Length > 0 )
+                    majorVersion = int.Parse( lines[0] );
+                if( lines.Length > 1 )
+                    minorVersion = int.Parse( lines[1] );
+                if( lines.Length > 2 )
+                    subMinorVersion = int.Parse( lines[2] );
 
                 subMinorVersion++;
-                if (subMinorVersion > incrementUpAt)
+                if( subMinorVersion > incrementUpAt )
                 {
                     minorVersion++;
                     subMinorVersion = 0;
                 }
-                if (minorVersion > incrementUpAt)
+                if( minorVersion > incrementUpAt )
                 {
                     majorVersion++;
                     minorVersion = 0;
                 }
 
-                versionBundleText = majorVersion.ToString("0") + "." + minorVersion.ToString("0") + "." + subMinorVersion.ToString("0");
+                versionBundleText = majorVersion.ToString( "0" ) + "." + minorVersion.ToString( "0" ) + "." + subMinorVersion.ToString( "0" );
 
             }
-            Debug.Log("Version Incremented to " + versionBundleText);
-            _sw.WriteLine($"[{DateTime.Now}] Version Incremented to {versionBundleText}");
+            Log( "Version Incremented to " + versionBundleText );
+            _sw.WriteLine( $"[{Now}] Version Incremented to {versionBundleText}" );
 
             androidVersionBundleCode++;
-
             _lastVersion = versionBundleText;
             _lastAndroidBundleCode = androidVersionBundleCode;
             PlayerSettings.bundleVersion = versionBundleText;
             PlayerSettings.Android.bundleVersionCode = androidVersionBundleCode;
 
-            _sw.WriteLine($"[{DateTime.Now}] Bundle Version Incremented to {androidVersionBundleCode}");
-            Debug.Log("Bundle Version Code Incremented To " + androidVersionBundleCode);
+            _sw.WriteLine( $"[{Now}] Bundle Version Incremented to {androidVersionBundleCode}" );
+            Log( "Bundle Version Code Incremented To " + androidVersionBundleCode );
 
-            File.WriteAllText(buildVersionPath, string.Empty);
-            using (var sw = File.AppendText(buildVersionPath))
+            WriteAllText( buildVersionPath, string.Empty );
+            using( var sw = AppendText( buildVersionPath ) )
             {
-                sw.WriteLine(versionBundleText);
-                sw.WriteLine(androidVersionBundleCode);
+                sw.WriteLine( versionBundleText );
+                sw.WriteLine( androidVersionBundleCode );
             }
         }
 
         private static void UpdateRuntimeVersion()
         {
-            var version = USettingsHelper.GetSettings<CISettings>();
+            var version = GetSettings<CISettings>();
 
-            version.m_buildTime = $"{DateTime.Now}";
+            version.m_buildTime = $"{Now}";
             version.m_version = _lastVersion;
             version.m_androidBundleCode = _lastAndroidBundleCode;
 
             version.Save();
         }
 
-        private static void PrepareWin64Package(string platform, string name, string version, bool developmentBuild)
+        private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )
         {
 
-            var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
-            var doNotShipName = $"{name}{DO_NOT_SHIP_SUFFIX}";
-            var batRelativeBuildPath = BUILD_PATH.Replace("..", ".");
-            var fullName = $"{prefix}{name}_{platform}_{version}";
-            var path = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
-            var zipPath = $"{UPLOAD_PATH}\\{fullName}.zip";
-            var doNotShipPath = $"{path}\\{doNotShipName}";
-            var isolationPath = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipName}";
+            var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var doNotShipName           = $"{name}{DO_NOT_SHIP_SUFFIX}";
+            var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
+            var fullName                = $"{prefix}{name}_{platform}_{version}";
+            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
+            var zipPath                 = $"{UPLOAD_PATH}\\{fullName}.zip";
+            var doNotShipPath           = $"{path}\\{doNotShipName}";
+            var isolationPath           = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipName}";
 
-            using (var sw = File.AppendText(BUILD_SLACK_MOVER_PATH))
+            using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
-                var createTmpIfNotExists = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
+                var createTmpIfNotExists    = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var isolateDoNotShip = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
-                var zipping = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
-                var recoverDoNotShip = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
+                var isolateDoNotShip        = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
+                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
+                var recoverDoNotShip        = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
 
-                sw.WriteLine(createTmpIfNotExists);
-                sw.WriteLine(createUploadIfNotExists);
-                sw.WriteLine(isolateDoNotShip);
-                sw.WriteLine(zipping);
-                sw.WriteLine(recoverDoNotShip);
+                sw.WriteLine( createTmpIfNotExists );
+                sw.WriteLine( createUploadIfNotExists );
+                sw.WriteLine( isolateDoNotShip );
+                sw.WriteLine( zipping );
+                sw.WriteLine( recoverDoNotShip );
             }
 
             var steamContentSubPath = developmentBuild ? "debug" : "release";
             var steamContentZipPath = $"{STEAM_CONTENT_BUILDER_PATH}\\{steamContentSubPath}\\{fullName}.zip";
 
-            using (var sw = File.AppendText(BUILD_STEAM_MOVER_PATH))
+            using( var sw = AppendText( BUILD_STEAM_MOVER_PATH ) )
             {
                 var moveShip = $"copy \"{zipPath}\" \"{steamContentZipPath}\"";
 
-                sw.WriteLine(moveShip);
+                sw.WriteLine( moveShip );
             }
         }
 
-        private static void PrepareAndroidPackage(string platform, string name, string version, bool developmentBuild)
+        private static void PrepareAndroidPackage( string platform, string name, string version, bool developmentBuild )
         {
 
-            var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
-            var batRelativeBuildPath = BUILD_PATH.Replace("..", ".");
-            var fullName = $"{prefix}{name}_{platform}_{version}";
-            var path = $"{batRelativeBuildPath}\\{platform}\\{fullName}\\{name}";
-            var apkPath = $"{path}.apk";
-            var copiedApkPath = $"{UPLOAD_PATH}\\{fullName}.apk";
+            var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
+            var fullName                = $"{prefix}{name}_{platform}_{version}";
+            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}\\{name}";
+            var apkPath                 = $"{path}.apk";
+            var copiedApkPath           = $"{UPLOAD_PATH}\\{fullName}.apk";
 
-            using (var sw = File.AppendText(BUILD_SLACK_MOVER_PATH))
+            using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var copyToUploadFolder = $"copy \"{apkPath}\" \"{copiedApkPath}\"";
+                var copyToUploadFolder      = $"copy \"{apkPath}\" \"{copiedApkPath}\"";
 
-                sw.WriteLine(createUploadIfNotExists);
-                sw.WriteLine(copyToUploadFolder);
+                sw.WriteLine( createUploadIfNotExists );
+                sw.WriteLine( copyToUploadFolder );
             }
         }
 
-        private static void PreparePS5Package(string platform, string name, string version, bool developmentBuild)
+        private static void PreparePS5Package( string platform, string name, string version, bool developmentBuild )
         {
-            var prefix = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
-            var doNotShipName = $"{name}{DO_NOT_SHIP_SUFFIX}";
-            var batRelativeBuildPath = BUILD_PATH.Replace("..", ".");
-            var fullName = $"{prefix}{name}_{platform}_{version}";
-            var path = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
-            var zipPath = $"{UPLOAD_PATH}\\{fullName}.zip";
-            var doNotShipPath = $"{path}\\{doNotShipName}";
-            var isolationPath = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipName}";
+            var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
+            var fullName                = $"{prefix}{name}_{platform}_{version}";
+            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}\\{name}";
+            var zipPath                 = $"{UPLOAD_PATH}\\{fullName}.zip";
 
-            using (var sw = File.AppendText(BUILD_SLACK_MOVER_PATH))
+            using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
-                var createTmpIfNotExists = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var isolateDoNotShip = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
-                var zipping = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
-                var recoverDoNotShip = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
+                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
 
-                sw.WriteLine(createTmpIfNotExists);
-                sw.WriteLine(createUploadIfNotExists);
-                sw.WriteLine(isolateDoNotShip);
-                sw.WriteLine(zipping);
-                sw.WriteLine(recoverDoNotShip);
+                sw.WriteLine( createUploadIfNotExists );
+                sw.WriteLine( zipping );
             }
         }
-
-        private static void UpdateWorkspace(bool developmentBuild)
-        {
-            
-        }
-
 
         private static void ClearSlackMover()
         {
-            File.WriteAllText(BUILD_SLACK_MOVER_PATH, string.Empty);
+            WriteAllText( BUILD_SLACK_MOVER_PATH, string.Empty );
         }
 
         private static void ClearSteamMover()
         {
-            File.WriteAllText(BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n");
+            WriteAllText( BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n" );
         }
 
         #endregion
-
-        /*
-        #region OLD
-
-        public static void BuildPicoReady()
-        {
-            // Scene
-            //  DisableStoreAndLIVManagers();
-            // Enable(OCULUS_MANAGER_NAME);
-
-            // Publishing      
-            ApplyDRM();
-            UpgradeVersionBundle();
-            ApplyPatchToForwardRenderer();
-
-            // Build
-            BuildPico();
-        }
-
-
-        public static void ReplaceAndroidManifest(BuildTarget buildTarget, string pathToBuiltProject)
-        {
-            if (buildTarget != BuildTarget.Android) return;
-            Debug.Log("AndroidManifest swapped with Pico");
-            var manifestPath = Application.dataPath + "/../Temp/StagingArea/AndroidManifest.xml";
-            var customManifestPath = Application.dataPath + "/Plugins/Android/AndroidManifest.xml";
-
-            FileUtil.ReplaceFile(customManifestPath, manifestPath);
-        }
-
-        public static void BuildRiftReady()
-        {
-            // Scene
-            DisableStoreAndLIVManagers();
-            Enable(OCULUS_MANAGER_NAME);
-
-            // Publishing
-            UpgradeVersionBundle();
-
-            // Build
-            BuildPC();
-
-            // Post Build
-            RemoveDllForOculusStore();
-        }
-
-
-        public static void BuildSteamReady()
-        {
-            // Scene
-            DisableStoreAndLIVManagers();
-            Enable(STEAM_MANAGER_NAME);
-            Enable(LIV_MANAGER_NAME);
-
-            // Publishing
-            UpgradeVersionBundle();
-
-            // Build
-            BuildPC();
-        }
-
-        public static void BuildAll()
-        {
-            BuildPicoReady();
-            BuildRiftReady();
-            BuildSteamReady();
-        }
-
-        #endregion
-
-
-        #region Upload
-
-        private static void UploadQuestToIkimashoInternal()
-        {
-            var process = new Process
-            {
-                StartInfo =
-            {
-                  FileName = "powershell.exe",
-                  Arguments =
-                        Environment
-                              .CurrentDirectory + "\\Assets\\Oculus\\VR\\Editor\\Tools\\ovr-platform-util.exe"
-                                                + " upload-quest-build --app-id 3043045549099845 --app_secret 45c03e32c4d69b42cc668abf57103ae4 --channel IkimashoInternal --apk "
-                                                + GetLastBuildPath(),
-                  RedirectStandardOutput = false,
-                  RedirectStandardError = false,
-                  UseShellExecute = false
-            }
-            };
-
-            process.Start();
-
-            var output = process.StandardOutput.ReadToEnd();
-            var error = process.StandardError.ReadToEnd();
-
-            Debug.Log("output " + output);
-            Debug.Log("error" + error);
-            process.WaitForExit();
-            process.Close();
-        }
-
-        private static void UploadRiftBuildToOculusStore()
-        {
-            var process = new Process
-            {
-                StartInfo =
-            {
-                  FileName = "powershell.exe",
-                  Arguments =
-                        Environment
-                              .CurrentDirectory + "\\Assets\\Oculus\\VR\\Editor\\Tools\\ovr-platform-util.exe"
-                                                + " upload-rift-build --app-id 2067955279976047 --app_secret ca6b1c4ab0cda7f4577841e3b93ed02b --channel IkimashoInternal --apk "
-                                                + GetLastBuildPath(),
-                  RedirectStandardOutput = false,
-                  RedirectStandardError = false,
-                  UseShellExecute = false
-            }
-            };
-
-            process.Start();
-
-            var output = process.StandardOutput.ReadToEnd();
-            var error = process.StandardError.ReadToEnd();
-
-            Debug.Log("output " + output);
-            Debug.Log("error" + error);
-            process.WaitForExit();
-            process.Close();
-        }
-
-        #endregion
-
-
-        #region Build And Upload
-
-        public static void BuildQuestAndUploadToOculusStore()
-        {
-            BuildPicoReady();
-            UploadQuestToIkimashoInternal();
-        }
-
-        public static void BuildRiftAndUploadToOculusStore()
-        {
-            BuildRiftReady();
-            UploadRiftBuildToOculusStore();
-        }
-
-        #endregion
-
-
-        #region Tools
-
-        private static string GetLastBuildPath()
-        {
-            var path = Environment.CurrentDirectory + "\\Builds\\";
-            var fileInfo = Directory.GetFiles(path)
-               .Select(x => new FileInfo(x))
-               .OrderByDescending(x => x.LastWriteTime)
-               .Take(1)
-               .ToArray();
-
-            return fileInfo[0] != null ? fileInfo[0].FullName : "";
-        }
-
-        private static void ApplyDRM()
-        {
-            PlayerSettings.Android.keystorePass = "C0rporate!";
-            PlayerSettings.Android.keyaliasName = "key0";
-            PlayerSettings.Android.keyaliasPass = "C0rporate!KEY";
-        }
-
-        private static void ApplyPatchToForwardRenderer()
-        {
-            var forwardRendererPath = "Packages/com.unity.render-pipelines.universal/Runtime/ForwardRenderer.cs";
-            var patch = "return false;";
-            var lineToEdit = 531;
-
-            var arrLine = File.ReadAllLines(forwardRendererPath);
-            arrLine[lineToEdit - 1] = "return false;";
-            arrLine[lineToEdit] = "";
-
-            File.WriteAllLines(forwardRendererPath, arrLine);
-        }
-
-
-        public static void RemoveDllForOculusStore()
-        {
-            var pathToOpenVR = "Builds\\StarShaman_" + Enum.GetName(typeof(BuildTarget), EditorUserBuildSettings.activeBuildTarget) + "_" + PlayerSettings.bundleVersion + "\\StarShaman_Data\\Plugins\\openvr_api.dll";
-
-            File.Delete(pathToOpenVR);
-
-            var pathToSteamApi64 = "Builds\\StarShaman_" + Enum.GetName(typeof(BuildTarget), EditorUserBuildSettings.activeBuildTarget) + "_" + PlayerSettings.bundleVersion + "\\StarShaman_Data\\Plugins\\steam_api64.dll";
-
-            File.Delete(pathToSteamApi64);
-
-            var pathToVivePort = "Builds\\StarShaman_" + Enum.GetName(typeof(BuildTarget), EditorUserBuildSettings.activeBuildTarget) + "_" + PlayerSettings.bundleVersion + "\\StarShaman_Data\\Plugins\\viveport_api64.dll";
-
-            File.Delete(pathToVivePort);
-
-            var pathToLIV = "Builds\\StarShaman_" + Enum.GetName(typeof(BuildTarget), EditorUserBuildSettings.activeBuildTarget) + "_" + PlayerSettings.bundleVersion + "\\StarShaman_Data\\Plugins\\LIV_MR.dll";
-
-            File.Delete(pathToLIV);
-        }
-
-
-        private static void BuildPico()
-        {
-            Build(BuildTarget.Android, ".apk");
-        }
-
-        private static void BuildPC()
-        {
-            Build(BuildTarget.StandaloneWindows64, ".exe");
-        }
-
-        private static void Build(BuildTarget buildTarget, string fileExtention)
-        {
-            var path = "Builds/" + "_" + Enum.GetName(typeof(BuildTarget), buildTarget) + "_" + PlayerSettings.bundleVersion;
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            var buildPlayerOptions = new BuildPlayerOptions
-            {
-                scenes = new[] { "Assets/Scenes/Game.unity" },
-                locationPathName = path + "/StarShaman" + fileExtention,
-                target = buildTarget,
-                options = BuildOptions.None
-            };
-
-            var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
-            var summary = report.summary;
-
-            //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractPath);
-
-            if (summary.result == BuildResult.Succeeded)
-            {
-                Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
-            }
-
-            if (summary.result == BuildResult.Failed)
-            {
-                Debug.Log("Build failed");
-            }
-        }
-
-        #endregion
-
-
-        #region ActivationState
-
-        private static void Enable(string target)
-        {
-            ChangeActivationStateOf(target, true);
-        }
-
-        private static void Disable(string target)
-        {
-            ChangeActivationStateOf(target, false);
-        }
-
-        private static void DisableStoreAndLIVManagers()
-        {
-            Disable(STEAM_MANAGER_NAME);
-            Disable(OCULUS_MANAGER_NAME);
-            Disable(LIV_MANAGER_NAME);
-        }
-
-        private static void ChangeActivationStateOf(string target, bool status)
-        {
-            var managers = GameObject.Find(MANAGERS_PARENT_NAME);
-            managers.transform.GetComponentsInChildren<Transform>(true)
-                  .FirstOrDefault(t => t.name == target)
-                  ?.gameObject.SetActive(status);
-        }
-
-        #endregion
-        */
 
 
         #region Private
@@ -812,8 +497,6 @@ namespace Universe.Editor
         private static StreamWriter _sw;
         private static string _lastVersion;
         private static int _lastAndroidBundleCode;
-
-        private static List<Action> _pendingBuilds = new();
 
         #endregion
     }

@@ -17,17 +17,17 @@ namespace Universe.Toolbar.Editor
 
 		public static float s_width = 100.0f;
 
-        #endregion
+		#endregion
 
 
-        #region Main
+		#region Main
 
-        public static bool Draw( string playerPref ) =>
+		public static bool Draw( string playerPref ) =>
 			Draw( "Level", playerPref );
 
 		public static bool Draw( string label, string playerPref ) =>
-			Draw( label, playerPref, false);
-		public static bool Draw(string label, string playerPref, bool saveInSettings = false)
+			Draw( label, playerPref, false );
+		public static bool Draw( string label, string playerPref, bool saveInSettings = false )
 		{
 			FindLevelDatas();
 
@@ -38,29 +38,31 @@ namespace Universe.Toolbar.Editor
 			}
 
 			var levelPath = GetString(playerPref);
+			_currentLevel = FindAssociatedLevel( levelPath );
 
-			if( string.IsNullOrEmpty( levelPath ) )
+			if( string.IsNullOrEmpty( levelPath ) || _currentLevel < 0 )
 			{
-				levelPath = _levelPaths[0];
+				_currentLevel = 0;
+				levelPath = _levelPaths[_currentLevel];
 				SetString( playerPref, levelPath );
 			}
 
-			_currentLevel	= FindAssociatedLevel(levelPath);
-
 			BeginChangeCheck();
 
-			Label(label);
-			_currentLevel	= Popup(_currentLevel, _levelNames, Width(s_width));
-			levelPath		= _levelPaths[_currentLevel];
+			Label( label );
+			_currentLevel = Popup( _currentLevel, _levelNames, Width( s_width ) );
+			levelPath = _levelPaths[_currentLevel];
 
-			if( !EndChangeCheck() ) return true;
-			
-			SetString(playerPref, levelPath);
+			if( !EndChangeCheck() )
+				return true;
 
-			if( !saveInSettings ) return true;
+			SetString( playerPref, levelPath );
 
-			var settings	= USettingsHelper.GetSettings<LevelSettings>();
-			var level		= LoadAssetAtPath<LevelData>(levelPath);
+			if( !saveInSettings )
+				return true;
+
+			var settings    = USettingsHelper.GetSettings<LevelSettings>();
+			var level       = LoadAssetAtPath<LevelData>(levelPath);
 
 			settings.m_startingLevel = level;
 			settings.Save();
@@ -73,32 +75,33 @@ namespace Universe.Toolbar.Editor
 
 		#region Utils
 
-		private static int FindAssociatedLevel(string path)
+		private static int FindAssociatedLevel( string path )
 		{
-			if(string.IsNullOrEmpty(path)) return 0;
+			if( string.IsNullOrEmpty( path ) )
+				return 0;
 
-			var pathList 	= _levelPaths.ToList();
-			var result 		= pathList.IndexOf(path);
+			var pathList    = _levelPaths.ToList();
+			var result      = pathList.IndexOf(path);
 
-			return result < 0 ? 0 : result; 
+			return result;
 		}
 
 		private static void FindLevelDatas()
 		{
-			var levels 	= FindAssets($"t:{typeof(LevelData)}");
-			var size 	= levels.Length;
-			
+			var levels  = FindAssets($"t:{typeof(LevelData)}");
+			var size    = levels.Length;
+
 			_levelNames = new string[size];
 			_levelPaths = new string[size];
 
-			for (int i = 0; i < size; i++)
+			for( int i = 0; i < size; i++ )
 			{
-				var level		= levels[i];
-				var path 		= GUIDToAssetPath(level);
-				var fullPath	= GetFullPath(path);
-				
-				_levelPaths[i]	= path;
-				_levelNames[i]	= GetFileNameWithoutExtension(fullPath);
+				var level       = levels[i];
+				var path        = GUIDToAssetPath(level);
+				var fullPath    = GetFullPath(path);
+
+				_levelPaths[i] = path;
+				_levelNames[i] = GetFileNameWithoutExtension( fullPath );
 			}
 		}
 

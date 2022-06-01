@@ -56,6 +56,12 @@ namespace Universe.Toolbar.Editor
 			Space( m_spacing );
 
 			BeginHorizontal();
+			DrawAudioToggle();
+			EndHorizontal();
+
+			Space( m_spacing );
+
+			BeginHorizontal();
 			Label( "Environment" );
 			DrawEnvironmentToggle( BLOCK_MESH );
 			DrawEnvironmentToggle( ART );
@@ -92,11 +98,26 @@ namespace Universe.Toolbar.Editor
 			_levelPath	= path;
 			_level		= level;
 			_taskAmount = _level.m_gameplayTasks.Count;
+			_audioUsed = IsTaskOpen( _level.m_audio );
+			_currentEnvironment = (IsTaskOpen( _level.m_blockMeshEnvironment ) ? BLOCK_MESH : NONE);
+			_currentEnvironment = _currentEnvironment ^ ( IsTaskOpen( _level.m_artEnvironment ) ? ART : NONE );
 			PopulateTaskUsed( _level.m_gameplayTasks );
 
 			var floatPageAmount = 1.0f * _taskAmount / m_maxEntryPerPage;
 
 			_pageAmount = CeilToInt( floatPageAmount );
+		}
+
+		private void DrawAudioToggle()
+		{
+			var willTurnOn = !_audioUsed;
+			var texName    = willTurnOn ? "d_CacheServerDisconnected" : "d_CacheServerConnected";
+			var tex        = IconContent(texName).image;
+
+			if( !Button( new GUIContent( "Audio", tex, $"{( willTurnOn ? "Load" : "Unload" )}" ) ) )
+				return;
+
+			_audioUsed = !_audioUsed;
 		}
 
 		private void DrawEnvironmentToggle( Environment environment )
@@ -215,6 +236,15 @@ namespace Universe.Toolbar.Editor
 			var openSceneMode = Single;
 
 			SaveCurrentModifiedScenesIfUserWantsTo();
+			if( NeedAudio )
+			{
+				var audioGuid   = _level.m_audio.m_assetReference.AssetGUID;
+				var audio       = GUIDToAssetPath(audioGuid);
+
+				OpenScene( audio, openSceneMode );
+				openSceneMode = Additive;
+			}
+
 			if( NeedBlockMesh )
 			{
 				var blockMeshGuid   = _level.m_blockMeshEnvironment.m_assetReference.AssetGUID;
@@ -272,13 +302,19 @@ namespace Universe.Toolbar.Editor
 
 			for( var i = 0; i < amount; i++ )
 			{
-				var taskData	= source[i];
-				var taskGuid	= taskData.m_assetReference.AssetGUID;
-				var taskPath	= GUIDToAssetPath(taskGuid);
-				var task        = GetSceneByPath(taskPath);
+				var taskData    = source[i];
 
-				_taskUsed[i] = task.IsValid();
+				_taskUsed[i] = IsTaskOpen(taskData);
 			}
+		}
+
+		private bool IsTaskOpen( TaskData taskData )
+		{
+			var taskGuid    = taskData.m_assetReference.AssetGUID;
+			var taskPath    = GUIDToAssetPath(taskGuid);
+			var task        = GetSceneByPath(taskPath);
+
+			return task.IsValid();
 		}
 
 		private static bool IsValidPath( string path )
@@ -289,6 +325,8 @@ namespace Universe.Toolbar.Editor
 			return Exists( fullPath );
 		}
 
+		private bool NeedAudio => 
+			_audioUsed;
 		private bool NeedBlockMesh =>
 			(_currentEnvironment & BLOCK_MESH) != 0;
 		private bool NeedArt =>
@@ -304,6 +342,7 @@ namespace Universe.Toolbar.Editor
 		private int _taskAmount;
 		private int _pageAmount;
 		private int _currentPage;
+		private bool _audioUsed;
         private Environment _currentEnvironment;
 		private bool[] _taskUsed;
 

@@ -19,6 +19,7 @@ namespace Universe.Toolbar.Editor
 
 		public string m_editorWindowText = "Type your level's name: ";
 		public string m_newLevelName 	= "NewLevel";
+		public TaskData m_audioTask;
 		public TaskData m_blockMeshTask;
 		public TaskData m_artTask;
 
@@ -32,19 +33,20 @@ namespace Universe.Toolbar.Editor
             var preferedMaxSize = maxSize;
             var preferedMinSize = minSize;
 
-            preferedMaxSize.y = 85.0f;
-            preferedMinSize.y = 85.0f;
+            preferedMaxSize.y = 105.0f;
+            preferedMinSize.y = 105.0f;
 
             m_newLevelName = EditorGUILayout.TextField(m_editorWindowText, m_newLevelName);
 
-            DrawBlockMeshFields(ref preferedMaxSize, ref preferedMinSize);
+            DrawAudioFields(ref preferedMaxSize, ref preferedMinSize);
+			DrawBlockMeshFields( ref preferedMaxSize, ref preferedMinSize);
             DrawArtFields(ref preferedMaxSize, ref preferedMinSize);
 
             GUILayout.BeginHorizontal();
             GUI.enabled = CanCreate();
             if (GUILayout.Button("Create"))
             {
-                CreateLevelHelper.NewLevel(m_newLevelName, m_blockMeshTask, m_artTask);
+                CreateLevelHelper.NewLevel(m_newLevelName, m_audioTask, m_blockMeshTask, m_artTask);
 				ReloadTasks();
                 GUIUtility.ExitGUI();
             }
@@ -61,22 +63,38 @@ namespace Universe.Toolbar.Editor
             minSize = preferedMinSize;
         }
 
-        private void DrawBlockMeshFields(ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize)
-        {
-            _useExistingBlockMesh = EditorGUILayout.Toggle("Use existing block mesh : ", _useExistingBlockMesh);
+		private void DrawAudioFields( ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize )
+		{
+			_useExistingAudio = EditorGUILayout.Toggle( "Use existing audio : ", _useExistingAudio );
 
-            if (_useExistingBlockMesh)
-            {
-                m_blockMeshTask = (TaskData)EditorGUILayout.ObjectField("Block mesh : ", m_blockMeshTask, typeof(TaskData), false);
-				
-                preferedMaxSize.y += 20.0f;
-                preferedMinSize.y += 20.0f;
+			if( _useExistingAudio )
+			{
+				m_blockMeshTask = (TaskData)EditorGUILayout.ObjectField( "Audio : ", m_blockMeshTask, typeof( TaskData ), false );
+
+				preferedMaxSize.y += 20.0f;
+				preferedMinSize.y += 20.0f;
+				return;
+			}
+
+			m_audioTask = null;
+		}
+
+		private void DrawBlockMeshFields( ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize )
+		{
+			_useExistingBlockMesh = EditorGUILayout.Toggle( "Use existing block mesh : ", _useExistingBlockMesh );
+
+			if( _useExistingBlockMesh )
+			{
+				m_blockMeshTask = (TaskData)EditorGUILayout.ObjectField( "Block mesh : ", m_blockMeshTask, typeof( TaskData ), false );
+
+				preferedMaxSize.y += 20.0f;
+				preferedMinSize.y += 20.0f;
 				return;
 			}
 
 			m_blockMeshTask = null;
-        }
-		
+		}
+
 		private void DrawArtFields(ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize)
         {
             _useExistingArt = EditorGUILayout.Toggle("Use existing art : ", _useExistingArt);
@@ -112,7 +130,8 @@ namespace Universe.Toolbar.Editor
 
         public bool CanCreate()
 		{
-			if(!IsUsingAnyExistingEnvironment) 	return true;
+			if(!IsUsingAnyExistingTask) 		return true;
+			if(IsUsingInvalidAudio) 			return false;
 			if(IsUsingInvalidBlockMesh) 		return false;
 			if(IsUsingInvalidArt) 				return false;
 
@@ -150,8 +169,9 @@ namespace Universe.Toolbar.Editor
 			m_settings = USettingsHelper.GetSettings<CreateLevelSettings>();
 		}
 
-		public bool IsUsingAnyExistingEnvironment 	=> _useExistingArt || _useExistingBlockMesh;
-		public bool IsUsingInvalidBlockMesh 		=> _useExistingBlockMesh && !m_blockMeshTask;
+		public bool IsUsingAnyExistingTask 			=> _useExistingAudio || _useExistingArt || _useExistingBlockMesh;
+		public bool IsUsingInvalidAudio 			=> _useExistingAudio && !m_audioTask;
+		public bool IsUsingInvalidBlockMesh			=> _useExistingBlockMesh && !m_blockMeshTask;
 		public bool IsUsingInvalidArt 				=> _useExistingArt && !m_artTask;
 
 		#endregion
@@ -159,6 +179,7 @@ namespace Universe.Toolbar.Editor
 		
 		#region Private
 
+		private bool _useExistingAudio;
 		private bool _useExistingBlockMesh;
 		private bool _useExistingArt;
 

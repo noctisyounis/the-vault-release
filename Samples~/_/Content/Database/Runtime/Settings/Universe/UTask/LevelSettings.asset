@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 832306289c24cdc45bab21626c0725f0, type: 3}
   m_Name: LevelSettings
   m_EditorClassIdentifier: 
-  m_startingLevel: {fileID: 11400000, guid: 637653885911e9648a3464708728f144, type: 2}
+  m_startingLevel: {fileID: 11400000, guid: c572af7203360ea41abf7922b1c7eb6d, type: 2}
   m_startingEnvironment: 3
-  m_startingTask: 0
+  m_startingTask: 1

@@ -9,6 +9,7 @@ namespace Universe.Toolbar.Editor
         #region Exposed
 
         public string m_levelFolder = "Assets/_/Content/Levels/Gameplay";
+        public string m_audioTaskName = "Audio";
 		public string m_blockMeshTaskName = "BlockMesh";
 		public string m_artTaskName = "Art";
 		public string m_gameplayTaskName = "Gameplay";

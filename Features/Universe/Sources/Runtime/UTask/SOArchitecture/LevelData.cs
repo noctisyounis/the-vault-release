@@ -7,6 +7,7 @@ namespace Universe.SceneTask.Runtime
 	{
 		#region Exposed
 
+		public TaskData m_audio;
 		public TaskData m_blockMeshEnvironment;
 		public TaskData m_artEnvironment;
 		public List<TaskData> m_gameplayTasks = new();

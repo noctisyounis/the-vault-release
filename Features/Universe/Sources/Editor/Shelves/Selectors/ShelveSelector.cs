@@ -68,9 +68,7 @@ namespace Universe.Toolbar.Editor
                     currentShelve = (SHELVE)Enum.Parse( typeof( SHELVE ), GetString( side + _shelvePlayerPrefKey ) );
                 }
                 catch
-                {
-                    currentShelve = SHELVE.Database;
-                }
+                {}
             }
 
             return currentShelve;
