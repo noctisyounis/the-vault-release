@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 namespace Universe
 {
     [ExecuteInEditMode, DisallowMultipleComponent]
-    public class Identity : UBehaviour, ISerializationCallbackReceiver
+    public class Identity : UBehaviour
     {
         #region Unity API
 
@@ -125,7 +125,7 @@ namespace Universe
         
     #endif
         
-        public void OnBeforeSerialize()
+        protected override void OnBeforeSerialize()
         {
     #if UNITY_EDITOR
             if (IsAssetOnDisk())
@@ -143,7 +143,7 @@ namespace Universe
             }
         }
 
-        public void OnAfterDeserialize()
+        protected override void OnAfterDeserialize()
         {
             if (serializedGuid != null && serializedGuid.Length == 16)
             {
