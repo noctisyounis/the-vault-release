@@ -10,94 +10,105 @@ using static UnityEditor.EditorGUI;
 using static UnityEngine.GUILayout;
 using static UnityEngine.PlayerPrefs;
 
-public class SelectTask
+namespace Universe.Toolbar.Editor
 {
-	#region Exposed
-
-	public static float s_width = 150.0f;
-
-    #endregion
-
-
-    #region Main
-
-    public static void Draw( string levelPlayerPref ) =>
-		Draw( "Task", levelPlayerPref );
-	public static void Draw( string label, string levelPlayerPref ) =>
-		Draw( label, levelPlayerPref, false );
-	public static void Draw( string label, string levelPlayerPref, bool saveInSettings = false )
+	public class SelectTask
 	{
-		var levelPath = GetString( levelPlayerPref );
+		#region Exposed
 
-		UpdateLevel( levelPath, saveInSettings );
+		public static float s_width = 150.0f;
 
-		if( _taskNames.Count < 1 )
+		#endregion
+
+
+		#region Main
+
+		public static void Draw( string levelPlayerPref ) =>
+			Draw( "Task", levelPlayerPref );
+		public static void Draw( string label, string levelPlayerPref ) =>
+			Draw( label, levelPlayerPref, false );
+		public static void Draw( string label, string levelPlayerPref, bool saveInSettings = false )
 		{
+			if( !_subcribedOnTaskLoaded )
+			{
+				CreateLevelHelper.OnTaskAdded += PopulateTaskNames;
+				_subcribedOnTaskLoaded = true;
+			}
+
+			var levelPath = GetString( levelPlayerPref );
+			UpdateLevel( levelPath, saveInSettings );
+
+			if( _taskNames.Count < 1 )
+			{
+				PopulateTaskNames();
+			}
+
+			BeginChangeCheck();
+
+			Label( label );
+			_currentTaskIndex = Popup( _currentTaskIndex, _taskNames.ToArray(), Width( s_width ) );
+
+			if( !EndChangeCheck() ) return;
+			if( !saveInSettings ) return;
+
+			var settings = USettingsHelper.GetSettings<LevelSettings>();
+			var checkpoint = settings.m_editorCheckpoint;
+
+			checkpoint.m_task = _currentLevel.GetGameplayTask( _currentTaskIndex );
+			settings.SaveAsset();
+		}
+
+		#endregion
+
+
+		#region Utils
+
+		private static void UpdateLevel( string path, bool saveInSettings )
+		{
+			if( path.Equals( _currentPath ) && _currentLevel ) return;
+			_currentPath = path;
+			_currentLevel = LoadAssetAtPath<LevelData>( path );
+			_currentTaskIndex = 0;
 			PopulateTaskNames();
+
+			if( !saveInSettings ) return;
+			var settings = USettingsHelper.GetSettings<LevelSettings>();
+			var checkpoint = settings.m_editorCheckpoint;
+
+			_currentTaskIndex = _currentLevel.IndexOf( checkpoint.m_task );
+			if( !_taskNames.GreaterThan( _currentTaskIndex ) )
+				_currentTaskIndex = 0;
+
+			checkpoint.m_level = _currentLevel;
+			checkpoint.m_task = _currentLevel.GetGameplayTask( _currentTaskIndex );
+
+			settings.SaveAsset();
 		}
 
-		BeginChangeCheck();
-
-		Label( label );
-		_currentTaskIndex = Popup( _currentTaskIndex, _taskNames.ToArray() , Width(s_width));
-
-		if( !EndChangeCheck() ) return;
-		if( !saveInSettings ) return;
-
-		var settings = USettingsHelper.GetSettings<LevelSettings>();
-
-		settings.m_startingTask = _currentTaskIndex;
-		settings.Save();
-	}
-
-	#endregion
-
-
-	#region Utils
-
-	private static void UpdateLevel( string path, bool saveInSettings )
-	{
-		if( path.Equals( _currentPath ) && _currentLevel) return;
-
-		_currentPath = path;
-		_currentLevel = LoadAssetAtPath<LevelData>( path );
-		_currentTaskIndex = 0;
-		PopulateTaskNames();
-
-		if( !saveInSettings ) return;
-		var settings = USettingsHelper.GetSettings<LevelSettings>();
-
-		_currentTaskIndex = settings.m_startingTask;
-		if( _taskNames.GreaterThan( _currentTaskIndex ) ) return;
-
-		_currentTaskIndex = 0;
-		settings.m_startingLevel = _currentLevel;
-		settings.m_startingTask = 0;
-		settings.Save();
-	}
-
-	private static void PopulateTaskNames()
-	{
-		var tasks = _currentLevel.m_gameplayTasks;
-
-		_taskNames = new ();
-		foreach( var task in tasks)
+		private static void PopulateTaskNames()
 		{
-			var taskName = task.GetTrimmedName();
-			_taskNames.Add(taskName);
+			var tasks = _currentLevel.m_gameplayTasks;
+
+			_taskNames = new();
+			foreach( var task in tasks )
+			{
+				var taskName = task.GetTrimmedName();
+				_taskNames.Add( taskName );
+			}
 		}
+
+		#endregion
+
+
+		#region Private
+
+		private static string _currentPath;
+		private static LevelData _currentLevel;
+
+		private static List<string> _taskNames;
+		private static int _currentTaskIndex;
+		private static bool _subcribedOnTaskLoaded;
+
+		#endregion
 	}
-
-	#endregion
-
-
-	#region Private
-
-	private static string _currentPath;
-	private static LevelData _currentLevel;
-
-	private static List<string> _taskNames;
-	private static int      _currentTaskIndex;
-
-    #endregion
 }

@@ -11,7 +11,7 @@ using static UnityEngine.Debug;
 
 namespace Universe
 {
-    public class TextServicesSettings : ScriptableObject
+    public class TextServicesSettings : UniverseScriptableObject
     {
         #region Public Members
 

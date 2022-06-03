@@ -187,68 +187,66 @@ namespace Universe
         
         #endregion
         
-        
-        #region Tasks
 
-        protected void LoadTask(TaskData task) =>
-            this.ULoadTask(task);
+        #region Checkpoint
 
-        protected void UnloadLastTaskAndLoad(TaskData task) =>
-            this.UUnloadLastTaskAndLoad(task);
+        protected void LoadCheckpoint(CheckpointData checkpoint, LoadLevelMode mode = LoadLevelMode.LoadAll) =>
+            this.ULoadCheckpoint(checkpoint, mode);
 
-        protected void UnloadTask(TaskData task) =>
-            this.UUnloadTask(task);
-        
-
-        #endregion
-
-
-        #region UFile
-
-        public string GetOrCreateFolderAt( string path ) => 
-            UGetOrCreateFolderAt( path );
-
-        public string GetPathRelativeToProject( string path ) => 
-            UGetPathRelativeToProject( path );
-
-        public string RemoveAssetsPathFrom( string path ) => 
-            URemoveAssetsPathFrom( path );
+        protected void ReloadCheckpoint() =>
+            this.UReloadCheckpoint();
 
         #endregion
 
 
         #region Level
 
-        protected void LoadLevelAbsolute(LevelData level) =>
-            this.ULoadLevelAbsolute(level);
-        protected void LoadLevelAbsolute( LevelData level, int taskIndex ) =>
-            this.ULoadLevelAbsolute( level, taskIndex );
-        protected void LoadLevelOptimized(LevelData level) =>
-            this.ULoadLevelOptimized(level);
-        protected void LoadLevelOptimized( LevelData level, int taskIndex ) =>
-            this.ULoadLevelOptimized( level, taskIndex );
-        
-        protected void ReloadCurrentLevelAbsolute() =>
-            this.UReloadCurrentLevelAbsolute();
-        protected void ReloadCurrentLevelAbsolute(int taskIndex ) =>
-            this.UReloadCurrentLevelAbsolute( taskIndex );
-        protected void ReloadCurrentLevelOptimized() =>
-            this.UReloadCurrentLevelOptimized();
-        protected void ReloadCurrentLevelOptimized( int taskIndex ) =>
-            this.UReloadCurrentLevelOptimized( taskIndex );
+        protected void LoadLevel( LevelData level, TaskData task = null) =>
+            this.ULoadLevel( level, task );
+
+        protected void ChangeLevel( LevelData level, TaskData task = null, LoadLevelMode mode = LoadLevelMode.LoadAll ) =>
+            this.UChangeLevel( level, task, mode );
+
+        protected void ReloadLevel( LoadLevelMode mode = LoadLevelMode.LoadAll ) =>
+            this.UReloadLevel( mode );       
         
         protected void UnloadLevel(LevelData level) =>
             this.UUnloadLevel(level);
-        protected void LoadNextTask() =>
-            this.ULoadNextTask();
-        protected void LoadLevelTask(int taskIndex) =>
-            this.ULoadLevelTask(taskIndex);
-        protected void ReloadCheckpoint() =>
-            this.UReloadCheckpoint();
-        protected void UnloadPreviousTask() =>
-            this.UUnloadPreviousTask();
-        protected void UnloadLevelTask( int taskIndex ) =>
-            this.UUnloadLevelTask( taskIndex );
+
+        
+        protected void LoadGameplayTask( TaskData task ) =>
+            this.ULoadGameplayTask( task );
+
+        protected void UnloadGameplayTask( TaskData task ) =>
+            this.UUnloadGameplayTask( task );
+
+        #endregion
+
+
+        #region Tasks
+
+        protected void LoadTask( TaskData task ) =>
+            this.ULoadTask( task );
+
+        protected void UnloadLastTaskAndLoad( TaskData task ) =>
+            this.UUnloadLastTaskAndLoad( task );
+
+        protected void UnloadTask( TaskData task ) =>
+            this.UUnloadTask( task );
+
+        #endregion
+
+
+        #region UFile
+
+        public string GetOrCreateFolderAt( string path ) =>
+            UGetOrCreateFolderAt( path );
+
+        public string GetPathRelativeToProject( string path ) =>
+            UGetPathRelativeToProject( path );
+
+        public string RemoveAssetsPathFrom( string path ) =>
+            URemoveAssetsPathFrom( path );
 
         #endregion
 

@@ -103,7 +103,6 @@ namespace Universe.SceneTask.Runtime
         {
             if( !_dicoOfTasks.ContainsKey( from ) )
             {
-                Debug.LogError( $"Task: {from.name} isn't currently loaded" );
                 return default( SceneInstance );
             }
 

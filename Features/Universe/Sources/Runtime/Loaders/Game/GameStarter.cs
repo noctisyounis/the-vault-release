@@ -52,16 +52,16 @@ namespace Universe.SceneTask.Runtime
 
 #if UNITY_EDITOR
 
-            var settings = LevelManager.Settings;
-            var startLevelData = settings.m_startingLevel;
-            var startLevelTask = settings.m_startingTask;
+            var checkpoint = CheckpointManager.EditorCheckPoint;
+            var startLevelData = checkpoint.m_level;
+            var startLevelTask = checkpoint.m_task;
 
-            LoadLevelAbsolute(startLevelData, startLevelTask);
+            ChangeLevel(startLevelData, startLevelTask);
 
             return;
 #else
             Verbose($"{m_levelData.name} Loaded");
-            LoadLevelAbsolute(m_levelData);
+            ChangeLevel(m_levelData);
 #endif
         }
         

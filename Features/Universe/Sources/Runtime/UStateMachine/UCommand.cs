@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Universe.StateMachine.Runtime
 {
-	public abstract class UCommand : ScriptableObject
+	public abstract class UCommand : UniverseScriptableObject
 	{
 		#region Main
 

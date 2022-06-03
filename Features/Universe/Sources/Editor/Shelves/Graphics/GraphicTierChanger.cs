@@ -32,7 +32,7 @@ namespace Universe.Toolbar.Editor
 			_settings.m_targetFolder 	= _settings.m_targetFolder.Replace(DirectorySeparatorChar, AltDirectorySeparatorChar);
 			_settings.m_fallbackFolder	= _settings.m_fallbackFolder.Replace(DirectorySeparatorChar, AltDirectorySeparatorChar);
 
-			_settings.Save();
+			_settings.SaveAsset();
 		}
 
 		#endregion

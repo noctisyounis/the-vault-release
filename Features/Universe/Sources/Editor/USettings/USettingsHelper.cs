@@ -6,7 +6,7 @@ namespace Universe.Editor
 	{
 		#region Main
 
-		public static T GetSettings<T>() where T : USettings
+		public static T GetSettings<T>() where T : UniverseScriptableObject
 		{
 			return ScriptableHelper.GetScriptable<T>(_settingsFolder);
 		}	

@@ -400,7 +400,7 @@ namespace Universe.Editor
             version.m_version = _lastVersion;
             version.m_androidBundleCode = _lastAndroidBundleCode;
 
-            version.Save();
+            version.SaveAsset();
         }
 
         private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )

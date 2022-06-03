@@ -1,13 +1,15 @@
 using System;
 using UnityEngine;
 
+using static Universe.SceneTask.Runtime.LoadLevelMode;
+
 namespace Universe.SceneTask.Runtime
 {
-	public static class Level
+    public static class Level
 	{
-		#region Public
+		#region Exposed
 
-		public static LevelData m_currentLevel;
+		public static LevelData s_currentLevel;
 
 		public static Environment CurrentEnvironment
 		{
@@ -16,20 +18,23 @@ namespace Universe.SceneTask.Runtime
 		}
 
 		public static TaskData CurrentAudioTask =>
-			m_currentLevel.m_audio;
+			s_currentLevel.m_audio;
 		public static TaskData CurrentBlockMeshTask =>
-			m_currentLevel.m_blockMeshEnvironment;
+			s_currentLevel.m_blockMeshEnvironment;
 		public static TaskData CurrentArtTask =>
-			m_currentLevel.m_artEnvironment;
+			s_currentLevel.m_artEnvironment;
 		public static TaskData CurrentGameplayTask =>
-			m_currentLevel.m_gameplayTasks[_currentTaskIndex];
+			GetGameplayTask( CurrentTaskIndex );
+		public static TaskData NextGameplayTask =>
+			GetGameplayTask( CurrentTaskIndex + 1 );
+		public static TaskData PreviousGameplayTask =>
+			GetGameplayTask( CurrentTaskIndex - 1 );
 		public static int CurrentTaskIndex =>
 			_currentTaskIndex;
 
 		public static bool CanLoadArt => ( CurrentEnvironment & Environment.ART ) != 0;
 		public static bool CanLoadBlockMesh => ( CurrentEnvironment & Environment.BLOCK_MESH ) != 0;
-		public static bool IsFullyLoaded => _audioTaskLoaded && _blockMeshTaskLoaded && _artTaskLoaded && _gameplayTaskLoaded;
-
+		public static bool IsFullyLoaded => _audioTaskLoaded && _blockMeshTaskLoaded && _artTaskLoaded && AreAllGameplayLoaded;
 
 		#endregion
 
@@ -41,246 +46,190 @@ namespace Universe.SceneTask.Runtime
 		#endregion
 
 
+		#region Public API
+
+		public static TaskData GetGameplayTask( int index )
+			=> s_currentLevel.GetGameplayTask( index );
+
+		#endregion
+
+
 		#region Main
 
-		///<summary>
-		///Load all the compound tasks of the level.
-		///</summary>
-
-		public static void ULoadLevelAbsolute( this UBehaviour source, LevelData level ) =>
-			source.ULoadLevelAbsolute( level, 0 );
-		
-
-		public static void ULoadLevelAbsolute( this UBehaviour source, LevelData level, int task )
+		public static void ULoadLevel( this UBehaviour source, LevelData level, TaskData task = null)
 		{
-			if( HasCurrentLevel )
-				source.UUnloadLevel( m_currentLevel );
+			s_currentLevel = level;
+			if( !task )
+				task = level.GetGameplayTask( 0 );
 
-			m_currentLevel = level;
-
-			LoadAudioTask(source);
-			TryLoadBlockMeshTask(source);
-			TryLoadArtTask(source);
-			LoadGameplayTask(source, task);
+			source.TryLoadAudioTask();
+			source.TryLoadBlockMeshTask();
+			source.TryLoadArtTask();
+			source.ULoadGameplayTask( task );
 		}
 
-		///<summary>
-		///Load the tasks that are different from the current level.
-		///</summary>
-
-		public static void ULoadLevelOptimized( this UBehaviour source, LevelData level ) =>
-			source.ULoadLevelOptimized( level, 0 );
-
-		public static void ULoadLevelOptimized( this UBehaviour source, LevelData level, int task )
+		public static void UChangeLevel( this UBehaviour source, LevelData toLevel, TaskData toTask = null, LoadLevelMode mode = LoadAll )
 		{
-			var audioTask = level.m_audio;
-			var blockMeshTask = level.m_blockMeshEnvironment;
-			var artTask = level.m_artEnvironment;
-			var gameplayTask = level.m_gameplayTasks[task];
-
-			var needAudio = false;
-			var needBlockMesh = false;
-			var needArt = false;
-
-			if( !HasCurrentLevel )
+			if( s_currentLevel )
 			{
-				needAudio = true;
-				needBlockMesh = true;
-				needArt = true;
-			}
-			else
-			{
-				if( !IsCurrentAudioEquals( audioTask ) )
+				if( mode == LoadAll )
 				{
-					source.UUnloadTask( CurrentAudioTask );
-					needAudio = true;
+					source.UUnloadLevel( s_currentLevel );
 				}
-				if(!IsCurrentBlockMeshEquals( blockMeshTask ) )
+				else
 				{
-					source.UUnloadTask( CurrentBlockMeshTask );
-					needBlockMesh = true;
-				}
-				if(!IsCurrentArtEquals( artTask ) )
-				{
-					source.UUnloadTask( CurrentArtTask );
-					needArt = true;
-				}
+					var audio = toLevel.m_audio;
+					var blockMesh = toLevel.m_blockMeshEnvironment;
+					var art = toLevel.m_artEnvironment;
 
-				source.UUnloadTask( CurrentGameplayTask );
+					if( !IsCurrentAudioEquals( audio ) )
+						source.UnloadAudioTask( s_currentLevel );
+					if( !IsCurrentBlockMeshEquals( blockMesh ) )
+						source.UnloadBlockMeshTask( s_currentLevel );
+					if( !IsCurrentArtEquals( art ) )
+						source.UnloadArtTask( s_currentLevel );
+
+					source.UnloadGameplayTasks( s_currentLevel );
+				}
 			}
 
-			m_currentLevel = level;
-
-			if( needAudio )
-				LoadAudioTask( source );
-			if( needBlockMesh )
-				TryLoadBlockMeshTask( source );
-			if( needArt )
-				TryLoadArtTask( source );
-
-			LoadGameplayTask( source, task );
+			source.ULoadLevel( toLevel, toTask );
 		}
 
-		public static void UReloadCurrentLevelAbsolute( this UBehaviour source ) =>
-			source.UReloadCurrentLevelAbsolute( 0 );
-
-		public static void UReloadCurrentLevelAbsolute( this UBehaviour source, int at )
+		public static void UReloadLevel( this UBehaviour source, LoadLevelMode mode = LoadLevelMode.LoadAll )
 		{
-			if( !HasCurrentLevel )
-				return;
+			var level = s_currentLevel;
+			var task = GetGameplayTask(0);
 
-			source.ULoadLevelAbsolute( m_currentLevel, at);
-		}
-
-		public static void UReloadCurrentLevelOptimized( this UBehaviour source) =>
-			source.UReloadCurrentLevelOptimized( 0 );
-
-		public static void UReloadCurrentLevelOptimized( this UBehaviour source, int at )
-		{
-			if( !HasCurrentLevel )
-				return;
-
-			source.ULoadLevelOptimized( m_currentLevel, at );
+			source.UChangeLevel( level, task, mode );
 		}
 
 		public static void UUnloadLevel( this UBehaviour source, LevelData level )
 		{
-			if( !HasCurrentLevel )
-				return;
-			if( !level.Equals( m_currentLevel ) )
-				throw new Exception( $"{level.name} isn't currently loaded" );
+			source.UnloadAudioTask( level );
+			source.UnloadBlockMeshTask( level );
+			source.UnloadArtTask( level );
+			source.UnloadGameplayTasks( level );
 
-			var audioTask = CurrentAudioTask;
-			var blockMeshEnvironmentTask = CurrentBlockMeshTask;
-			var artEnvironmentTask = CurrentArtTask;
-			var gameplayTasks = level.m_gameplayTasks;
-			var gameplayTask = CurrentGameplayTask;
-
-			source.UUnloadTask( audioTask );
-			source.UUnloadTask( artEnvironmentTask );
-			source.UUnloadTask( blockMeshEnvironmentTask );
-			source.UUnloadTask( gameplayTask );
-
-			if( gameplayTasks.GreaterThan( _previousLevelTaskIndex ))
-			{
-				var previousTask = level.m_gameplayTasks[_previousLevelTaskIndex];
-
-				source.UUnloadTask( previousTask );
-				_previousLevelTaskIndex = -1;
-			}
-
-			m_currentLevel = null;
+			_currentTaskIndex = 0;
 		}
 
-		public static void ULoadNextTask( this UBehaviour source )
+		public static void ULoadGameplayTask( this UBehaviour source, TaskData task )
 		{
-			if( !HasCurrentLevel )
+			var tasks = s_currentLevel.m_gameplayTasks;
+			var index = s_currentLevel.IndexOf(task);
+			if( index < 0 )
 				return;
 
-			var nextLevelTask = _currentTaskIndex + 1;
+			var loaded = Task.GetLoadedScene(task).Scene.IsValid();
+			if( loaded )
+				return;
 
-			source.ULoadLevelTask( nextLevelTask );
+			_currentTaskIndex = index;
+			_gameplayTaskRequestedAmount++;
+			source.ULoadTask( task );
+
+			if( IsSubscribed )
+				return;
+			Task.OnTaskLoaded += OnGameplayTaskLoaded;
 		}
 
-		public static void ULoadLevelTask( this UBehaviour source, int taskIndex )
+		public static void UUnloadGameplayTask( this UBehaviour source, TaskData task )
 		{
-			if( !HasCurrentLevel )
+			var loaded = Task.GetLoadedScene(task).Scene.IsValid();
+			if( !loaded )
 				return;
 
-			var currentLevelTaskIndex = _currentTaskIndex;
-			var tasks = m_currentLevel.m_gameplayTasks;
-			if( !tasks.GreaterThan( taskIndex ))
-				return;
+			source.UUnloadTask( task );
 
-			var nextGameplayTask = tasks[taskIndex];
-
-			source.ULoadTask( nextGameplayTask );
-
-			_currentTaskIndex = taskIndex;
-			_previousLevelTaskIndex = currentLevelTaskIndex;
+			_gameplayTaskLoadedAmount--;
+			_gameplayTaskRequestedAmount--;
 		}
-
-		public static void UReloadCheckpoint( this UBehaviour source )
-		{
-			if( !HasCurrentLevel )
-				return;
-
-			var tasks = m_currentLevel.m_gameplayTasks;
-			if( !tasks.GreaterThan( _currentTaskIndex ) )
-				return;
-
-			var currentLevelTask = tasks[_currentTaskIndex];
-
-			source.UUnloadTask( currentLevelTask );
-			source.ULoadTask( currentLevelTask );
-		}
-
-		public static void UUnloadPreviousTask( this UBehaviour source ) =>
-			source.UUnloadLevelTask( _previousLevelTaskIndex );
-
-		public static void UUnloadLevelTask( this UBehaviour source, int taskIndex )
-		{
-			if( !HasCurrentLevel )
-				return;
-			var tasks = m_currentLevel.m_gameplayTasks;
-			if( !tasks.GreaterThan( taskIndex ) )
-				return;
-
-			var gameplayTask = tasks[taskIndex];
-			source.UUnloadTask( gameplayTask );
-
-			if( taskIndex == _previousLevelTaskIndex )
-				_previousLevelTaskIndex = -1;
-		}
-
 
 		#endregion
 
 
 		#region Utils
 
-		private static void LoadAudioTask( UBehaviour source )
+		private static void TryLoadAudioTask( this UBehaviour source )
 		{
-			_audioTaskLoaded = false;
-			source.ULoadTask( m_currentLevel.m_audio );
+			var audio = s_currentLevel.m_audio;
+
+			_audioTaskLoaded = Task.GetLoadedScene(audio).Scene.IsValid();
+			if( _audioTaskLoaded )
+				return;
+
+			source.ULoadTask( audio );
 			Task.OnTaskLoaded += OnAudioTaskLoaded;
 		}
 
-		private static void TryLoadBlockMeshTask(UBehaviour source)
+		private static void UnloadAudioTask( this UBehaviour source, LevelData of )
 		{
+			var audio = of.m_audio;
+
+			source.UUnloadTask( audio );
+		}
+
+		private static void TryLoadBlockMeshTask( this UBehaviour source )
+		{
+			
 			if( CanLoadBlockMesh )
 			{
-				_blockMeshTaskLoaded = false;
-				source.ULoadTask( m_currentLevel.m_blockMeshEnvironment );
+				var blockMesh = s_currentLevel.m_blockMeshEnvironment;
+
+				_blockMeshTaskLoaded = Task.GetLoadedScene(blockMesh).Scene.IsValid();
+				if( _blockMeshTaskLoaded )
+					return;
+
+				source.ULoadTask( blockMesh );
 				Task.OnTaskLoaded += OnBlockMeshTaskLoaded;
+				return;
 			}
 
 			_blockMeshTaskLoaded = true;
 		}
 
-		private static void TryLoadArtTask( UBehaviour source )
+		private static void UnloadBlockMeshTask( this UBehaviour source, LevelData of )
+		{
+			var blockMesh = of.m_blockMeshEnvironment;
+
+			source.UUnloadTask( blockMesh );
+		}
+
+		private static void TryLoadArtTask( this UBehaviour source )
 		{
 			if( CanLoadArt )
 			{
-				_artTaskLoaded = false;
-				source.ULoadTask( m_currentLevel.m_artEnvironment );
+				var art = s_currentLevel.m_artEnvironment;
+				_artTaskLoaded = Task.GetLoadedScene( art ).Scene.IsValid();
+
+				if( _artTaskLoaded )
+					return;
+
+				source.ULoadTask( s_currentLevel.m_artEnvironment );
 				Task.OnTaskLoaded += OnArtTaskLoaded;
+				return;
 			}
 
 			_artTaskLoaded = true;
 		}
 
-		private static void LoadGameplayTask( UBehaviour source, int index )
+		private static void UnloadArtTask( this UBehaviour source, LevelData of )
 		{
-			var tasks = m_currentLevel.m_gameplayTasks;
-			if( !tasks.GreaterThan( index ) ) return;
+			var art = of.m_artEnvironment;
 
-			var current = tasks[index];
+			source.UUnloadTask( art );
+		}
 
-			_currentTaskIndex = index;
-			_gameplayTaskLoaded = false;
-			source.ULoadTask( current );
-			Task.OnTaskLoaded += OnGameplayTaskLoaded;
+		private static void UnloadGameplayTasks( this UBehaviour source, LevelData of )
+		{
+			var tasks = of.m_gameplayTasks;
+
+			foreach( var task in tasks )
+				source.UUnloadTask( task );
+
+			_gameplayTaskRequestedAmount = 0;
+			_gameplayTaskLoadedAmount = 0;
 		}
 
 		private static void OnAudioTaskLoaded( TaskData audio )
@@ -295,7 +244,7 @@ namespace Universe.SceneTask.Runtime
 			if( !IsFullyLoaded )
 				return;
 
-			OnLevelLoaded?.Invoke( m_currentLevel );
+			OnLevelLoaded?.Invoke( s_currentLevel );
 		}
 
 		private static void OnBlockMeshTaskLoaded( TaskData environment )
@@ -310,7 +259,7 @@ namespace Universe.SceneTask.Runtime
 			if( !IsFullyLoaded )
 				return;
 
-			OnLevelLoaded?.Invoke( m_currentLevel );
+			OnLevelLoaded?.Invoke( s_currentLevel );
 		}
 
 		private static void OnArtTaskLoaded( TaskData environment )
@@ -325,23 +274,22 @@ namespace Universe.SceneTask.Runtime
 			if( !IsFullyLoaded )
 				return;
 
-			OnLevelLoaded?.Invoke( m_currentLevel );
+			OnLevelLoaded?.Invoke( s_currentLevel );
 		}
 
 		private static void OnGameplayTaskLoaded( TaskData gameplay )
 		{
-			var current = m_currentLevel.m_gameplayTasks[_currentTaskIndex];
+			_gameplayTaskLoadedAmount++;
 
-			if( !gameplay.Equals( current ) )
+			if( !AreAllGameplayLoaded )
 				return;
 
-			_gameplayTaskLoaded = true;
 			Task.OnTaskLoaded -= OnGameplayTaskLoaded;
 
 			if( !IsFullyLoaded )
 				return;
 
-			OnLevelLoaded?.Invoke( m_currentLevel );
+			OnLevelLoaded?.Invoke( s_currentLevel );
 		}
 
 		private static bool IsCurrentAudioEquals( TaskData to )
@@ -380,17 +328,24 @@ namespace Universe.SceneTask.Runtime
 			return currentAssetReference.Equals( otherAssetReference );
 		}
 
+		private static bool AreAllGameplayLoaded => 
+			_gameplayTaskLoadedAmount == _gameplayTaskRequestedAmount;
+
+		private static bool IsSubscribed =>
+			Task.OnTaskLoaded.GetInvocationList().Length > 0;
+
 		#endregion
 
 
 		#region Private
 
-		private static bool HasCurrentLevel => m_currentLevel;
+		private static bool HasCurrentLevel => s_currentLevel;
 
 		private static bool _audioTaskLoaded;
 		private static bool _blockMeshTaskLoaded;
 		private static bool _artTaskLoaded;
-		private static bool _gameplayTaskLoaded;
+		private static int _gameplayTaskLoadedAmount;
+		private static int _gameplayTaskRequestedAmount;
 
 		private static Environment _currentEnvironment;
 		private static int _currentTaskIndex;

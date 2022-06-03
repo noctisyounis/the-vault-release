@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Universe
 {
-    public abstract class FactBase : ScriptableObject
+    public abstract class FactBase : UniverseScriptableObject
     {
         #region Public
         public new abstract string ToString();

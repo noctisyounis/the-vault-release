@@ -5,7 +5,7 @@ using static Universe.TextServices;
 
 namespace Universe
 {
-    public class FontSettings : ScriptableObject
+    public class FontSettings : UniverseScriptableObject
     {
         #region Public
 

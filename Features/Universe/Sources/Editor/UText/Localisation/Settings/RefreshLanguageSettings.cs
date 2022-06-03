@@ -10,7 +10,7 @@ using static UnityEngine.Debug;
 
 namespace Universe.Editor
 {
-    public class RefreshLanguageSettings : ScriptableObject
+    public class RefreshLanguageSettings : UniverseScriptableObject
     {
 
         #region Public Members

@@ -9,40 +9,26 @@ namespace Universe.SceneTask.Runtime
 
 		public LevelData m_level1;
 		public LevelData m_level2;
+		public CheckpointData m_runtimeCheckpoint;
 
 		#endregion
 
 
 		#region Main
 
-		private void OnGUI() 
+		private void OnGUI()
 		{
-			BeginHorizontal(Width(200.0f));
-			Label("Load Level 1 : ");
-			if(Button("Absolute"))	LoadLevelAbsolute(m_level1);	
-			if(Button("Optimized")) LoadLevelOptimized(m_level1);
+			BeginVertical();
+			Label( $"{Level.CurrentTaskIndex}" );
+			DrawModeToggle();
+			DrawLevelControl( m_level1 );
+			DrawLevelControl( m_level2 );
+
+			BeginHorizontal();
+			DrawSaveCheckpointButton();
+			DrawLoadCheckpointButton();
 			EndHorizontal();
-
-			BeginHorizontal(Width(200.0f));
-			Label("Load Level 2 : ");
-			if(Button("Absolute"))	LoadLevelAbsolute(m_level2);	
-			if(Button("Optimized")) LoadLevelOptimized(m_level2);
-			EndHorizontal();
-
-			if(Button($"Toggle to {(IsUsingArtEnvironment ? "block mesh" : "art")}"))
-			{
-				Level.CurrentEnvironment = IsUsingArtEnvironment ? Environment.BLOCK_MESH : Environment.ART;
-			}
-
-			BeginHorizontal(Width(200.0f));
-			if(Button("Load next")) LoadNextTask();
-			if(Button("Unload Previous")) UnloadPreviousTask();
-			if(Button("Load first")) LoadLevelTask(0);
-			if(Button("Reload Checkpoint")) ReloadCheckpoint();
-			EndHorizontal();
-
-			if(Button("Reload Level")) ReloadCurrentLevelAbsolute();
-			if(Button("Reset Gameplay")) ReloadCurrentLevelOptimized();
+			EndVertical();
 		}
 
 		public void Start()
@@ -53,9 +39,92 @@ namespace Universe.SceneTask.Runtime
 		#endregion
 
 
+		#region Utils
+
+		private void DrawModeToggle()
+		{
+			var next = (_currentMode == LoadLevelMode.LoadAll) ? LoadLevelMode.LoadMissingTasks : LoadLevelMode.LoadAll;
+
+			BeginHorizontal();
+			Label( $"Mode : {_currentMode}" );
+			if( Button( $"Toggle to {next}" ) )
+				_currentMode = next;
+			EndHorizontal();
+		}
+
+		private void DrawLevelControl( LevelData level )
+		{
+			var tasks = level.m_gameplayTasks;
+			var count = tasks.Count;
+
+			BeginHorizontal();
+			Label( $"{level.name}" );
+
+			if( Level.s_currentLevel && Level.s_currentLevel.Equals( level ) )
+			{
+				for( var i = 0; i < count; i++ )
+				{
+					var task = tasks[i];
+					DrawTaskButton( $"Task_{i + 1}", task );
+				}
+			}
+			else
+			{
+				for( var i = 0; i < count; i++ )
+				{
+					var task = tasks[i];
+					DrawLoadLevelButton( $"Task_{i + 1}", level, task );
+				}
+			}
+			
+			EndHorizontal();
+		}
+
+		private void DrawTaskButton( string name, TaskData task )
+		{
+			var loaded = Task.GetLoadedScene(task).Scene.IsValid();
+			var nextStatus = loaded ? "Unload" : "Load";
+
+			if( !Button( $"{nextStatus} {name}" ) )
+				return;
+
+			if( loaded )
+				UnloadGameplayTask( task );
+			else
+				LoadGameplayTask( task );
+		}
+
+		private void DrawLoadLevelButton( string name, LevelData level, TaskData task )
+		{
+			if( !Button( $"Load at {name}" ) )
+				return;
+
+			ChangeLevel( level, task, _currentMode );
+		}
+
+		private void DrawSaveCheckpointButton()
+		{
+			if( !Button( "Save State" ) )
+				return;
+
+			m_runtimeCheckpoint.m_level = Level.s_currentLevel;
+			m_runtimeCheckpoint.m_task = Level.CurrentGameplayTask;
+		}
+
+		private void DrawLoadCheckpointButton()
+		{
+			if( !Button( "Load State" ) )
+				return;
+
+			LoadCheckpoint( m_runtimeCheckpoint, _currentMode );
+		}
+
+		#endregion
+
+
 		#region Private 
 
-		private static bool IsUsingArtEnvironment => Level.CurrentEnvironment == Environment.ART;
+		private LoadLevelMode _currentMode = LoadLevelMode.LoadAll;
 
 		#endregion
 	}

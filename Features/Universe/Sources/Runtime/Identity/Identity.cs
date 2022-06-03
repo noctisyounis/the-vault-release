@@ -127,6 +127,7 @@ namespace Universe
         
         protected override void OnBeforeSerialize()
         {
+            base.OnBeforeSerialize();
     #if UNITY_EDITOR
             if (IsAssetOnDisk())
             {
@@ -145,6 +146,7 @@ namespace Universe
 
         protected override void OnAfterDeserialize()
         {
+            base.OnAfterDeserialize();
             if (serializedGuid != null && serializedGuid.Length == 16)
             {
                 guid = new System.Guid(serializedGuid);

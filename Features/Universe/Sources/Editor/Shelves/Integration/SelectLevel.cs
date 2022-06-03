@@ -62,10 +62,11 @@ namespace Universe.Toolbar.Editor
 				return true;
 
 			var settings    = USettingsHelper.GetSettings<LevelSettings>();
+			var checkpoint  = settings.m_editorCheckpoint; 
 			var level       = LoadAssetAtPath<LevelData>(levelPath);
 
-			settings.m_startingLevel = level;
-			settings.Save();
+			checkpoint.m_level = level;
+			settings.SaveAsset();
 
 			return true;
 		}

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Universe
 {
-    public class Expression : ScriptableObject
+    public class Expression : UniverseScriptableObject
     {
         public ScriptableObject m_firstOperand;
         public PropertyInfo _firstOperandProperty;

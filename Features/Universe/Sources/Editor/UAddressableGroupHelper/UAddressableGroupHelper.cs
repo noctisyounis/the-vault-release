@@ -7,7 +7,7 @@ using static UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject
 
 namespace Universe
 {
-	public class UAddressableGroupHelper : ScriptableObject
+	public class UAddressableGroupHelper : UniverseScriptableObject
 	{
 		#region Public 
 

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 832306289c24cdc45bab21626c0725f0, type: 3}
   m_Name: LevelSettings
   m_EditorClassIdentifier: 
-  m_startingLevel: {fileID: 11400000, guid: c572af7203360ea41abf7922b1c7eb6d, type: 2}
   m_startingEnvironment: 3
-  m_startingTask: 1
+  m_runtimeCheckpoint: {fileID: 11400000, guid: 0fb51dede8102d44196ab6ebb9e681bd, type: 2}
+  m_editorCheckpoint: {fileID: 11400000, guid: 3db53695d9984a946b06441a942250fa, type: 2}

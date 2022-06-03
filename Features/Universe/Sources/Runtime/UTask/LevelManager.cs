@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Universe.SceneTask.Runtime
 {
     public class LevelManager : UBehaviour
@@ -9,7 +5,6 @@ namespace Universe.SceneTask.Runtime
         #region Exposed
 
         public LevelSettings m_settings;
-        private static LevelSettings s_settings;
         public static LevelSettings Settings => s_settings;
 
         #endregion
@@ -24,6 +19,13 @@ namespace Universe.SceneTask.Runtime
 
             Level.CurrentEnvironment = Settings.m_startingEnvironment;
         }
+
+        #endregion
+
+
+        #region Private
+
+        private static LevelSettings s_settings;
 
         #endregion
     }

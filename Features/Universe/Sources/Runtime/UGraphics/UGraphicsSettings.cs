@@ -8,7 +8,7 @@ using static UnityEditor.AssetDatabase;
 
 namespace Universe
 {
-    public class UGraphicsSettings : USettings
+    public class UGraphicsSettings : UniverseScriptableObject
     {
         #region Public 
 

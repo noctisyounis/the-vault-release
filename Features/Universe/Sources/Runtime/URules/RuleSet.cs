@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Universe
 {
-    public class URuleSet : ScriptableObject
+    public class URuleSet : UniverseScriptableObject
     {
         public List<Rule> Rules;
     }

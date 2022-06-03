@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Universe.SceneTask.Runtime
 {
-	public class LevelData : ScriptableObject
+	public class LevelData : UniverseScriptableObject
 	{
 		#region Exposed
 
@@ -13,5 +13,21 @@ namespace Universe.SceneTask.Runtime
 		public List<TaskData> m_gameplayTasks = new();
 
 		#endregion
-	}
+
+
+		#region Public API
+
+		public int IndexOf( TaskData gameplayTask )
+			=> m_gameplayTasks.IndexOf( gameplayTask );
+
+		public TaskData GetGameplayTask( int index )
+		{
+			if( !m_gameplayTasks.GreaterThan( index ) )
+				return null;
+
+			return m_gameplayTasks[index];
+		}
+
+        #endregion
+    }
 }

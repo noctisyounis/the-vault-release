@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Universe.Toolbar.Editor
 {
-    public class CreateLevelSettings : USettings
+    public class CreateLevelSettings : UniverseScriptableObject
 	{
         #region Exposed
 

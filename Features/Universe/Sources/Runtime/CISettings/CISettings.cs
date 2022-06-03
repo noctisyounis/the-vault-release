@@ -4,7 +4,7 @@ using Universe;
 
 namespace Universe
 {
-    public class CISettings : USettings
+    public class CISettings : UniverseScriptableObject
     {
         #region Exposed
 

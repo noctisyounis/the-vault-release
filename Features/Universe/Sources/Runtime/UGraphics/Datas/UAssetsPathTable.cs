@@ -11,7 +11,7 @@ using static UnityEditor.AssetDatabase;
 
 namespace Universe
 {
-    public class UAssetsPathTable : ScriptableObject
+    public class UAssetsPathTable : UniverseScriptableObject
     {
         #region Public
 

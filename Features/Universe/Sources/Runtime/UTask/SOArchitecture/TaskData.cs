@@ -3,7 +3,7 @@ using UnityEngine.AddressableAssets;
 
 namespace Universe.SceneTask.Runtime
 {
-    public class TaskData : ScriptableObject
+    public class TaskData : UniverseScriptableObject
     {
         #region Exposed
 

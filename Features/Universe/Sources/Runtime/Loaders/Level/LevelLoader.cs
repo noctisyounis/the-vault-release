@@ -43,7 +43,7 @@ namespace Universe.SceneTask.Runtime
         
         public void Load()
         {
-            LoadLevelAbsolute(m_levelData);
+            ChangeLevel(m_levelData);
             Verbose($"{m_levelData.name} Loaded");
         }
         

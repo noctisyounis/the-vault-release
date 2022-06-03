@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Universe
 {
-    public class Rule : ScriptableObject
+    public class Rule : UniverseScriptableObject
     {
         public List<Expression> Expressions;
     }

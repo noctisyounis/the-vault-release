@@ -1,16 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Universe.SceneTask.Runtime
 {
-    public class LevelSettings : USettings
+    public class LevelSettings : UniverseScriptableObject
     {
         #region Exposed
 
-        public LevelData m_startingLevel;
         public Environment m_startingEnvironment;
-        public int m_startingTask;
+        public CheckpointData m_runtimeCheckpoint;
+        public CheckpointData m_editorCheckpoint;
+
+        #endregion
+
+
+        #region Main
+
+        public override void SaveAsset()
+        {
+            base.SaveAsset();
+#if UNITY_EDITOR
+            m_runtimeCheckpoint.SaveAsset();
+            m_editorCheckpoint.SaveAsset();
+#endif
+        }
 
         #endregion
     }
