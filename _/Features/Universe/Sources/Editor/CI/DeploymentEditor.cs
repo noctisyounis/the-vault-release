@@ -79,6 +79,7 @@ namespace Universe.Editor
         {
             _sw = AppendText( BUILD_LOG_PATH );
             _sw.WriteLine( $"[{Now}] PC Build Requested" );
+            _sw.WriteLine( $"[{Now}] PC Build V{PlayerSettings.bundleVersion}" );
             UpdateRuntimeVersion();
             _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
@@ -377,7 +378,7 @@ namespace Universe.Editor
 
             }
             Log( "Version Incremented to " + versionBundleText );
-            _sw.WriteLine( $"[{Now}] Version Incremented to {versionBundleText}" );
+            //_sw.WriteLine( $"[{Now}] Version Incremented to {versionBundleText}" );
 
             androidVersionBundleCode++;
             _lastVersion = versionBundleText;
@@ -385,7 +386,7 @@ namespace Universe.Editor
             PlayerSettings.bundleVersion = versionBundleText;
             PlayerSettings.Android.bundleVersionCode = androidVersionBundleCode;
 
-            _sw.WriteLine( $"[{Now}] Bundle Version Incremented to {androidVersionBundleCode}" );
+            //_sw.WriteLine( $"[{Now}] Bundle Version Incremented to {androidVersionBundleCode}" );
             Log( "Bundle Version Code Incremented To " + androidVersionBundleCode );
 
             WriteAllText( buildVersionPath, string.Empty );
