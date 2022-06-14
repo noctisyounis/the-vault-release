@@ -13,7 +13,7 @@ using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
 using static Universe.Editor.UGroupHelper;
-using static Universe.Editor.USettingsHelper;
+using static Universe.Editor.USettings;
 using static Symlink.Editor.SymlinkEditor;
 
 namespace Universe.Editor
