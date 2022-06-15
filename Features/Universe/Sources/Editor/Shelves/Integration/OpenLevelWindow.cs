@@ -285,7 +285,7 @@ namespace Universe.Toolbar.Editor
 		private static void SetStyleTo( OpenLevelWindow window )
 		{
 			var windowRect = window.position;
-			var minSize = new Vector2(300.0f, 507.0f);
+			var minSize = new Vector2(300.0f, 550.0f);
 
 			window.titleContent = new GUIContent( "Select Level To Open" );
 			window._currentEnvironment = BOTH;

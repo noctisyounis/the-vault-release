@@ -193,8 +193,8 @@ namespace Universe
         protected void LoadCheckpoint(CheckpointData checkpoint, LoadLevelMode mode = LoadLevelMode.LoadAll) =>
             this.ULoadCheckpoint(checkpoint, mode);
 
-        protected void ReloadCheckpoint() =>
-            this.UReloadCheckpoint();
+        protected void ReloadCheckpoint(LoadLevelMode mode = LoadLevelMode.LoadAll) =>
+            this.UReloadCheckpoint(mode);
 
         #endregion
 
