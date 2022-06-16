@@ -331,9 +331,21 @@ namespace Universe.SceneTask.Runtime
 		private static bool AreAllGameplayLoaded => 
 			_gameplayTaskLoadedAmount == _gameplayTaskRequestedAmount;
 
-		private static bool IsSubscribed =>
-			Task.OnTaskLoaded.GetInvocationList().Length > 0;
+		private static bool IsSubscribed
+		{
+			get
+			{
+				var action = Task.OnTaskLoaded;
+				if( action is null )
+					return false;
 
+				var invocations = action.GetInvocationList();
+				if( invocations is null )
+					return false;
+
+				return invocations.Length > 0;
+			}
+		}
 		#endregion
 
 
