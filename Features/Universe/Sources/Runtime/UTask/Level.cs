@@ -129,7 +129,7 @@ namespace Universe.SceneTask.Runtime
 			_gameplayTaskRequestedAmount++;
 			source.ULoadTask( task );
 
-			if( IsSubscribed )
+			if( IsGameplaySubscribed )
 				return;
 			Task.OnTaskLoaded += OnGameplayTaskLoaded;
 		}
@@ -331,7 +331,7 @@ namespace Universe.SceneTask.Runtime
 		private static bool AreAllGameplayLoaded => 
 			_gameplayTaskLoadedAmount == _gameplayTaskRequestedAmount;
 
-		private static bool IsSubscribed
+		private static bool IsGameplaySubscribed
 		{
 			get
 			{
@@ -343,7 +343,17 @@ namespace Universe.SceneTask.Runtime
 				if( invocations is null )
 					return false;
 
-				return invocations.Length > 0;
+				var length = invocations.Length;
+
+				for( var i = 0; i < length; i++ )
+				{
+					var invocation = invocations[i];
+
+					if( invocation.Method.Name.Equals( nameof( OnGameplayTaskLoaded ) ) )
+						return true;
+				}
+
+				return false;
 			}
 		}
 		#endregion
