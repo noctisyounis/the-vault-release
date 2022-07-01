@@ -26,7 +26,7 @@ namespace Universe.DebugWatch.Runtime
 
         #region Main
 
-        public void OnClick() => m_instance.Execute(m_path);
+        public void OnClick() => s_instance.Execute(m_path);
         public void OnCancel() => m_owner.ReturnToParent();
 
         #endregion
@@ -36,6 +36,7 @@ namespace Universe.DebugWatch.Runtime
 
         public void DisplayArrow() => m_arrowHover.gameObject.SetActive(true);
         public void HideArrow() => m_arrowHover.gameObject.SetActive(false);
+        public void DisplayTooltip() => s_instance.DisplayTooltip( m_path );
 
         #endregion
     }

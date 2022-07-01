@@ -104,7 +104,7 @@ namespace Universe.Toolbar.Editor
                 SelectTask.Draw( " On: ", "PlaymodeLevelPath", true );
             }
             CreateLevelButton.Draw();
-            AddTaskToLevel.Draw();
+            AddSituationToLevel.Draw();
         }
 
         static void DrawLevelLoading()

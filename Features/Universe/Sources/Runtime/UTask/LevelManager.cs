@@ -17,7 +17,7 @@ namespace Universe.SceneTask.Runtime
             base.Awake();
             s_settings = m_settings;
 
-            Level.CurrentEnvironment = Settings.m_startingEnvironment;
+            Situation.CurrentEnvironment = Settings.m_startingEnvironment;
         }
 
         #endregion

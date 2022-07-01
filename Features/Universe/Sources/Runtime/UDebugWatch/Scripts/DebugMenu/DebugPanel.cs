@@ -86,7 +86,7 @@ namespace Universe.DebugWatch.Runtime
         {
             if (!HasParent) return;
 
-            m_instance.Execute(ParentPath);
+            s_instance.Execute(ParentPath);
         }
         public void SelectNextButton()
         {
@@ -129,6 +129,7 @@ namespace Universe.DebugWatch.Runtime
 
             _currentButton = currentChild.GetComponent<DebugButton>();
             _currentButton.DisplayArrow();
+            _currentButton.DisplayTooltip();
         }
 
         #endregion
@@ -189,7 +190,7 @@ namespace Universe.DebugWatch.Runtime
             }
 
             ResponsiveMenu();
-            DebugMenuRoot.m_instance.GeneratePanel(otherPanel, m_depth + 1);
+            DebugMenuRoot.s_instance.GeneratePanel(otherPanel, m_depth + 1);
         }
 
         private void InitializeNewButton(GameObject buttonObject, KeyValuePair<string, string> item)

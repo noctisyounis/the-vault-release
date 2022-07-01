@@ -184,11 +184,21 @@ namespace Universe
         
         protected bool GetKeyUp(UKeyCode keyCode) => 
             this.UGetKeyUp(keyCode);
-        
+
         #endregion
-        
+
 
         #region Checkpoint
+
+        protected void SaveCheckpoint() =>
+            this.USaveCheckpoint();
+        protected void SaveCheckpoint(CheckpointData checkpoint) =>
+            this.USaveCheckpoint(checkpoint);
+        protected void SaveCheckpoint(CheckpointData checkpoint, LevelData level, SituationData situation) =>
+            this.USaveCheckpoint(checkpoint, level, situation);
+
+        protected void LoadCheckpoint(LoadLevelMode mode = LoadLevelMode.LoadAll) =>
+            this.ULoadCheckpoint(mode);
 
         protected void LoadCheckpoint(CheckpointData checkpoint, LoadLevelMode mode = LoadLevelMode.LoadAll) =>
             this.ULoadCheckpoint(checkpoint, mode);
@@ -201,11 +211,11 @@ namespace Universe
 
         #region Level
 
-        protected void LoadLevel( LevelData level, TaskData task = null) =>
-            this.ULoadLevel( level, task );
+        protected void LoadLevel( LevelData level, SituationData situation = null) =>
+            this.ULoadLevel( level, situation );
 
-        protected void ChangeLevel( LevelData level, TaskData task = null, LoadLevelMode mode = LoadLevelMode.LoadAll ) =>
-            this.UChangeLevel( level, task, mode );
+        protected void ChangeLevel( LevelData level, SituationData situation = null, LoadLevelMode mode = LoadLevelMode.LoadAll ) =>
+            this.UChangeLevel( level, situation, mode );
 
         protected void ReloadLevel( LoadLevelMode mode = LoadLevelMode.LoadAll ) =>
             this.UReloadLevel( mode );       
@@ -213,12 +223,16 @@ namespace Universe
         protected void UnloadLevel(LevelData level) =>
             this.UUnloadLevel(level);
 
+        #endregion
         
-        protected void LoadGameplayTask( TaskData task ) =>
-            this.ULoadGameplayTask( task );
+        
+        #region Situation
+        
+        protected void LoadSituation( SituationData situation ) =>
+            this.ULoadSituation( situation );
 
-        protected void UnloadGameplayTask( TaskData task ) =>
-            this.UUnloadGameplayTask( task );
+        protected void UnloadSituation( SituationData situation ) =>
+            this.UUnloadSituation( situation );
 
         #endregion
 

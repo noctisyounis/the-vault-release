@@ -1,13 +1,10 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using Universe.Editor;
-using Universe.SceneTask;
 using Universe.SceneTask.Runtime;
 
 using static UnityEditor.EditorGUIUtility;
-
+using static UnityEditor.EditorGUILayout;
 
 namespace Universe.Toolbar.Editor
 {
@@ -15,39 +12,40 @@ namespace Universe.Toolbar.Editor
 	{
 		#region Public
 
+		public static float m_fieldSize = 20.0f;
+
 		public static CreateLevelSettings m_settings;
 
-		public string m_editorWindowText = "Type your level's name: ";
 		public string m_newLevelName 	= "NewLevel";
+		public TaskData m_playerTask;
 		public TaskData m_audioTask;
-		public TaskData m_blockMeshTask;
-		public TaskData m_artTask;
+		public SituationInfos m_initialSituation;
 
 		#endregion
 
 
 		#region Main
 	
-		void OnGUI()
+		public void OnGUI()
         {
-            var preferedMaxSize = maxSize;
             var preferedMinSize = minSize;
+            var preferedMaxSize = maxSize;
 
-            preferedMaxSize.y = 105.0f;
-            preferedMinSize.y = 105.0f;
+            preferedMinSize.y = 115.0f;
+            preferedMaxSize.y = 115.0f;
 
-            m_newLevelName = EditorGUILayout.TextField(m_editorWindowText, m_newLevelName);
+            m_newLevelName = TextField("Name : ", m_newLevelName);
 
-            DrawAudioFields(ref preferedMaxSize, ref preferedMinSize);
-			DrawBlockMeshFields( ref preferedMaxSize, ref preferedMinSize);
-            DrawArtFields(ref preferedMaxSize, ref preferedMinSize);
+            DrawTaskField("Player", ref m_playerTask, ref _useExistingPlayer, ref preferedMinSize, ref preferedMaxSize);
+            DrawTaskField("Audio", ref m_audioTask, ref _useExistingAudio, ref preferedMinSize, ref preferedMaxSize);
+			CreateSituationWindow.DrawForm("Initial Situation", ref m_initialSituation, ref _useExistingBlockMesh, ref _useExistingArt, ref preferedMinSize, ref preferedMaxSize);
 
             GUILayout.BeginHorizontal();
             GUI.enabled = CanCreate();
             if (GUILayout.Button("Create"))
             {
-                CreateLevelHelper.NewLevel(m_newLevelName, m_audioTask, m_blockMeshTask, m_artTask);
-				ReloadTasks();
+	            m_initialSituation.m_isCheckpoint = true;
+                CreateLevelHelper.CreateLevel(m_newLevelName, m_audioTask, m_playerTask, m_initialSituation);
                 GUIUtility.ExitGUI();
             }
             GUI.enabled = true;
@@ -59,64 +57,32 @@ namespace Universe.Toolbar.Editor
             }
             GUILayout.EndHorizontal();
 
-            maxSize = preferedMaxSize;
             minSize = preferedMinSize;
+            maxSize = preferedMaxSize;
         }
 
-		private void DrawAudioFields( ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize )
+		private static void DrawTaskField(string label, ref TaskData task, ref bool useExisting, ref Vector2 preferedMinSize, ref Vector2 preferedMaxSize )
 		{
-			_useExistingAudio = EditorGUILayout.Toggle( "Use existing audio : ", _useExistingAudio );
+			useExisting = Toggle( $"Use existing {label} : ", useExisting );
+			preferedMinSize.y += m_fieldSize;
+			preferedMaxSize.y += m_fieldSize;
 
-			if( _useExistingAudio )
+			if( useExisting )
 			{
-				m_blockMeshTask = (TaskData)EditorGUILayout.ObjectField( "Audio : ", m_blockMeshTask, typeof( TaskData ), false );
-
-				preferedMaxSize.y += 20.0f;
-				preferedMinSize.y += 20.0f;
+				task = (TaskData)ObjectField( $"\t{label} : ", task, typeof( TaskData ), false );
+				preferedMinSize.y += m_fieldSize;
+				preferedMaxSize.y += m_fieldSize;
 				return;
 			}
 
-			m_audioTask = null;
+			task = null;
 		}
-
-		private void DrawBlockMeshFields( ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize )
-		{
-			_useExistingBlockMesh = EditorGUILayout.Toggle( "Use existing block mesh : ", _useExistingBlockMesh );
-
-			if( _useExistingBlockMesh )
-			{
-				m_blockMeshTask = (TaskData)EditorGUILayout.ObjectField( "Block mesh : ", m_blockMeshTask, typeof( TaskData ), false );
-
-				preferedMaxSize.y += 20.0f;
-				preferedMinSize.y += 20.0f;
-				return;
-			}
-
-			m_blockMeshTask = null;
-		}
-
-		private void DrawArtFields(ref Vector2 preferedMaxSize, ref Vector2 preferedMinSize)
-        {
-            _useExistingArt = EditorGUILayout.Toggle("Use existing art : ", _useExistingArt);
-
-            if (_useExistingArt)
-            {
-                m_artTask = (TaskData)EditorGUILayout.ObjectField("Art : ", m_artTask, typeof(TaskData), false);
-				
-                preferedMaxSize.y += 20.0f;
-                preferedMinSize.y += 20.0f;
-				return;
-			}
-			
-			m_artTask = null;
-        }
 
         public static void ShowLevelWindow()
         {
             var window	= CreateInstance<CreateLevelWindow>();
             var title	= new GUIContent("Create new level", IconContent(@"SceneSet Icon").image);
 
-            ReloadTasks();
 			LoadSettings();
 
             window.titleContent = title;
@@ -130,61 +96,33 @@ namespace Universe.Toolbar.Editor
 
         public bool CanCreate()
 		{
-			if(!IsUsingAnyExistingTask) 		return true;
-			if(IsUsingInvalidAudio) 			return false;
-			if(IsUsingInvalidBlockMesh) 		return false;
-			if(IsUsingInvalidArt) 				return false;
+			if(!IsUsingAnyExistingTask) return true;
+			if(IsUsingInvalidAudio) 	return false;
+			if(IsUsingInvalidPlayer)	return false;
+			if(IsUsingInvalidBlockMesh)	return false;
+			if(IsUsingInvalidArt)		return false;
 
 			return true;
 		}
 
-		private static void ReloadTasks()
-        {
-            _environmentTasks 	= FindEnvironmentTasks();
-            _taskNames 			= GetEnvironmentTaskNames();
-        }
-
-		public static List<TaskData> FindEnvironmentTasks()
-		{
-			var tasks = Resources.FindObjectsOfTypeAll<TaskData>().ToList();
-			var environmentTasks = tasks.FindAll((TaskData task) => task.m_priority == TaskPriority.ENVIRONMENT);
-
-			return environmentTasks;
-		}
-
-		public static List<string> GetEnvironmentTaskNames()
-		{
-			var names = new List<string>();
-
-			foreach(var task in _environmentTasks)
-			{
-				names.Add(task.name);
-			}
-
-			return names;
-		}
-
-		private static void LoadSettings()
-		{
+		private static void LoadSettings() =>
 			m_settings = USettingsHelper.GetSettings<CreateLevelSettings>();
-		}
 
-		public bool IsUsingAnyExistingTask 			=> _useExistingAudio || _useExistingArt || _useExistingBlockMesh;
+		public bool IsUsingAnyExistingTask 			=> _useExistingPlayer || _useExistingAudio || _useExistingBlockMesh || _useExistingArt;
 		public bool IsUsingInvalidAudio 			=> _useExistingAudio && !m_audioTask;
-		public bool IsUsingInvalidBlockMesh			=> _useExistingBlockMesh && !m_blockMeshTask;
-		public bool IsUsingInvalidArt 				=> _useExistingArt && !m_artTask;
+		public bool IsUsingInvalidPlayer			=> _useExistingPlayer && !m_playerTask;
+		public bool IsUsingInvalidBlockMesh			=> _useExistingBlockMesh && !m_initialSituation.m_blockMesh;
+		public bool IsUsingInvalidArt				=> _useExistingArt && !m_initialSituation.m_art;
 
 		#endregion
 
 		
 		#region Private
 
+		private bool _useExistingPlayer;
 		private bool _useExistingAudio;
 		private bool _useExistingBlockMesh;
 		private bool _useExistingArt;
-
-		private static List<TaskData> _environmentTasks;
-		private static List<string> _taskNames;
 
 		#endregion
 	}

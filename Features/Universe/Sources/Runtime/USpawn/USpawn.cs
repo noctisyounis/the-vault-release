@@ -127,6 +127,9 @@ namespace Universe
                 tr.localRotation = rotation;
                 tr.localScale = scale;
 
+                if( parent == null )
+                    ReleaseInstance( go.Result );
+
                 if(callback != null) callback(go.Result);
             };
         }

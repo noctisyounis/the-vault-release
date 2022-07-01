@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Universe.SceneTask.Runtime
 {
     public class CheckpointData : UniverseScriptableObject
@@ -9,7 +5,7 @@ namespace Universe.SceneTask.Runtime
         #region Exposed
 
         public LevelData m_level;
-        public TaskData m_task;
+        public SituationData m_situation;
 
         #endregion
     }

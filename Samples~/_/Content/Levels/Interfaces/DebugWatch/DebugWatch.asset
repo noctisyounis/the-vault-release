@@ -17,6 +17,5 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  m_priority: 4000
+  m_priority: 3000
   m_canBeLoadOnlyOnce: 1
-  m_alwaysUpdated: 0

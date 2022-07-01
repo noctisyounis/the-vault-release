@@ -1,6 +1,5 @@
 using UnityEditor.SceneTemplate;
 using UnityEditor.AddressableAssets.Settings;
-using UnityEngine;
 
 namespace Universe.Toolbar.Editor
 {
@@ -9,8 +8,10 @@ namespace Universe.Toolbar.Editor
         #region Exposed
 
         public string m_levelFolder = "Assets/_/Content/Levels/Gameplay";
+        public string m_playerTaskName = "Player";
         public string m_audioTaskName = "Audio";
-		public string m_blockMeshTaskName = "BlockMesh";
+        public string m_situationName = "Situations";
+        public string m_blockMeshTaskName = "BlockMesh";
 		public string m_artTaskName = "Art";
 		public string m_gameplayTaskName = "Gameplay";
 		public string m_addressableGroupHelperName = "LevelHelper";

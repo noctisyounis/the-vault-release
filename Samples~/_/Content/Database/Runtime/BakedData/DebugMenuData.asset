@@ -34,13 +34,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 5
+      Data: 17
     - Name: 
       Entry: 7
       Data: 
     - Name: $k
       Entry: 1
-      Data: Vision.../Collider
+      Data: Memory.../Render Profiler
     - Name: $v
       Entry: 7
       Data: 2|System.Reflection.RuntimeMethodInfo, mscorlib
@@ -55,7 +55,7 @@ MonoBehaviour:
       Data: 
     - Name: methodName
       Entry: 1
-      Data: ToggleCollider
+      Data: ToggleRenderProfiler
     - Name: signature
       Entry: 7
       Data: 4|System.Type[], mscorlib
@@ -79,7 +79,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: Vision.../Bounding Box
+      Data: Memory.../Memory Profiler
     - Name: $v
       Entry: 7
       Data: 5|System.Reflection.RuntimeMethodInfo, mscorlib
@@ -88,7 +88,7 @@ MonoBehaviour:
       Data: 3
     - Name: methodName
       Entry: 1
-      Data: ToggleMeshBoundingBox
+      Data: ToggleMemoryProfiler
     - Name: signature
       Entry: 7
       Data: 6|System.Type[], mscorlib
@@ -112,7 +112,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: Memory.../Render Profiler
+      Data: Profile.../Framerate Counter
     - Name: $v
       Entry: 7
       Data: 7|System.Reflection.RuntimeMethodInfo, mscorlib
@@ -121,7 +121,7 @@ MonoBehaviour:
       Data: 3
     - Name: methodName
       Entry: 1
-      Data: ToggleRenderProfiler
+      Data: ToggleFPS
     - Name: signature
       Entry: 7
       Data: 8|System.Type[], mscorlib
@@ -145,7 +145,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: Memory.../Memory Profiler
+      Data: Vision.../World Tangents
     - Name: $v
       Entry: 7
       Data: 9|System.Reflection.RuntimeMethodInfo, mscorlib
@@ -154,7 +154,7 @@ MonoBehaviour:
       Data: 3
     - Name: methodName
       Entry: 1
-      Data: ToggleMemoryProfiler
+      Data: ToggleWorldTangents
     - Name: signature
       Entry: 7
       Data: 10|System.Type[], mscorlib
@@ -178,7 +178,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: Profile.../Framerate Counter
+      Data: Vision.../World Normals
     - Name: $v
       Entry: 7
       Data: 11|System.Reflection.RuntimeMethodInfo, mscorlib
@@ -187,10 +187,406 @@ MonoBehaviour:
       Data: 3
     - Name: methodName
       Entry: 1
-      Data: ToggleFPS
+      Data: ToggleWorldNormals
     - Name: signature
       Entry: 7
       Data: 12|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Wireframe
+    - Name: $v
+      Entry: 7
+      Data: 13|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleWireframe
+    - Name: signature
+      Entry: 7
+      Data: 14|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Vertex Color RGB
+    - Name: $v
+      Entry: 7
+      Data: 15|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleVertexColorRGB
+    - Name: signature
+      Entry: 7
+      Data: 16|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Vertex Color R
+    - Name: $v
+      Entry: 7
+      Data: 17|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleVertexColorR
+    - Name: signature
+      Entry: 7
+      Data: 18|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Vertex Color G
+    - Name: $v
+      Entry: 7
+      Data: 19|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleVertexColorG
+    - Name: signature
+      Entry: 7
+      Data: 20|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Vertex Color B
+    - Name: $v
+      Entry: 7
+      Data: 21|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleVertexColorB
+    - Name: signature
+      Entry: 7
+      Data: 22|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Vertex Color A
+    - Name: $v
+      Entry: 7
+      Data: 23|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleVertexColorA
+    - Name: signature
+      Entry: 7
+      Data: 24|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../UV1 Checker
+    - Name: $v
+      Entry: 7
+      Data: 25|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleUV1Checker
+    - Name: signature
+      Entry: 7
+      Data: 26|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../UV0 Checker
+    - Name: $v
+      Entry: 7
+      Data: 27|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleUV0Checker
+    - Name: signature
+      Entry: 7
+      Data: 28|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Shadow Cascades
+    - Name: $v
+      Entry: 7
+      Data: 29|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleShadowCascades
+    - Name: signature
+      Entry: 7
+      Data: 30|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Overdraw
+    - Name: $v
+      Entry: 7
+      Data: 31|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleOverdraw
+    - Name: signature
+      Entry: 7
+      Data: 32|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Collider
+    - Name: $v
+      Entry: 7
+      Data: 33|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleCollider
+    - Name: signature
+      Entry: 7
+      Data: 34|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Vision.../Bounding Box
+    - Name: $v
+      Entry: 7
+      Data: 35|System.Reflection.RuntimeMethodInfo, mscorlib
+    - Name: declaringType
+      Entry: 9
+      Data: 3
+    - Name: methodName
+      Entry: 1
+      Data: ToggleMeshBoundingBox
+    - Name: signature
+      Entry: 7
+      Data: 36|System.Type[], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -212,10 +608,22 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  m_methodsCount: 5
+  m_methodsCount: 17
   _methodNames:
-  - ToolManager/ToggleCollider
-  - ToolManager/ToggleMeshBoundingBox
   - ToolManager/ToggleRenderProfiler
   - ToolManager/ToggleMemoryProfiler
   - ToolManager/ToggleFPS
+  - ToolManager/ToggleWorldTangents
+  - ToolManager/ToggleWorldNormals
+  - ToolManager/ToggleWireframe
+  - ToolManager/ToggleVertexColorRGB
+  - ToolManager/ToggleVertexColorR
+  - ToolManager/ToggleVertexColorG
+  - ToolManager/ToggleVertexColorB
+  - ToolManager/ToggleVertexColorA
+  - ToolManager/ToggleUV1Checker
+  - ToolManager/ToggleUV0Checker
+  - ToolManager/ToggleShadowCascades
+  - ToolManager/ToggleOverdraw
+  - ToolManager/ToggleCollider
+  - ToolManager/ToggleMeshBoundingBox

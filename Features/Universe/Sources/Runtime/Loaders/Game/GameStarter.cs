@@ -54,9 +54,9 @@ namespace Universe.SceneTask.Runtime
 
             var checkpoint = CheckpointManager.EditorCheckPoint;
             var startLevelData = checkpoint.m_level;
-            var startLevelTask = checkpoint.m_task;
+            var startLevelSituation = checkpoint.m_situation;
 
-            ChangeLevel(startLevelData, startLevelTask);
+            ChangeLevel(startLevelData, startLevelSituation);
 
             return;
 #else

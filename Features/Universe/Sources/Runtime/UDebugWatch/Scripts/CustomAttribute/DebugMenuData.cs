@@ -31,6 +31,15 @@ namespace Universe.DebugWatch.Runtime
 
         #region Main
 
+        public string GetTooltip( string path )
+        {
+            if(!IsValidMethod(path)) return string.Empty;
+
+            var method = Methods[path];
+
+            return method.GetCustomAttribute<DebugMenuAttribute>().Tooltip;
+        }
+
         public void InvokeMethod(string path)
         {
             if (!IsValidMethod(path)) return;
@@ -128,7 +137,7 @@ namespace Universe.DebugWatch.Runtime
             Methods[path];
 
         private bool IsValidMethod(string path) => 
-            (Methods.ContainsKey(path) || Methods[path].IsPrivate);
+            (Methods.ContainsKey(path) && !Methods[path].IsPrivate);
         private static bool IsQuickMenu(MethodInfo method) =>
             method.GetCustomAttribute<DebugMenuAttribute>().IsQuickMenu;
 

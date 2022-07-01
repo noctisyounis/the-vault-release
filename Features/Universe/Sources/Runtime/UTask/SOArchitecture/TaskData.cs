@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Universe.SceneTask.Runtime
@@ -8,9 +7,8 @@ namespace Universe.SceneTask.Runtime
         #region Exposed
 
         public AssetReference m_assetReference;
-        public TaskPriority m_priority = TaskPriority.PERSISTENT;
+        public TaskPriority m_priority = TaskPriority.ALWAYS_UPDATE;
         public bool m_canBeLoadOnlyOnce = true;
-        public bool m_alwaysUpdated = false;
 
         #endregion
 

@@ -49,6 +49,7 @@ namespace Universe
 
         #endregion
         
+
         #region Main
         
         private void ConvertAssetReferenceToPreferredGraphicTier()

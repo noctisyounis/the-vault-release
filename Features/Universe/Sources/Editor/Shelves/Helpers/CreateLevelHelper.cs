@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.IO;
-using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.SceneTemplate;
 using UnityEditor.AddressableAssets.Settings;
-using Unity.EditorCoroutines.Editor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Universe.SceneTask;
@@ -29,45 +26,40 @@ namespace Universe.Toolbar.Editor
 		#region Events
 
 		public static Action OnLevelCreated;
-		public static Action OnTaskAdded;
+		public static Action OnSituationAdded;
 
 		#endregion
 
 
 		#region Main
 
-		public static void NewLevel(string name, TaskData audioData, TaskData blockData, TaskData artData)
-        {
-			if(_isGenerating)
-			{
-				LogWarning("Another level is being generated, wait for its completion before creating another");
-				return;
-			}
-            ReadSettings();
-
-            _levelName = name;
-            _defaultLevelFolder = Join(_targetFolder, _levelName);
-            _currentLevelFolder = _defaultLevelFolder;
-
-            GenerateHierarchy();
-            GenerateAaGroup();
-            EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAssets(audioData, blockData, artData));
-        }
-
-		public static void AddTask(LevelData level)
+		public static void CreateLevel(string name, TaskData playerData, TaskData audioData, SituationInfos initialSituation)
 		{
-			if(_isGenerating)
+			if (_isGenerating)
 			{
 				LogWarning("Another level is being generated, wait for its completion before creating another");
 				return;
 			}
 
 			ReadSettings();
+
+			_levelName = name;
+			_defaultLevelFolder = Join(_targetFolder, _levelName);
+			_currentLevelFolder = _defaultLevelFolder;
+
+			GenerateHierarchy(!playerData, !audioData);
+			GenerateAaGroup();
+			GenerateAssets(playerData, audioData, initialSituation);
+		}
+
+		public static void AddSituation(LevelData target, SituationInfos situationInfos)
+		{
+			ReadSettings();
 			FindHelper();
 
-			var levelPath = GetAssetPath(level);
+			var levelPath = GetAssetPath(target);
 
-			_levelName = level.name;
+			_levelName = target.name;
 			
 			if( !string.IsNullOrEmpty( levelPath ) )
 			{
@@ -80,57 +72,44 @@ namespace Universe.Toolbar.Editor
 				_defaultLevelFolder = Join( _targetFolder, _levelName );
 				_currentLevelFolder = _defaultLevelFolder;
 			}
-
-			EditorCoroutineUtility.StartCoroutineOwnerless(GenerateAddedGameplay(level));
+			
+			GenerateAddedSituation(target, situationInfos);
+			OnSituationAdded?.Invoke();
 		}
 
-        private static IEnumerator GenerateAssets(TaskData audioData, TaskData blockData, TaskData artData)
+        private static void GenerateAssets(TaskData playerData, TaskData audioData, SituationInfos initialSituation)
         {
-            var level 			= GenerateLevelAsset();
-			audioData			??= GenerateTask(_targetAudio, AUDIO, false);
-            blockData 			??= GenerateTask(_targetBlock, ENVIRONMENT, true);
-            artData 			??= GenerateTask(_targetArt, ENVIRONMENT, true);
-            var gameplayData 	= GenerateTask(_targetGameplay, GAMEPLAY, true);
+            var level 	= GenerateLevelAsset();
+            
+			playerData	??= GenerateTask(_targetPlayer, GAMEPLAY, true);
+			audioData	??= GenerateTask(_targetAudio, GAMEPLAY, true);
+			
+			if(string.IsNullOrEmpty(initialSituation.m_name)) 
+				initialSituation.m_name = $"{_situationName}";
+			else
+				initialSituation.m_name = $"{_situationName}-{initialSituation.m_name}";
 
-			_isGenerating = true;
-			yield return 0;
-			_isGenerating = false;
+			CreateSituationHelper.CreateSituation(initialSituation, level);
 
 			level.m_audio = audioData;
-            level.m_blockMeshEnvironment = blockData;
-            level.m_artEnvironment = artData;
-            level.m_gameplayTasks.Add(gameplayData);
-			EditorUtility.SetDirty(level);
+			level.m_player = playerData;
 
 			Log($"<color=lime>{level.name} generated successfully</color>");
 			OnLevelCreated?.Invoke();
-			SaveAssets();
-			Refresh();
+			level.SaveAsset();
         }
 
-		private static IEnumerator GenerateAddedGameplay(LevelData level)
-		{
-			var taskIndex 	= level.m_gameplayTasks.Count + 1;
-			var gameplayName 	= $"{_levelName}-{_gameplayTaskName}-{taskIndex:00}";
+        private static void GenerateAddedSituation(LevelData level, SituationInfos situation)
+        {
+	        var situationIndex = level.Situations.Count + 1;
+	        
+	        if(string.IsNullOrEmpty(situation.m_name)) 
+		        situation.m_name = $"{_levelName}-{_situationName}-{situationIndex:00}";
+	        else
+				situation.m_name = $"{_levelName}-{_situationName}-{situationIndex:00}-{situation.m_name}";
 
-			_currentGameplayFolder = Join(_currentLevelFolder, _gameplayTaskName, gameplayName);
-			_currentGameplayFolder = FolderHelper.CreatePath(_currentGameplayFolder);
-			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
-
-			var gameplayData = GenerateTask(_targetGameplay, GAMEPLAY, true);
-
-			_isGenerating = true;
-			yield return 0;
-			_isGenerating = false;
-
-			level.m_gameplayTasks.Add(gameplayData);
-
-			Log($"<color=lime>{gameplayName} generated successfully</color>");
-			EditorUtility.SetDirty( level );
-			OnTaskAdded?.Invoke();
-			SaveAssets();
-			Refresh();
-		}
+	        CreateSituationHelper.CreateSituation(situation, level);
+        }
 
         #endregion
 
@@ -141,49 +120,40 @@ namespace Universe.Toolbar.Editor
 		{
 			if(!_settings) LoadSettings();
 
-			_targetFolder = _settings.m_levelFolder;
-			
 			var helperName = _settings.m_addressableGroupHelperName;
-			_targetHelper = Join(_targetFolder, $"{helperName}.asset");
-
+			
+			_targetFolder			= _settings.m_levelFolder;
+			_targetHelper			= Join(_targetFolder, $"{helperName}.asset");
 			_audioTaskName			= _settings.m_audioTaskName;
-			_blockMeshTaskName 		= _settings.m_blockMeshTaskName;
-			_artTaskName			= _settings.m_artTaskName;
-			_gameplayTaskName		= _settings.m_gameplayTaskName;
+			_playerTaskName			= _settings.m_playerTaskName;
+			_situationName			= _settings.m_situationName;
 			_sceneTemplate 			= _settings.m_sceneTemplate; 
 			_addressableTemplate	= _settings.m_addressableGroupTemplate;
 		}
 
-		private static void LoadSettings()
-		{
+		private static void LoadSettings() =>
 			_settings = USettingsHelper.GetSettings<CreateLevelSettings>();
-		}
 
-        private static void GenerateHierarchy()
+        private static void GenerateHierarchy(bool newPlayer, bool newAudio)
         {
             if (!IsValidFolder(_targetFolder)) FolderHelper.CreatePath(_targetFolder);
             FindHelper();
 
-			var audioName       = $"{_levelName}-{_audioTaskName}";
-			var blockMeshName 	= $"{_levelName}-{_blockMeshTaskName}";
-			var artName			= $"{_levelName}-{_artTaskName}";
-			var gameplayName 	= $"{_levelName}-{_gameplayTaskName}-01";
-
-			_currentAudioFolder		= Join( _currentLevelFolder, _audioTaskName );
-			_currentBlockMeshFolder = Join(_currentLevelFolder, _blockMeshTaskName);
-			_currentArtFolder 		= Join(_currentLevelFolder, _artTaskName);
-			_currentGameplayFolder 	= Join(_currentLevelFolder, _gameplayTaskName, gameplayName);
-
+			var playerName			= $"{_levelName}-{_playerTaskName}";
+			var audioName			= $"{_levelName}-{_audioTaskName}";
+			
+			_situationName			= $"{_levelName}-{_situationName}-01";
 			_currentLevelFolder 	= FolderHelper.CreatePath(_defaultLevelFolder);
-			_currentAudioFolder		= FolderHelper.CreatePath(_currentAudioFolder);
-			_currentBlockMeshFolder = FolderHelper.CreatePath(_currentBlockMeshFolder);
-			_currentArtFolder		= FolderHelper.CreatePath(_currentArtFolder);
-			_currentGameplayFolder	= FolderHelper.CreatePath(_currentGameplayFolder);
+			_currentPlayerFolder	= Join(_currentLevelFolder, _playerTaskName);
+			_currentAudioFolder		= Join( _currentLevelFolder, _audioTaskName );
+			
+			if (newPlayer)
+				_currentPlayerFolder	= FolderHelper.CreatePath(_currentPlayerFolder);
+			if (newAudio)
+				_currentAudioFolder		= FolderHelper.CreatePath(_currentAudioFolder);
 
+			_targetPlayer	= Join(_currentPlayerFolder, $"{playerName}.unity");
 			_targetAudio	= Join(_currentAudioFolder, $"{audioName}.unity");
-			_targetBlock 	= Join(_currentBlockMeshFolder, $"{blockMeshName}.unity");
-			_targetArt 		= Join(_currentArtFolder, $"{artName}.unity");
-			_targetGameplay = Join(_currentGameplayFolder, $"{gameplayName}.unity");
         }
 
 		private static void FindHelper()
@@ -199,9 +169,7 @@ namespace Universe.Toolbar.Editor
                 CreateAsset(_helper, _targetHelper);
             }
 			else
-			{
 				_helper = LoadAssetAtPath<UAddressableGroupHelper>(_targetHelper);
-			}
 		}
 
 		private static void GenerateAaGroup()
@@ -216,16 +184,12 @@ namespace Universe.Toolbar.Editor
 			var path 	= Join(_currentLevelFolder, $"{_levelName}.asset");
 
 			CreateAsset(level, path);
-
 			level.name = _levelName;
 
 			var levelGuid = GUIDFromAssetPath(path).ToString();
 
 			CreateAaEntry(Settings, levelGuid, _helper.m_group);
-
-			EditorUtility.SetDirty(level);
-			SaveAssets();
-			Refresh();
+			level.SaveAsset();
 			return level;
 		}
 
@@ -246,9 +210,9 @@ namespace Universe.Toolbar.Editor
 				var scene 	= NewScene(NewSceneSetup.EmptyScene, mode);
 				
 				SaveScene(scene, path);
-
+				
 				var directory = new DirectoryInfo(path).Name;
-
+				
 				LogWarning($"No scene template found, an empty scene has been generated for {directory}.");
 			}
 			
@@ -257,7 +221,6 @@ namespace Universe.Toolbar.Editor
 
 			taskData.m_assetReference		= new AssetReference(sceneGuid);
 			taskData.m_priority				= priority;
-			taskData.m_alwaysUpdated 		= (priority == AUDIO) ? true : false;
 			taskData.m_canBeLoadOnlyOnce 	= true;
 			CreateAsset(taskData, dataPath);
 
@@ -266,10 +229,7 @@ namespace Universe.Toolbar.Editor
 
 			CreateAaEntry(Settings, sceneGuid, group);
 			CreateAaEntry(Settings, taskGuid, group);
-
-			EditorUtility.SetDirty(taskData);
-			SaveAssets();
-			Refresh();
+			taskData.SaveAsset();
 			return taskData;
 		}
 
@@ -283,21 +243,18 @@ namespace Universe.Toolbar.Editor
 		private static string _levelName;
 		private static string _defaultLevelFolder;
 		private static string _currentLevelFolder;
+		private static string _currentPlayerFolder;
 		private static string _currentAudioFolder;
-		private static string _currentBlockMeshFolder;
-		private static string _currentArtFolder;
-		private static string _currentGameplayFolder;
+		private static string _currentSituationFolder;
 		private static string _targetHelper;
 		private static UAddressableGroupHelper _helper;
 		private static string _audioTaskName;
-		private static string _blockMeshTaskName;
-		private static string _artTaskName;
-		private static string _gameplayTaskName;
+		private static string _playerTaskName;
+		private static string _situationName;
 		private static string _addressableGroupHelperName;
 		private static string _targetAudio;
-		private static string _targetBlock;
-		private static string _targetArt;
-		private static string _targetGameplay;
+		private static string _targetPlayer;
+		private static string _targetSituation;
 		private static SceneTemplateAsset _sceneTemplate;
 		private static AddressableAssetGroupTemplate _addressableTemplate;
 		private static bool _isGenerating;

@@ -31,7 +31,7 @@ namespace Universe.Toolbar.Editor
 		{
 			if( !_subcribedOnTaskLoaded )
 			{
-				CreateLevelHelper.OnTaskAdded += PopulateTaskNames;
+				CreateLevelHelper.OnSituationAdded += PopulateTaskNames;
 				_subcribedOnTaskLoaded = true;
 			}
 
@@ -46,7 +46,7 @@ namespace Universe.Toolbar.Editor
 			BeginChangeCheck();
 
 			Label( label );
-			_currentTaskIndex = Popup( _currentTaskIndex, _taskNames.ToArray(), Width( s_width ) );
+			_currentSituationIndex = Popup( _currentSituationIndex, _taskNames.ToArray(), Width( s_width ) );
 
 			if( !EndChangeCheck() ) return;
 			if( !saveInSettings ) return;
@@ -54,7 +54,7 @@ namespace Universe.Toolbar.Editor
 			var settings = USettingsHelper.GetSettings<LevelSettings>();
 			var checkpoint = settings.m_editorCheckpoint;
 
-			checkpoint.m_task = _currentLevel.GetGameplayTask( _currentTaskIndex );
+			checkpoint.m_situation = _currentLevel.GetSituation( _currentSituationIndex );
 			settings.SaveAsset();
 		}
 
@@ -68,31 +68,33 @@ namespace Universe.Toolbar.Editor
 			if( path.Equals( _currentPath ) && _currentLevel ) return;
 			_currentPath = path;
 			_currentLevel = LoadAssetAtPath<LevelData>( path );
-			_currentTaskIndex = 0;
+			_currentSituationIndex = 0;
 			PopulateTaskNames();
 
 			if( !saveInSettings ) return;
 			var settings = USettingsHelper.GetSettings<LevelSettings>();
 			var checkpoint = settings.m_editorCheckpoint;
 
-			_currentTaskIndex = _currentLevel.IndexOf( checkpoint.m_task );
-			if( !_taskNames.GreaterThan( _currentTaskIndex ) )
-				_currentTaskIndex = 0;
+			_currentSituationIndex = _currentLevel.IndexOf( checkpoint.m_situation );
+			if( !_taskNames.GreaterThan( _currentSituationIndex ) )
+				_currentSituationIndex = 0;
 
 			checkpoint.m_level = _currentLevel;
-			checkpoint.m_task = _currentLevel.GetGameplayTask( _currentTaskIndex );
+			checkpoint.m_situation = _currentLevel.GetSituation( _currentSituationIndex );
 
 			settings.SaveAsset();
 		}
 
 		private static void PopulateTaskNames()
 		{
-			var tasks = _currentLevel.m_gameplayTasks;
+			var situations = _currentLevel.Situations;
+
+			if (situations is null) return;
 
 			_taskNames = new();
-			foreach( var task in tasks )
+			foreach( var situation in situations )
 			{
-				var taskName = task.GetTrimmedName();
+				var taskName = situation.m_name;
 				_taskNames.Add( taskName );
 			}
 		}
@@ -106,7 +108,7 @@ namespace Universe.Toolbar.Editor
 		private static LevelData _currentLevel;
 
 		private static List<string> _taskNames;
-		private static int _currentTaskIndex;
+		private static int _currentSituationIndex;
 		private static bool _subcribedOnTaskLoaded;
 
 		#endregion

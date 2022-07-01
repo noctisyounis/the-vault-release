@@ -13,7 +13,7 @@ namespace Universe.SceneTask.Runtime
         #endregion
 
 
-        #region Unit API
+        #region Unity API
 
         public override void Awake()
         {
@@ -21,7 +21,29 @@ namespace Universe.SceneTask.Runtime
             s_editorCheckpoint = m_editorCheckpoint;
             s_gameplayCheckpoint = m_gameplayCheckpoint;
 
-            Checkpoint.m_currentCheckpoint = m_gameplayCheckpoint;
+            Checkpoint.s_currentCheckpoint = m_gameplayCheckpoint;
+        }
+
+        #endregion
+
+
+        #region Public API
+
+        public static void ChangeCheckpointLevel(LevelData to)
+        {
+            if (to == null) return;
+            
+            GameplayCheckPoint.m_level = to;
+        }
+
+        public static void ChangeCheckpointSituation(SituationData to)
+        {
+            if (to == null) return;
+            if (!GameplayCheckPoint) return;
+            if (!GameplayCheckPoint.m_level) return;
+            if (!GameplayCheckPoint.m_level.Situations.Contains(to)) return;
+
+            GameplayCheckPoint.m_situation = to;
         }
 
         #endregion

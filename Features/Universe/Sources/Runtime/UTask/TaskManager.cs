@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Universe.SceneTask;
 using Universe.SceneTask.Runtime;
 
 using static UnityEngine.SceneManagement.SceneManager;
@@ -28,6 +29,12 @@ namespace Universe
             public Transform m_playArea;
             public Transform m_dominantHand;
             public Transform m_nonDominantHand;    
+        }
+
+        public TaskPriority Priority
+        {
+            get => _priority;
+            set => _priority = value;
         }
             
         #endregion
@@ -182,12 +189,11 @@ namespace Universe
             list.Remove(target);
         }
 
-        public bool IsAlwaysUpdated() => _alwaysUpdated;
-        public void SetAlwaysUpdated(bool next) => _alwaysUpdated = next;
+        public bool IsAlwaysUpdated() => Priority.Equals( TaskPriority.ALWAYS_UPDATE );
 
-        private bool CanUpdate => _alwaysUpdated || IsFocused;
-        private bool IsFocused => gameObject.scene.name == Task.GetFocusSceneName();
-        
+        private bool CanUpdate => IsAlwaysUpdated() || IsFocused;
+        private bool IsFocused => Priority.Equals(Task.GetFocusPriority());
+
         #endregion
 
 
@@ -216,7 +222,7 @@ namespace Universe
 
         #region Private And Protected
 
-        private bool _alwaysUpdated;
+        private TaskPriority _priority;
         
         private UTrackedAlias _headsetTrackedAlias;
         private UTrackedAlias _playAreaTrackedAlias;

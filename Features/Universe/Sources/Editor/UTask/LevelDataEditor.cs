@@ -24,14 +24,12 @@ namespace Universe.SceneTask.Editor
 
 		private void DrawAddTaskButton()
 		{
-			if(GUILayout.Button("Add Task"))
-			{
-				var level = target as LevelData;
+			if(!GUILayout.Button("Add Situation")) return;
+			
+			var level = target as LevelData;
+			if(!level) return;
 
-				if(!level) return;
-
-				CreateLevelHelper.AddTask(level);
-			}
+			CreateSituationWindow.ShowSituationWindow(level);
 		}
 
 		#endregion

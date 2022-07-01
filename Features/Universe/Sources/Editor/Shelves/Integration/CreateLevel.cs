@@ -3,7 +3,6 @@ using UnityEngine;
 using static UnityEditor.EditorGUIUtility;
 using static UnityEngine.GUILayout;
 
-
 namespace Universe.Toolbar.Editor
 {
     public static class CreateLevelButton

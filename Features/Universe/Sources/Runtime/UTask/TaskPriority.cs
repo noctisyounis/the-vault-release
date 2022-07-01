@@ -2,11 +2,9 @@ namespace Universe.SceneTask
 {
     public enum TaskPriority
     {
-        PERSISTENT = 0,
-        AUDIO = 500,
-        ENVIRONMENT = 1000,
-        GAMEPLAY = 2000,
-        UI = 3000,
-        DEBUG = 4000
+        ALWAYS_UPDATE = 0,
+        GAMEPLAY = 1000,
+        MENU = 2000,
+        DEBUG = 3000
     }
 }

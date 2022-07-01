@@ -19,7 +19,7 @@ namespace Universe.Toolbar.Editor
 
         public static void Draw(string playerPref, Environment environment )
         {
-            var currentEnvironment = Level.CurrentEnvironment;
+            var currentEnvironment = Situation.CurrentEnvironment;
             var currentLevelPath    = GetString(playerPref);
             var willLoad = (currentEnvironment & environment) == 0;
 
@@ -31,24 +31,33 @@ namespace Universe.Toolbar.Editor
 
             if( !Button( new GUIContent( environment.ToString(), tex, $"{labelText} {environment}" ) ) ) return;
             
-            Level.CurrentEnvironment ^= environment;
+            Situation.CurrentEnvironment ^= environment;
 
             var level           = LoadAssetAtPath<LevelData>(currentLevelPath);
-            var blockMeshGuid   = level.m_blockMeshEnvironment.m_assetReference.AssetGUID;
-            var artGuid         = level.m_artEnvironment.m_assetReference.AssetGUID;
-            var environmentGuid = IsArtEnvironment(environment) ? artGuid : blockMeshGuid;
-            var environmentPath = GUIDToAssetPath(environmentGuid);
+            var situations = level.Situations;
 
-            if( willLoad )
+            foreach (var situation in situations)
             {
-                OpenScene( environmentPath, Additive );
-                return;
-            }
-
-            var environmentScene = EditorSceneManager.GetSceneByPath( environmentPath );
+                var gameplayGuid = situation.m_gameplay.m_assetReference.AssetGUID;
+                var gameplayPath = GUIDToAssetPath(gameplayGuid);
+                var gameplayScene = EditorSceneManager.GetSceneByPath(gameplayPath);
+                if (!gameplayScene.IsValid()) return;
                 
-            SaveCurrentModifiedScenesIfUserWantsTo();
-            CloseScene( environmentScene, false );
+                var blockMeshGuid   = situation.m_blockMeshEnvironment.m_assetReference.AssetGUID;
+                var artGuid         = situation.m_artEnvironment.m_assetReference.AssetGUID;
+                var environmentGuid = IsArtEnvironment(environment) ? artGuid : blockMeshGuid;
+                var environmentPath = GUIDToAssetPath(environmentGuid);
+                
+                if( willLoad )
+                {
+                    OpenScene( environmentPath, Additive );
+                    return;
+                }
+
+                var environmentScene = EditorSceneManager.GetSceneByPath( environmentPath );
+                SaveCurrentModifiedScenesIfUserWantsTo();
+                CloseScene( environmentScene, false );
+            }
         }
 
         #endregion

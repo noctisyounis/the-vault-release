@@ -39,14 +39,14 @@ namespace Universe
             var path        = Join(m_rootFolder, $"{nameof(UAssetsPathTable)}.asset");
             var fullPath    = GetFullPath(path);
 
-            if(Exists(fullPath))
+            if( Exists( fullPath ) )
             {
-                m_pathTable = LoadAssetAtPath<UAssetsPathTable>(path);
+                m_pathTable = LoadAssetAtPath<UAssetsPathTable>( path );
                 return;
             }
 
             m_pathTable = CreateInstance<UAssetsPathTable>();
-            m_pathTable.m_targetFolder = m_rootFolder;
+            m_pathTable.m_targetFolders = new string[]{m_rootFolder};
             m_pathTable.Populate();
 
             CreateAsset(m_pathTable, path);

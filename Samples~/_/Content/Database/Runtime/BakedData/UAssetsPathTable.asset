@@ -12,6 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c69075eca996d3843bdda9242b9e635b, type: 3}
   m_Name: UAssetsPathTable
   m_EditorClassIdentifier: 
-  m_targetFolder: Assets/_/Content/GraphicsTier
-  m_guids: []
-  m_paths: []
+  m_targetFolders:
+  - Assets/_/Content/GraphicsTier
+  - Assets/_/Content/Levels
+  m_guids:
+  - d17219024fbeead459175e17a4e8623a
+  - c209dd43eac92f540a0ffc044435ccff
+  - e2d8a8b09fd71cf4aab900a514c31ec3
+  - e4088c056e9a848499e3cf919e371d0e
+  - 366ab1dbba55cff4c92dd8ed72d2b743
+  - 466039f8decdbdb4d8882ca46d6d2ad6
+  - 47de0b9ce928c86409890ed557ca4695
+  - 099355b6dd8a47d45be1e0a572cd0411
+  - 9aed690798cac8a428ad7afdaecd89c0
+  - 9b07778fb8058dd4ab05e8952bb9d738
+  - db95a251ea476b747a863affebf4faba
+  - 2cd3ab4556185f244915ddfc9ad1116e
+  - dd3009f242b4c3c46bf2300d4a273778
+  - fde8b17ecdce5ed46aee85a097aaf473
+  m_paths:
+  - Assets/_/Content/Levels/DebugWatchTesting/DebugWatchTesting.asset
+  - Assets/_/Content/Levels/DebugWatchTesting/Gameplay/DebugWatchTesting-Gameplay-01/DebugWatchTesting-Gameplay-01.asset
+  - Assets/_/Content/Levels/Interfaces/DebugWatch/DebugWatch.asset
+  - Assets/_/Content/Levels/DebugWatchTesting/Gameplay/DebugWatchTesting-Gameplay-01/DebugWatchTesting-Gameplay-01.unity
+  - Assets/_/Content/Levels/DebugWatchTesting/Audio/DebugWatchTesting-Audio.asset
+  - Assets/_/Content/Levels/LevelsHelper.asset
+  - Assets/_/Content/Levels/Tech/PersistantScene/Persistant Scene.asset
+  - Assets/_/Content/Levels/DebugWatchTesting/Art/DebugWatchTesting-Art.unity
+  - Assets/_/Content/Levels/DebugWatchTesting/BlockMesh/DebugWatchTesting-BlockMesh.asset
+  - Assets/_/Content/Levels/DebugWatchTesting/Audio/DebugWatchTesting-Audio.unity
+  - Assets/_/Content/Levels/DebugWatchTesting/Art/DebugWatchTesting-Art.asset
+  - Assets/_/Content/Levels/Interfaces/DebugWatch/DebugWatch.unity
+  - Assets/_/Content/Levels/Tech/PersistantScene/Persistant Scene.unity
+  - Assets/_/Content/Levels/DebugWatchTesting/BlockMesh/DebugWatchTesting-BlockMesh.unity

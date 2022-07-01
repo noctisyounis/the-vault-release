@@ -1,0 +1,12 @@
+﻿Change Log:
+
+1.0.4	-	Added support for 2020.2
+
+1.0.3	-	Added support for 2020.1
+
+1.0.2	-	Fixed a bug that could get the editor stuck in debug view mode when changing a script.
+
+1.0.1   -   Fixed a bug that prevented shaders from ShaderGraph to be used in a debug view.
+        -   Added asmdefs.
+
+1.0.0	-	Initial Release.

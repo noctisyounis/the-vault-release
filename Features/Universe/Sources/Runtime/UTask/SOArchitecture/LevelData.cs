@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Universe.SceneTask.Runtime
 {
@@ -7,27 +7,42 @@ namespace Universe.SceneTask.Runtime
 	{
 		#region Exposed
 
+		public TaskData m_player;
 		public TaskData m_audio;
-		public TaskData m_blockMeshEnvironment;
-		public TaskData m_artEnvironment;
-		public List<TaskData> m_gameplayTasks = new();
+
+		public List<SituationData> Situations => 
+			_situations ??= new();
 
 		#endregion
 
 
 		#region Public API
 
-		public int IndexOf( TaskData gameplayTask )
-			=> m_gameplayTasks.IndexOf( gameplayTask );
-
-		public TaskData GetGameplayTask( int index )
+		public int IndexOf( SituationData situation )
+			=> Situations.IndexOf( situation );
+		
+		public void AddSituation(SituationData situation)
 		{
-			if( !m_gameplayTasks.GreaterThan( index ) )
+			if (Situations.Contains(situation)) return;
+			
+	        Situations.Add(situation);
+		}
+
+		public SituationData GetSituation( int index )
+		{
+			if( !Situations.GreaterThan( index ) )
 				return null;
 
-			return m_gameplayTasks[index];
+			return Situations[index];
 		}
 
         #endregion
-    }
+        
+        
+        #region Private
+
+        [SerializeField] private List<SituationData> _situations;
+
+        #endregion
+	}
 }

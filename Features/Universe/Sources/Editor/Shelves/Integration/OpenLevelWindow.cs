@@ -34,6 +34,7 @@ namespace Universe.Toolbar.Editor
         public static void ShowWindow()
         {
             var window = GetWindow<OpenLevelWindow>();
+            
             SetStyleTo( window );
         }
 
@@ -57,6 +58,7 @@ namespace Universe.Toolbar.Editor
 
 			BeginHorizontal();
 			DrawAudioToggle();
+			DrawPlayerToggle();
 			EndHorizontal();
 
 			Space( m_spacing );
@@ -97,11 +99,11 @@ namespace Universe.Toolbar.Editor
 
 			_levelPath	= path;
 			_level		= level;
-			_taskAmount = _level.m_gameplayTasks.Count;
+			_taskAmount = _level.Situations.Count;
 			_audioUsed = IsTaskOpen( _level.m_audio );
-			_currentEnvironment = (IsTaskOpen( _level.m_blockMeshEnvironment ) ? BLOCK_MESH : NONE);
-			_currentEnvironment = _currentEnvironment ^ ( IsTaskOpen( _level.m_artEnvironment ) ? ART : NONE );
-			PopulateTaskUsed( _level.m_gameplayTasks );
+			_playerUsed = IsTaskOpen( _level.m_player );
+			_currentEnvironment = BLOCK_MESH;
+			PopulateTaskUsed( _level.Situations );
 
 			var floatPageAmount = 1.0f * _taskAmount / m_maxEntryPerPage;
 
@@ -118,6 +120,18 @@ namespace Universe.Toolbar.Editor
 				return;
 
 			_audioUsed = !_audioUsed;
+		}
+
+		private void DrawPlayerToggle()
+		{
+			var willTurnOn = !_playerUsed;
+			var texName    = willTurnOn ? "d_CacheServerDisconnected" : "d_CacheServerConnected";
+			var tex        = IconContent(texName).image;
+
+			if( !Button( new GUIContent( "Player", tex, $"{( willTurnOn ? "Load" : "Unload" )}" ) ) )
+				return;
+
+			_playerUsed = !_playerUsed;
 		}
 
 		private void DrawEnvironmentToggle( Environment environment )
@@ -198,26 +212,26 @@ namespace Universe.Toolbar.Editor
 			for( var i = 0; i < m_maxEntryPerPage; i++ )
 			{
 				var index = start + i;
-				if( !_level.m_gameplayTasks.GreaterThan( index ) ) break;
+				if( !_level.Situations.GreaterThan( index ) ) break;
 
-				DrawTaskEntry( index );
+				DrawSituationEntry( index );
 			}
 
 			EndVertical();
 		}
 
-		private void DrawTaskEntry(int index)
+		private void DrawSituationEntry(int index)
 		{
-			var willTurnOn	= !_taskUsed[index];
+			var willTurnOn		= !_taskUsed[index];
 			var texName		= willTurnOn ? "d_CacheServerDisconnected" : "d_CacheServerConnected";
 			var tex			= IconContent(texName).image;
-			var taskName	= _level.m_gameplayTasks[index].GetTrimmedName();
+			var situationName	= _level.Situations[index].m_name;
             var style = new GUIStyle( GUI.skin.button )
             {
                 alignment = MiddleLeft
             };
 
-            if( !Button(new GUIContent($"{(index + 1):000}:\t{taskName}", tex), style ) ) return;
+            if( !Button(new GUIContent($"{(index + 1):000}:\t{situationName}", tex), style ) ) return;
 
 			_taskUsed[index] = willTurnOn;
 		}
@@ -245,21 +259,12 @@ namespace Universe.Toolbar.Editor
 				openSceneMode = Additive;
 			}
 
-			if( NeedBlockMesh )
+			if( NeedPlayer )
 			{
-				var blockMeshGuid   = _level.m_blockMeshEnvironment.m_assetReference.AssetGUID;
-				var blockMesh       = GUIDToAssetPath(blockMeshGuid);
+				var playerGuid	= _level.m_player.m_assetReference.AssetGUID;
+				var player      = GUIDToAssetPath(playerGuid);
 
-				OpenScene( blockMesh, openSceneMode );
-				openSceneMode = Additive;
-			}
-
-			if( NeedArt )
-			{
-				var artGuid         = _level.m_artEnvironment.m_assetReference.AssetGUID;
-				var art             = GUIDToAssetPath(artGuid);
-				
-				OpenScene( art, openSceneMode );
+				OpenScene( player, openSceneMode );
 				openSceneMode = Additive;
 			}
 
@@ -267,13 +272,33 @@ namespace Universe.Toolbar.Editor
 			{
 				if( !_taskUsed[i] ) continue;
 
-				var gameplayGuid    = _level.m_gameplayTasks[i].m_assetReference.AssetGUID;
+				var situation = _level.Situations[i];
+				
+				if( NeedBlockMesh )
+				{
+					var blockMeshGuid   = situation.m_blockMeshEnvironment.m_assetReference.AssetGUID;
+					var blockMesh       = GUIDToAssetPath(blockMeshGuid);
+
+					OpenScene( blockMesh, openSceneMode );
+					openSceneMode = Additive;
+				}
+
+				if( NeedArt )
+				{
+					var artGuid         = situation.m_artEnvironment.m_assetReference.AssetGUID;
+					var art             = GUIDToAssetPath(artGuid);
+				
+					OpenScene( art, openSceneMode );
+					openSceneMode = Additive;
+				}
+
+				var gameplayGuid    = situation.m_gameplay.m_assetReference.AssetGUID;
 				var gameplay        = GUIDToAssetPath(gameplayGuid);
 
 				OpenScene( gameplay, openSceneMode );
 			}
 
-			Level.CurrentEnvironment = _currentEnvironment;
+			Situation.CurrentEnvironment = _currentEnvironment;
 			Close();
 		}
 
@@ -294,7 +319,7 @@ namespace Universe.Toolbar.Editor
 			window.position = windowRect;
 		}
 
-		private void PopulateTaskUsed( List<TaskData> source )
+		private void PopulateTaskUsed( List<SituationData> source )
 		{
 			var amount = source.Count;
 
@@ -302,9 +327,9 @@ namespace Universe.Toolbar.Editor
 
 			for( var i = 0; i < amount; i++ )
 			{
-				var taskData    = source[i];
+				var situationData    = source[i];
 
-				_taskUsed[i] = IsTaskOpen(taskData);
+				_taskUsed[i] = IsTaskOpen(situationData.m_gameplay);
 			}
 		}
 
@@ -322,11 +347,14 @@ namespace Universe.Toolbar.Editor
 			if( string.IsNullOrEmpty( path ) ) return false;
 
 			var fullPath = GetFullPath(path);
+			
 			return Exists( fullPath );
 		}
 
 		private bool NeedAudio => 
 			_audioUsed;
+		private bool NeedPlayer =>
+			_playerUsed;
 		private bool NeedBlockMesh =>
 			(_currentEnvironment & BLOCK_MESH) != 0;
 		private bool NeedArt =>
@@ -343,7 +371,8 @@ namespace Universe.Toolbar.Editor
 		private int _pageAmount;
 		private int _currentPage;
 		private bool _audioUsed;
-        private Environment _currentEnvironment;
+		private bool _playerUsed;
+		private Environment _currentEnvironment;
 		private bool[] _taskUsed;
 
         #endregion

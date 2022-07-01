@@ -1,8 +1,8 @@
 using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 using UnityEngine.AddressableAssets;
+using TMPro;
 
 using static UnityEngine.InputSystem.InputAction;
 
@@ -13,10 +13,12 @@ namespace Universe.DebugWatch.Runtime
         #region Public Members
 
         [Header("Generation")]
-        public static DebugMenuRoot m_instance;
+        public static DebugMenuRoot s_instance;
         public DebugMenuData        m_bakedData;
         public string               m_debugMenuName;
         public AssetReference       m_debugMenuPanel;
+        public GameObject           m_tooltipRoot;
+        public TMP_Text             m_tooltipText;
 
         [Header("Inputs")]
         public AxisToButtonConverter m_selection;
@@ -40,7 +42,7 @@ namespace Universe.DebugWatch.Runtime
 
         public override void Awake()
         {
-            m_instance      = this;
+            s_instance      = this;
             _menus          = new Dictionary<string, DebugPanel>();
             _bufferedPaths  = new();
 
@@ -83,6 +85,15 @@ namespace Universe.DebugWatch.Runtime
             }
             
             InvokeMethod(path);
+        }
+
+        public void DisplayTooltip( string path )
+        {
+            var tooltip = m_bakedData.GetTooltip( UnlinkPathFromRoot(path) );
+            var isEmpty = string.IsNullOrEmpty(tooltip);
+
+            m_tooltipRoot.SetActive( !isEmpty );
+            m_tooltipText.text = tooltip;
         }
 
         #endregion
@@ -210,6 +221,9 @@ namespace Universe.DebugWatch.Runtime
 
         private string UnlinkPathFromRoot(string path)
         {
+            if( string.IsNullOrEmpty( path ) )
+                return path;
+            
             var result = path.Remove(0, m_debugMenuName.Length + 1);
             
             return result;

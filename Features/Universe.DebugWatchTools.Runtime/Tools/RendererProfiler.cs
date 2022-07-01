@@ -9,7 +9,7 @@ namespace Universe.DebugWatchTools.Runtime
 {
     public class RendererProfiler : UBehaviour
     {
-        #region Public Members
+        #region Exposed
 
         [Header("Profiler Settings")]
         public GameObjectFact m_debugArrayManager;

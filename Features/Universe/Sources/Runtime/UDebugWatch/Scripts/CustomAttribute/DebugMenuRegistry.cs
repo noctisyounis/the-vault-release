@@ -53,7 +53,7 @@ namespace Universe.DebugWatch.Runtime
                             .GetTypes()
                             .SelectMany(classType       => classType.GetMethods())
                             .Where(classMethod          => classMethod.GetCustomAttributes().OfType<DebugMenuAttribute>().Any())
-                            .ToDictionary(methodInfo    => methodInfo.GetCustomAttributes().OfType<DebugMenuAttribute>().FirstOrDefault<DebugMenuAttribute>().Path);
+                            .ToDictionary(methodInfo    => methodInfo.GetCustomAttributes().OfType<DebugMenuAttribute>().FirstOrDefault().Path);
 
                 if (assemblyDictionary is null) continue;
                 
@@ -69,7 +69,7 @@ namespace Universe.DebugWatch.Runtime
 
             s_bakedData.Methods.Clear();
 
-            for (var i = _methods.Count - 1; i >= 0; i--)
+            for (var i = 0; i < initialMethodCount; i++)
             {
                 var key = keys[i];
                 var method = Methods[key];
@@ -77,7 +77,6 @@ namespace Universe.DebugWatch.Runtime
                 if (!method.IsStatic)
                 {
                     LogError($"<color=orange>{method.Name} of class {method.ReflectedType} must be static</color>");
-                    Methods.Remove(key);
                 }
                 else
                 {

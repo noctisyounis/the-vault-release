@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02bbc553a368884eb95136cbdbafbc0, type: 3}
   m_Name: EditorStart
   m_EditorClassIdentifier: 
-  m_level: {fileID: 11400000, guid: 0acac3000033f9b459956e010dd92fca, type: 2}
-  m_task: {fileID: 11400000, guid: 82d826ccebbbb4244814597530d50fa6, type: 2}
+  m_level: {fileID: 11400000, guid: 37c94132e82b4424abb69d49abe16377, type: 2}
+  m_task: {fileID: 0}

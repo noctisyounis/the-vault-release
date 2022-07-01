@@ -19,17 +19,7 @@ namespace Universe.SceneTask.Runtime
         public static TaskData m_focusTask;
         public static SceneInstance m_focusScene;
 
-        public static bool IsTheSameAsFocusedScene( TaskData taskData ) =>
-            m_focusTask.m_assetReference != taskData.m_assetReference;
-
-        public static bool HaveSamePriorityAsFocusScene( TaskData taskData ) =>
-            m_focusTask.m_priority == taskData.m_priority;
-
-        public static Scene GetFocusScene() =>
-            m_focusScene.Scene;
-
-        public static string GetFocusSceneName() =>
-            m_focusScene.Scene.name;
+        
 
         #endregion
 
@@ -83,33 +73,83 @@ namespace Universe.SceneTask.Runtime
             UnloadScene( handle );
         }
 
-        public static SceneInstance GetFocusedScene()
-        {
-            if( IsSceneDicoEmpty() )
-            {
-                m_focusSceneHandle = new AsyncOperationHandle<SceneInstance>();
-                return new SceneInstance();
-            }
-
-            _orderedKeys = _dicoOfTasks.Keys.OrderByDescending( task => task.m_priority );
-
-            m_focusTask = _orderedKeys.First();
-            var entry = _dicoOfTasks[m_focusTask];
-            m_focusSceneHandle = entry[0];
-            return m_focusSceneHandle.Result;
-        }
-
         public static SceneInstance GetLoadedScene( TaskData from )
         {
             if( !_dicoOfTasks.ContainsKey( from ) )
             {
-                return default( SceneInstance );
+                return default;
             }
 
             var task = _dicoOfTasks[from];
             var sceneHandle = task[0];
 
             return sceneHandle.Result;
+        }
+
+        public static bool IsLoaded( TaskData target ) =>
+            GetLoadedScene( target ).Scene.IsValid();
+
+        public static void SetFocus( TaskData to )
+        {
+            if( IsSceneDicoEmpty() )
+            {
+                m_focusSceneHandle = new AsyncOperationHandle<SceneInstance>();
+                m_focusScene = default( SceneInstance );
+                m_focusTask = null;
+                _focusPriority = TaskPriority.ALWAYS_UPDATE;
+                return;
+            }
+
+            var scene = GetLoadedScene(to);
+            if( !scene.Scene.IsValid() )
+                return;
+
+            var previousManager = GetTaskManagerOf(m_focusScene.Scene);
+            previousManager?.DisableTaskInputs();
+
+            m_focusScene = scene;
+            m_focusTask = to;
+            _focusPriority = m_focusTask.m_priority;
+
+            var manager = GetTaskManagerOf(m_focusScene.Scene);
+            manager.EnableTaskInputs();
+
+            var handles = _dicoOfTasks[m_focusTask];
+            m_focusSceneHandle = handles[0];
+        }
+
+        public static SceneInstance GetFocusSceneInstance() =>
+            m_focusSceneHandle.Result;
+
+        public static Scene GetFocusScene() =>
+            m_focusScene.Scene;
+        
+        public static string GetFocusSceneName() =>
+            GetFocusScene().name;
+        
+        public static TaskPriority GetFocusPriority() =>
+            _focusPriority;
+
+        public static bool IsSubscribedOnTaskLoaded(Type owner, string methodName)
+        {
+            var action = Task.OnTaskLoaded;
+            if( action is null )
+                return false;
+
+            var invocations = action.GetInvocationList();
+            if( invocations is null )
+                return false;
+
+            var length = invocations.Length;
+            foreach( var invocation in invocations )
+            {
+                var method = invocation.Method;
+                var ownerType = method.DeclaringType;
+                if( ownerType.Equals(owner) && method.Name.Equals( methodName ) )
+                    return true;
+            }
+
+            return false;
         }
 
         #endregion
@@ -133,6 +173,28 @@ namespace Universe.SceneTask.Runtime
             UnloadSceneAsync( scene ).Completed += SceneUnloadComplete( sceneToLoadAfter );
         }
 
+        private static void RefreshFocusedScene()
+        {
+            if( IsSceneDicoEmpty() )
+            {
+                SetFocus( null );
+                return;
+            }
+
+            _orderedKeys = _dicoOfTasks.Keys.OrderByDescending( task => task.m_priority );
+
+            var task = _orderedKeys.First();
+
+            if( m_focusTask )
+            {
+                var focusScene = GetLoadedScene( m_focusTask ).Scene;
+                if( focusScene.IsValid() && task.m_priority <= m_focusTask.m_priority )
+                    return;
+            }
+
+            SetFocus( task );
+        }
+
         #endregion
 
 
@@ -140,11 +202,7 @@ namespace Universe.SceneTask.Runtime
 
         private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete( TaskData task = null )
         {
-            var highestScene = GetFocusedScene();
-            var taskManager = GetTaskManagerOf(highestScene.Scene);
-
-            taskManager.gameObject.SetActive( true );
-            m_focusScene = highestScene;
+            RefreshFocusedScene();
 
             if( task ) ULoadTask( null, task );
 
@@ -153,25 +211,12 @@ namespace Universe.SceneTask.Runtime
 
         private static void OnSceneLoaded( AsyncOperationHandle<SceneInstance> go )
         {
-            var highestScene = GetFocusedScene();
             var taskData = GetTaskDataOf(go);
             var taskManager = GetTaskManagerOf(go);
 
-            if( !string.IsNullOrEmpty( m_focusScene.Scene.name ) )
-            {
-                var previousTaskManager = GetTaskManagerOf(m_focusScene.Scene);
-                previousTaskManager.DisableTaskInputs();
-
-                if( !previousTaskManager.IsAlwaysUpdated() )
-                {
-                    previousTaskManager.gameObject.SetActive( false );
-                }
-            }
-
-            taskManager.SetAlwaysUpdated( taskData.m_alwaysUpdated );
-
+            taskManager.Priority = taskData.m_priority;
+            RefreshFocusedScene();
             OnTaskLoaded?.Invoke( taskData );
-            m_focusScene = highestScene;
         }
 
         #endregion
@@ -218,13 +263,34 @@ namespace Universe.SceneTask.Runtime
 
         private static TaskManager GetTaskManagerOf(Scene scene)
         {
+            if( !scene.IsValid() )
+                return default;
             var rootGameObjects = new List<GameObject>();
             scene.GetRootGameObjects(rootGameObjects);
 
-            var taskManagerRoot = rootGameObjects.Find((GameObject root) => root.name.Contains("[TaskManager]") || root.transform.Find("[TaskManager]"));
+            var taskManagerRoot = rootGameObjects.Find(SearchTaskManager);
             var taskManager = taskManagerRoot.GetComponentInChildren<TaskManager>(true);
 
             return taskManager;
+        }
+
+        private static bool SearchTaskManager( GameObject target )
+        {
+            if( target.name.Contains( "TaskManager" ) )
+                return true;
+
+            var transform = target.transform;
+            var childCount = transform.childCount;
+
+            for( var i = 0; i < childCount; i++ )
+            {
+                var child = transform.GetChild(i);
+
+                if( child.name.Contains( "TaskManager" ) )
+                    return true;
+            }
+
+            return false;
         }
 
         public static void RegisterUpdate(UBehaviour target)
@@ -350,8 +416,8 @@ namespace Universe.SceneTask.Runtime
         private static Dictionary<TaskData, List<AsyncOperationHandle<SceneInstance>>> _dicoOfTasks = new();
         private static List<AsyncOperationHandle<SceneInstance>> _taskHandlesList = new();
         private static IEnumerable<TaskData> _orderedKeys = new List<TaskData>();
-
         private static List<TaskManager> _taskManagers = new();
+        private static TaskPriority _focusPriority;
 
         #endregion
     }

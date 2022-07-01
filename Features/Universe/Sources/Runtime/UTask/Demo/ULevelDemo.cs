@@ -19,7 +19,9 @@ namespace Universe.SceneTask.Runtime
 		private void OnGUI()
 		{
 			BeginVertical();
-			Label( $"{Level.CurrentTaskIndex}" );
+			Label( $"Focused Task : {Task.GetFocusSceneName()}" );
+			Label( $"Focused Priority : {Task.GetFocusPriority()}" );
+			Label( $"TaskIndex : {Level.CurrentSituationIndex}" );
 			DrawModeToggle();
 			DrawLevelControl( m_level1 );
 			DrawLevelControl( m_level2 );
@@ -54,8 +56,8 @@ namespace Universe.SceneTask.Runtime
 
 		private void DrawLevelControl( LevelData level )
 		{
-			var tasks = level.m_gameplayTasks;
-			var count = tasks.Count;
+			var situations = level.Situations;
+			var count = situations.Count;
 
 			BeginHorizontal();
 			Label( $"{level.name}" );
@@ -64,42 +66,44 @@ namespace Universe.SceneTask.Runtime
 			{
 				for( var i = 0; i < count; i++ )
 				{
-					var task = tasks[i];
-					DrawTaskButton( $"Task_{i + 1}", task );
+					var situation = situations[i];
+					DrawTaskButton( $"Task_{i + 1}", situation );
 				}
 			}
 			else
 			{
 				for( var i = 0; i < count; i++ )
 				{
-					var task = tasks[i];
-					DrawLoadLevelButton( $"Task_{i + 1}", level, task );
+					var situation = situations[i];
+					if (!situation.m_isCheckpoint) continue;
+					DrawLoadLevelButton( $"Task_{i + 1}", level, situation );
 				}
 			}
 			
 			EndHorizontal();
 		}
 
-		private void DrawTaskButton( string name, TaskData task )
+		private void DrawTaskButton( string name, SituationData situation )
 		{
-			var loaded = Task.GetLoadedScene(task).Scene.IsValid();
+			var gameplay = situation.m_gameplay;
+			var loaded = Task.IsLoaded(gameplay);
 			var nextStatus = loaded ? "Unload" : "Load";
 
 			if( !Button( $"{nextStatus} {name}" ) )
 				return;
 
 			if( loaded )
-				UnloadGameplayTask( task );
+				UnloadSituation( situation );
 			else
-				LoadGameplayTask( task );
+				LoadSituation( situation );
 		}
 
-		private void DrawLoadLevelButton( string name, LevelData level, TaskData task )
+		private void DrawLoadLevelButton( string name, LevelData level, SituationData situation )
 		{
 			if( !Button( $"Load at {name}" ) )
 				return;
 
-			ChangeLevel( level, task, _currentMode );
+			ChangeLevel( level, situation, _currentMode );
 		}
 
 		private void DrawSaveCheckpointButton()
@@ -108,7 +112,7 @@ namespace Universe.SceneTask.Runtime
 				return;
 
 			m_runtimeCheckpoint.m_level = Level.s_currentLevel;
-			m_runtimeCheckpoint.m_task = Level.CurrentGameplayTask;
+			m_runtimeCheckpoint.m_situation = Level.CurrentSituation;
 		}
 
 		private void DrawLoadCheckpointButton()

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Universe.DebugWatch.Editor;
+using Universe.DebugWatchTools.Runtime;
 
 using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
 using static UnityEditor.EditorGUIUtility;
@@ -22,6 +23,7 @@ namespace Universe.Editor
 
         public static void Execute()
         {
+			LevelManagement.BakeLevelDebug();
             DebugWatchDictionary.TryValidate();
             OnRefreshCompleted += RebuildAddressable;
             RefreshAaGroups();

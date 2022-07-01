@@ -13,10 +13,10 @@ namespace Universe
 {
     public class UAssetsPathTable : UniverseScriptableObject
     {
-        #region Public
+        #region Exposed
 
         [Header("Target")]
-        public string m_targetFolder;
+        public string[] m_targetFolders;
 
         [Header("Lists")]
         public List<string> m_guids = new();
@@ -30,7 +30,7 @@ namespace Universe
         [Button("Populate")]
         public void Populate()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
 
             m_paths.Clear();
             m_guids.Clear();
@@ -39,7 +39,14 @@ namespace Universe
             
             foreach (var path in allPaths)
             {
-                if(!path.Contains(m_targetFolder)) continue;
+                var isTarget = false;
+                foreach( var folder in m_targetFolders )
+                {
+                    if(!path.Contains(folder)) continue;
+                    isTarget = true;
+                }
+
+                if( !isTarget ) continue;
                 if(IsValidFolder(path)) continue;
 
                 var guid = AssetPathToGUID(path);
@@ -48,8 +55,7 @@ namespace Universe
                 m_guids.Add(guid);
             }
 
-            EditorUtility.SetDirty( this );
-            SaveAssetIfDirty( this );
+            SaveAsset();
 #endif
         }
 

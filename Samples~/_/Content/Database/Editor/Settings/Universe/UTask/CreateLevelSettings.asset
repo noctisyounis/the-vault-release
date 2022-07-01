@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: CreateLevelSettings
   m_EditorClassIdentifier: 
   m_levelFolder: Assets/_/Content/Levels
+  m_playerTaskName: Player
   m_audioTaskName: Audio
+  m_situationName: Situations
   m_blockMeshTaskName: BlockMesh
   m_artTaskName: Art
   m_gameplayTaskName: Gameplay

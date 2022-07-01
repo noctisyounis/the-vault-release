@@ -6,7 +6,7 @@ namespace Universe.SceneTask.Runtime
     {
         #region Exposed
 
-        public static CheckpointData m_currentCheckpoint;
+        public static CheckpointData s_currentCheckpoint;
 
         #endregion
 
@@ -14,31 +14,58 @@ namespace Universe.SceneTask.Runtime
         #region Event
 
         public static Action<CheckpointData> OnCheckpointLoaded;
+        public static Action<CheckpointData> OnCheckpointSaved;
 
         #endregion
 
 
         #region Main
 
+        public static void USaveCheckpoint( this UBehaviour source )
+        {
+            source.USaveCheckpoint( s_currentCheckpoint );
+        }
+
+        public static void USaveCheckpoint( this UBehaviour source, CheckpointData checkpoint )
+        {
+            var currentLevel = Level.s_currentLevel;
+            var currentSituation = Level.CurrentSituation;
+
+            source.USaveCheckpoint( checkpoint, currentLevel, currentSituation );
+        }
+
+        public static void USaveCheckpoint( this UBehaviour source, CheckpointData checkpoint, LevelData level, SituationData situation )
+        {
+            checkpoint.m_level = level;
+            checkpoint.m_situation = situation;
+
+            OnCheckpointSaved?.Invoke(checkpoint);
+        }
+
+        public static void ULoadCheckpoint( this UBehaviour source, LoadLevelMode mode )
+        {
+            source.ULoadCheckpoint( s_currentCheckpoint, mode );
+        }
+
         public static void ULoadCheckpoint( this UBehaviour source, CheckpointData checkpoint, LoadLevelMode mode = LoadLevelMode.LoadAll )
         {
             var level = checkpoint.m_level;
-            var task = checkpoint.m_task;
+            var situation = checkpoint.m_situation;
             
-            m_currentCheckpoint.m_level = level;
-            m_currentCheckpoint.m_task = task;
+            s_currentCheckpoint.m_level = level;
+            s_currentCheckpoint.m_situation = situation;
 
-            source.UChangeLevel( level, task, mode );
+            source.UChangeLevel( level, situation, mode );
 
             Level.OnLevelLoaded += LevelLoaded;
         }
 
         public static void UReloadCheckpoint( this UBehaviour source, LoadLevelMode mode = LoadLevelMode.LoadAll )
         {
-            var level = m_currentCheckpoint.m_level;
-            var task = m_currentCheckpoint.m_task;
+            var level = s_currentCheckpoint.m_level;
+            var situation = s_currentCheckpoint.m_situation;
 
-            source.UChangeLevel( level, task, mode );
+            source.UChangeLevel( level, situation, mode );
          
             Level.OnLevelLoaded += LevelLoaded;
         }
@@ -50,7 +77,7 @@ namespace Universe.SceneTask.Runtime
 
         private static void LevelLoaded( LevelData level )
         {
-            OnCheckpointLoaded?.Invoke(m_currentCheckpoint);
+            OnCheckpointLoaded?.Invoke(s_currentCheckpoint);
 
             Level.OnLevelLoaded -= LevelLoaded;
         }
