@@ -385,15 +385,11 @@ namespace Universe.Editor
 
             }
             Log( "Version Incremented to " + versionBundleText );
-            _sw.WriteLine( $"[{Now}] Version Incremented to {versionBundleText}" );
-
             androidVersionBundleCode++;
             _lastVersion = versionBundleText;
             _lastAndroidBundleCode = androidVersionBundleCode;
             PlayerSettings.bundleVersion = versionBundleText;
             PlayerSettings.Android.bundleVersionCode = androidVersionBundleCode;
-
-            _sw.WriteLine( $"[{Now}] Bundle Version Incremented to {androidVersionBundleCode}" );
             Log( "Bundle Version Code Incremented To " + androidVersionBundleCode );
 
             WriteAllText( buildVersionPath, string.Empty );
