@@ -68,13 +68,29 @@ namespace Universe.Editor
 
         #region Build
 
+        [MenuItem("Vault/CI/Increment PC Version")]
+        public static void RequestWin64VersionIncrement()
+        {
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PC );
+        }
+        
+        [MenuItem("Vault/CI/Increment Android Version")]
+        public static void RequestAndroidVersionIncrement()
+        {
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_ANDROID );
+        }
+        
+        [MenuItem("Vault/CI/Increment PS5 Version")]
+        public static void RequestPS5VersionIncrement()
+        {
+            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PS5 );
+        }
+
         [MenuItem( "Vault/CI/Build PC" )]
         public static void RequestWin64Builds()
         {
             _sw = AppendText( BUILD_LOG_PATH );
             _sw.WriteLine( $"[{Now}] PC Build Requested" );
-            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PC );
-            _sw.WriteLine( $"[{Now}] Editor Version Updated" );
             UpdateRuntimeVersion();
             _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
@@ -93,8 +109,6 @@ namespace Universe.Editor
         {
             _sw = AppendText( BUILD_LOG_PATH );
             _sw.WriteLine( $"[{Now}] Android Build Requested" );
-            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_ANDROID );
-            _sw.WriteLine( $"[{Now}] Editor Version Updated" );
             UpdateRuntimeVersion();
             _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
@@ -113,8 +127,6 @@ namespace Universe.Editor
         {
             _sw = AppendText( BUILD_LOG_PATH );
             _sw.WriteLine( $"[{Now}] PS5 Build Requested" );
-            UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PS5 );
-            _sw.WriteLine( $"[{Now}] Editor Version Updated" );
             UpdateRuntimeVersion();
             _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
