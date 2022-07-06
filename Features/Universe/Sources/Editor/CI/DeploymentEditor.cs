@@ -37,9 +37,10 @@ namespace Universe.Editor
         private const string UPLOAD_PATH = ".\\SlackUpload";
 
         //static names
-        private const string DEVELOPMENT_BUILD_PREFIX   = "[DEV]";
-        private const string RELEASE_BUILD_PREFIX       = "[Release]";
-        private const string DO_NOT_SHIP_SUFFIX         = "_BurstDebugInformation_DoNotShip";
+        private const string DEVELOPMENT_BUILD_PREFIX       = "[DEV]";
+        private const string RELEASE_BUILD_PREFIX           = "[Release]";
+        private const string DO_NOT_SHIP_BURST_SUFFIX       = "_BurstDebugInformation_DoNotShip";
+        private const string DO_NOT_SHIP_IL_SUFFIX          = "_BackUpThisFolder_ButDontShipItWithYourGame";
 
         private const string PLATFORM_DISPLAY_NAME_PC       = "Win64";
         private const string PLATFORM_EXTENSION_PC          = ".exe";
@@ -414,28 +415,36 @@ namespace Universe.Editor
         private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )
         {
 
-            var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
-            var doNotShipName           = $"{name}{DO_NOT_SHIP_SUFFIX}";
-            var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
-            var fullName                = $"{prefix}{name}_{platform}_{version}";
-            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
-            var zipPath                 = $"{UPLOAD_PATH}\\{fullName}.zip";
-            var doNotShipPath           = $"{path}\\{doNotShipName}";
-            var isolationPath           = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipName}";
+            var useIL = PlayerSettings.GetScriptingBackend(BuildTargetGroup.Standalone) == ScriptingImplementation.IL2CPP;
+            
+            var prefix                 = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var doNotShipBurstName          = $"{name}{DO_NOT_SHIP_BURST_SUFFIX}";
+            var doNotShipILName             = $"{name}{DO_NOT_SHIP_IL_SUFFIX}";
+            var batRelativeBuildPath   = BUILD_PATH.Replace("..", ".");
+            var fullName                    = $"{prefix}{name}_{platform}_{version}";
+            var path                        = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
+            var zipPath                     = $"{UPLOAD_PATH}\\{fullName}.zip";
+            var doNotShipBurstPath          = $"{path}\\{doNotShipBurstName}";
+            var doNotShipILPath             = $"{path}\\{doNotShipILName}";
+            var isolationPath               = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipBurstName}";
 
             using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
                 var createTmpIfNotExists    = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var isolateDoNotShip        = $"move \"{doNotShipPath}\" \"{isolationPath}\"";
+                var isolateDoNotShipBurst   = $"move \"{doNotShipBurstPath}\" \"{isolationPath}\"";
+                var isolateDoNotShipIL      = useIL ? $"move \"{doNotShipILPath}\" \"{isolationPath}\"" : "";
                 var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
-                var recoverDoNotShip        = $"move \"{isolationPath}\" \"{doNotShipPath}\"";
+                var recoverDoNotShipBurst   = $"move \"{isolationPath}\" \"{doNotShipBurstPath}\"";
+                var recoverDoNotShipIL      = useIL ? $"move \"{isolationPath}\" \"{doNotShipILPath}\"" : "";
 
                 sw.WriteLine( createTmpIfNotExists );
                 sw.WriteLine( createUploadIfNotExists );
-                sw.WriteLine( isolateDoNotShip );
+                sw.WriteLine( isolateDoNotShipBurst );
+                sw.WriteLine( isolateDoNotShipIL );
                 sw.WriteLine( zipping );
-                sw.WriteLine( recoverDoNotShip );
+                sw.WriteLine( recoverDoNotShipBurst );
+                sw.WriteLine( recoverDoNotShipIL );
             }
 
             var steamContentSubPath = developmentBuild ? "debug" : "release";
