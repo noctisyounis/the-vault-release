@@ -426,19 +426,22 @@ namespace Universe.Editor
             var zipPath                     = $"{UPLOAD_PATH}\\{fullName}.zip";
             var doNotShipBurstPath          = $"{path}\\{doNotShipBurstName}";
             var doNotShipILPath             = $"{path}\\{doNotShipILName}";
-            var isolationPath               = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipBurstName}";
+            var burstIsolationPath          = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipBurstName}";
+            var ILIsolationPath             = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipILName}";
 
             using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
-                var createTmpIfNotExists    = $"if not exist \"{isolationPath}\" mkdir \"{isolationPath}\"";
+                var createBurstTmpIfNotExists    = $"if not exist \"{burstIsolationPath}\" mkdir \"{burstIsolationPath}\"";
+                var createILTmpIfNotExists    = useIL ? $"if not exist \"{ILIsolationPath}\" mkdir \"{ILIsolationPath}\"" : "";
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var isolateDoNotShipBurst   = $"move \"{doNotShipBurstPath}\" \"{isolationPath}\"";
-                var isolateDoNotShipIL      = useIL ? $"move \"{doNotShipILPath}\" \"{isolationPath}\"" : "";
+                var isolateDoNotShipBurst   = $"move \"{doNotShipBurstPath}\" \"{burstIsolationPath}\"";
+                var isolateDoNotShipIL      = useIL ? $"move \"{doNotShipILPath}\" \"{ILIsolationPath}\"" : "";
                 var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
-                var recoverDoNotShipBurst   = $"move \"{isolationPath}\" \"{doNotShipBurstPath}\"";
-                var recoverDoNotShipIL      = useIL ? $"move \"{isolationPath}\" \"{doNotShipILPath}\"" : "";
+                var recoverDoNotShipBurst   = $"move \"{burstIsolationPath}\" \"{doNotShipBurstPath}\"";
+                var recoverDoNotShipIL      = useIL ? $"move \"{ILIsolationPath}\" \"{doNotShipILPath}\"" : "";
 
-                sw.WriteLine( createTmpIfNotExists );
+                sw.WriteLine( createBurstTmpIfNotExists );
+                sw.WriteLine( createILTmpIfNotExists );
                 sw.WriteLine( createUploadIfNotExists );
                 sw.WriteLine( isolateDoNotShipBurst );
                 sw.WriteLine( isolateDoNotShipIL );

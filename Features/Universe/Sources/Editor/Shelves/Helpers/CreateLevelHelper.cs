@@ -81,8 +81,8 @@ namespace Universe.Toolbar.Editor
         {
             var level 	= GenerateLevelAsset();
             
-			playerData	??= GenerateTask(_targetPlayer, GAMEPLAY, true);
-			audioData	??= GenerateTask(_targetAudio, GAMEPLAY, true);
+			playerData	??= GenerateTask(_targetPlayer, GAMEPLAY, true, true);
+			audioData	??= GenerateTask(_targetAudio, GAMEPLAY, false, true);
 			
 			if(string.IsNullOrEmpty(initialSituation.m_name)) 
 				initialSituation.m_name = $"{_situationName}";
@@ -193,7 +193,7 @@ namespace Universe.Toolbar.Editor
 			return level;
 		}
 
-		private static TaskData GenerateTask(string path, TaskPriority priority, bool isAdditive)
+		private static TaskData GenerateTask(string path, TaskPriority priority, bool hasInputPriority, bool isAdditive)
 		{
 			var fullPath = GetFullPath(path);
 			var dataPath = path.Replace(".unity", ".asset");
@@ -221,6 +221,7 @@ namespace Universe.Toolbar.Editor
 
 			taskData.m_assetReference		= new AssetReference(sceneGuid);
 			taskData.m_priority				= priority;
+			taskData.m_inputPriority		= hasInputPriority;
 			taskData.m_canBeLoadOnlyOnce 	= true;
 			CreateAsset(taskData, dataPath);
 

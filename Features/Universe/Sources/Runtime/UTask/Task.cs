@@ -181,7 +181,7 @@ namespace Universe.SceneTask.Runtime
                 return;
             }
 
-            _orderedKeys = _dicoOfTasks.Keys.OrderByDescending( task => task.m_priority );
+            _orderedKeys = _dicoOfTasks.Keys.OrderByDescending(task => task);
 
             var task = _orderedKeys.First();
 
