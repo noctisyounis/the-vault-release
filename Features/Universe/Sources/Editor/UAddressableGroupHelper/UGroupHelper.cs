@@ -86,7 +86,10 @@ namespace Universe.Editor
 				if(!path.Contains(s_targetFolder)) continue;
                 if(IsValidFolder(path)) continue;
 
-				if(GetMainAssetTypeAtPath(path).Equals(typeof(UAddressableGroupHelper)))
+                var assetType = GetMainAssetTypeAtPath(path);
+                if(assetType is null) continue;
+
+				if(assetType.Equals(typeof(UAddressableGroupHelper)))
 				{
 					s_helperPaths.Add(path);
 					continue;
