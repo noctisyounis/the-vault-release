@@ -86,6 +86,26 @@ namespace Universe.Editor
         {
             UpgradeVersionBundle( PLATFORM_DISPLAY_NAME_PS5 );
         }
+        
+        public static void RequestSymlinkLoad()
+        {
+            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
+
+            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
+        }
+
+        public static void RequestSymlinkUnload()
+        {
+            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
+
+            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
+        }
+
+        public static void RequestAddressableBuild()
+        {
+            CleanPlayerContent(); 
+            ReloadAndBuildAddressable.Execute();
+        }
 
         [MenuItem( "Vault/CI/Build PC" )]
         public static void RequestWin64Builds()
@@ -95,14 +115,7 @@ namespace Universe.Editor
             UpdateRuntimeVersion();
             _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
 
-            CleanPlayerContent();
-
-            var directories         = GetDirectories(SourceDirectoryPath);
-            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
-
-            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
-            OnRefreshCompleted += StartWin64Builds;
-            ReloadAndBuildAddressable.Execute();
+            StartWin64Builds();
         }
 
         [MenuItem( "Vault/CI/Build Android" )]
@@ -115,10 +128,6 @@ namespace Universe.Editor
 
             CleanPlayerContent();
 
-            var directories         = GetDirectories(SourceDirectoryPath);
-            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
-
-            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
             OnRefreshCompleted += StartAndroidBuilds;
             ReloadAndBuildAddressable.Execute();
         }
@@ -133,10 +142,6 @@ namespace Universe.Editor
 
             CleanPlayerContent();
 
-            var directories         = GetDirectories(SourceDirectoryPath);
-            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
-
-            LoadAllSymlink( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
             OnRefreshCompleted += StartPS5Builds;
             ReloadAndBuildAddressable.Execute();
         }
@@ -154,13 +159,9 @@ namespace Universe.Editor
             StartBuild( target, false );
             StartBuild( target, true );
 
-            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
-
             _sw.WriteLine( $"[{Now}] Build Finished" );
             Log( $"[{Now}] Build Finished" );
 
-            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
-            _sw.WriteLine( $"[{Now}] Symlink unloaded" );
             _sw.WriteLine( $"[{Now}] Stream Closed" );
             _sw.WriteLine( $"------------------------------------------------------------" );
             _sw.Close();
@@ -178,13 +179,9 @@ namespace Universe.Editor
             StartBuild( target, true );
             StartBuild( target, false );
 
-            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
-
             _sw.WriteLine( $"[{Now}] Build Finished" );
             Log( $"[{Now}] Build Finished" );
 
-            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
-            _sw.WriteLine( $"[{Now}] Symlink unloaded" );
             _sw.WriteLine( $"[{Now}] Stream Closed" );
             _sw.WriteLine( $"------------------------------------------------------------" );
             _sw.Close();
@@ -203,13 +200,9 @@ namespace Universe.Editor
             StartBuild( target, true );
             StartBuild( target, false );
 
-            var graphicsDirectories = GetDirectories(SourceGraphicsTiersDirectoryPath);
-
             _sw.WriteLine( $"[{Now}] Build Finished" );
             Log( $"[{Now}] Build Finished" );
 
-            RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
-            _sw.WriteLine( $"[{Now}] Symlink unloaded" );
             _sw.WriteLine( $"[{Now}] Stream Closed" );
             _sw.WriteLine( $"------------------------------------------------------------" );
             _sw.Close();
