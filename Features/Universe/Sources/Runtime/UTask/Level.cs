@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using static Universe.SceneTask.Runtime.LoadLevelMode;
 
 namespace Universe.SceneTask.Runtime
@@ -38,6 +39,15 @@ namespace Universe.SceneTask.Runtime
 
         public static SituationData GetSituation(int index) =>
             s_currentLevel.GetSituation(index);
+
+        public static void UpdateCurrentSituation(SituationData situation)
+        {
+            var index = s_currentLevel.IndexOf(situation);
+            if (index < 0)
+                return;
+            
+            _currentSituationIndex = index;
+        }
 
         #endregion
 
@@ -101,7 +111,6 @@ namespace Universe.SceneTask.Runtime
 
         private static void LoadSituation(this UBehaviour source, SituationData situation)
         {
-            var tasks = s_currentLevel.Situations;
             var index = s_currentLevel.IndexOf(situation);
             if (index < 0)
                 return;

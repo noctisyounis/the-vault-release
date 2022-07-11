@@ -42,6 +42,8 @@ namespace Universe.SceneTask.Runtime
             source.TryLoadBlockMeshTask( situation );
             source.TryLoadArtTask( situation );
             source.TryLoadGameplayTask( situation );
+            
+            Level.UpdateCurrentSituation(situation);
 
             if (!situation.m_isCheckpoint)
                 return;
