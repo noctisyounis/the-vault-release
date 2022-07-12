@@ -81,8 +81,8 @@ namespace Universe.Toolbar.Editor
         {
             var level 	= GenerateLevelAsset();
             
-			playerData	??= GenerateTask(_targetPlayer, GAMEPLAY, true, true);
-			audioData	??= GenerateTask(_targetAudio, GAMEPLAY, false, true);
+			playerData	??= GenerateTask(_targetPlayer, GAMEPLAY, true, _settings.m_playerSceneTemplate, true);
+			audioData	??= GenerateTask(_targetAudio, GAMEPLAY, false, _settings.m_audioSceneTemplate, true);
 			
 			if(string.IsNullOrEmpty(initialSituation.m_name)) 
 				initialSituation.m_name = $"{_situationName}";
@@ -127,7 +127,6 @@ namespace Universe.Toolbar.Editor
 			_audioTaskName			= _settings.m_audioTaskName;
 			_playerTaskName			= _settings.m_playerTaskName;
 			_situationName			= _settings.m_situationName;
-			_sceneTemplate 			= _settings.m_sceneTemplate; 
 			_addressableTemplate	= _settings.m_addressableGroupTemplate;
 		}
 
@@ -193,16 +192,16 @@ namespace Universe.Toolbar.Editor
 			return level;
 		}
 
-		private static TaskData GenerateTask(string path, TaskPriority priority, bool hasInputPriority, bool isAdditive)
+		private static TaskData GenerateTask(string path, TaskPriority priority, bool hasInputPriority, SceneTemplateAsset template, bool isAdditive)
 		{
 			var fullPath = GetFullPath(path);
 			var dataPath = path.Replace(".unity", ".asset");
 
 			if(Exists(fullPath)) return LoadAssetAtPath<TaskData>(dataPath);
 
-			if(_sceneTemplate)
+			if(template)
 			{
-				SceneTemplateService.Instantiate(_sceneTemplate, isAdditive, path);
+				SceneTemplateService.Instantiate(template, isAdditive, path);
 			}
 			else
 			{
@@ -256,7 +255,6 @@ namespace Universe.Toolbar.Editor
 		private static string _targetAudio;
 		private static string _targetPlayer;
 		private static string _targetSituation;
-		private static SceneTemplateAsset _sceneTemplate;
 		private static AddressableAssetGroupTemplate _addressableTemplate;
 		private static bool _isGenerating;
 		

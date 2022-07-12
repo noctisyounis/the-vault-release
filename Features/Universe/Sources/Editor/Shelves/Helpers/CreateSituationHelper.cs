@@ -70,9 +70,9 @@ namespace Universe.Toolbar.Editor
 		{
 			var situation 		= GenerateSituationAsset();
 			
-			blockMeshData		??= GenerateTask(_targetBlockMesh, GAMEPLAY, true);
-			artData				??= GenerateTask(_targetArt, GAMEPLAY, true);
-			gameplayData		??= GenerateTask(_targetGameplay, GAMEPLAY, true);
+			blockMeshData		??= GenerateTask(_targetBlockMesh, GAMEPLAY, _settings.m_blockMeshSceneTemplate, true);
+			artData				??= GenerateTask(_targetArt, GAMEPLAY, _settings.m_artSceneTemplate, true);
+			gameplayData		??= GenerateTask(_targetGameplay, GAMEPLAY, _settings.m_gameplaySceneTemplate, true);
 
 			var shortName = Shorten(situation.name);
 
@@ -104,7 +104,6 @@ namespace Universe.Toolbar.Editor
 			_blockMeshTaskName	= _settings.m_blockMeshTaskName;
 			_artTaskName		= _settings.m_artTaskName;
 			_gameplayTaskName	= _settings.m_gameplayTaskName;
-			_sceneTemplate		= _settings.m_sceneTemplate;
 		}
 
 		private static void LoadSettings() =>
@@ -189,15 +188,15 @@ namespace Universe.Toolbar.Editor
 			return situation;
 		}
 		
-		private static TaskData GenerateTask(string path, TaskPriority priority, bool isAdditive)
+		private static TaskData GenerateTask(string path, TaskPriority priority, SceneTemplateAsset template, bool isAdditive)
 		{
 			var fullPath = GetFullPath(path);
 			var dataPath = path.Replace(".unity", ".asset");
 
 			if(Exists(fullPath)) return LoadAssetAtPath<TaskData>(dataPath);
 
-			if(_sceneTemplate)
-				SceneTemplateService.Instantiate(_sceneTemplate, isAdditive, path);
+			if(template)
+				SceneTemplateService.Instantiate(template, isAdditive, path);
 			else
 			{
 				var mode 	= isAdditive ? Additive : NewSceneMode.Single;
@@ -252,7 +251,6 @@ namespace Universe.Toolbar.Editor
 		private static string _targetArt;
 		private static string _targetGameplay;
 		private static bool _isGenerating;
-		private static SceneTemplateAsset _sceneTemplate;
 		private static AddressableAssetGroupTemplate _addressableTemplate;
 
 		#endregion

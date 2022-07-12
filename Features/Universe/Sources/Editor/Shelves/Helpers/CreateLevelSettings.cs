@@ -15,7 +15,11 @@ namespace Universe.Toolbar.Editor
 		public string m_artTaskName = "Art";
 		public string m_gameplayTaskName = "Gameplay";
 		public string m_addressableGroupHelperName = "LevelHelper";
-		public SceneTemplateAsset m_sceneTemplate;
+		public SceneTemplateAsset m_playerSceneTemplate;
+		public SceneTemplateAsset m_audioSceneTemplate;
+		public SceneTemplateAsset m_blockMeshSceneTemplate;
+		public SceneTemplateAsset m_artSceneTemplate;
+		public SceneTemplateAsset m_gameplaySceneTemplate;
         public AddressableAssetGroupTemplate m_addressableGroupTemplate;
 
         #endregion
