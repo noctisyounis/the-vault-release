@@ -256,7 +256,7 @@ namespace Universe.Editor
             var path            = summary.outputPath;
             var isDevelopment   = (summary.options & Development) != 0;
 
-            _sw.WriteLine( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
+            _sw?.WriteLine( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
             Log( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
         }
 
