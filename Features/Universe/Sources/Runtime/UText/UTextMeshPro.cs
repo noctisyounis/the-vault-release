@@ -6,7 +6,6 @@ using static Universe.TextServices;
 
 namespace Universe
 {
-    [RequireComponent(typeof(TextMeshPro))]
     public class UTextMeshPro : UTextGeneric<TMP_Text>
     {
         #region Public

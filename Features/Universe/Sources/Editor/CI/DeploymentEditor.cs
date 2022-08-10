@@ -12,7 +12,6 @@ using static UnityEditor.BuildPipeline;
 using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
-using static Universe.Editor.UGroupHelper;
 using static Universe.Editor.USettingsHelper;
 using static Symlink.Editor.SymlinkEditor;
 
@@ -28,7 +27,6 @@ namespace Universe.Editor
         //Project relative
         private const string TASK_GAME_STARTER_PATH = "Assets\\_\\GameStarter\\GameStarter.unity";
         private const string BUILD_PATH             = "..\\Builds";
-        private const string BUILD_LOG_PATH         = "..\\BuildLog.txt";
         private const string BUILD_VERSION_PATH     = "..\\..\\{productName}_{platform}_LastBuildVersion.txt";
         private const string BUILD_SLACK_MOVER_PATH = "..\\Jenkins_Slack_Uploader.bat";
         private const string BUILD_STEAM_MOVER_PATH = "..\\Jenkins_Steam_Mover.bat";
@@ -107,105 +105,59 @@ namespace Universe.Editor
             ReloadAndBuildAddressable.Execute();
         }
 
-        [MenuItem( "Vault/CI/Build PC" )]
-        public static void RequestWin64Builds()
+        [MenuItem("Vault/CI/Clear Movers .bat")]
+        public static void ClearMovers()
         {
-            _sw = AppendText( BUILD_LOG_PATH );
-            _sw.WriteLine( $"[{Now}] PC Build Requested" );
-            UpdateRuntimeVersion();
-            _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
-
-            StartWin64Builds();
-        }
-
-        [MenuItem( "Vault/CI/Build Android" )]
-        public static void RequestAndroidBuilds()
-        {
-            _sw = AppendText( BUILD_LOG_PATH );
-            _sw.WriteLine( $"[{Now}] Android Build Requested" );
-            UpdateRuntimeVersion();
-            _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
-
-            CleanPlayerContent();
-
-            OnRefreshCompleted += StartAndroidBuilds;
-            ReloadAndBuildAddressable.Execute();
-        }
-
-        [MenuItem( "Vault/CI/Build PS5" )]
-        public static void RequestPS5Builds()
-        {
-            _sw = AppendText( BUILD_LOG_PATH );
-            _sw.WriteLine( $"[{Now}] PS5 Build Requested" );
-            UpdateRuntimeVersion();
-            _sw.WriteLine( $"[{Now}] Runtime Version Updated" );
-
-            CleanPlayerContent();
-
-            OnRefreshCompleted += StartPS5Builds;
-            ReloadAndBuildAddressable.Execute();
-        }
-
-        private static void StartWin64Builds()
-        {
-            var target = StandaloneWindows64;
-
-            OnRefreshCompleted -= StartWin64Builds;
-            _sw.WriteLine( $"[{Now}] PC Builds Pending" );
-
             ClearSlackMover();
             ClearSteamMover();
-
-            StartBuild( target, false );
-            StartBuild( target, true );
-
-            _sw.WriteLine( $"[{Now}] Build Finished" );
-            Log( $"[{Now}] Build Finished" );
-
-            _sw.WriteLine( $"[{Now}] Stream Closed" );
-            _sw.WriteLine( $"------------------------------------------------------------" );
-            _sw.Close();
         }
 
-        private static void StartAndroidBuilds()
+        [MenuItem( "Vault/CI/Build PC/[DEV]" )]
+        public static void RequestWin64DevBuild()
         {
-            var target = Android;
+            UpdateRuntimeVersion();
 
-            OnRefreshCompleted -= StartAndroidBuilds;
-            _sw.WriteLine( $"[{Now}] Android Builds Pending" );
-
-            ClearSlackMover();
-
-            StartBuild( target, true );
-            StartBuild( target, false );
-
-            _sw.WriteLine( $"[{Now}] Build Finished" );
-            Log( $"[{Now}] Build Finished" );
-
-            _sw.WriteLine( $"[{Now}] Stream Closed" );
-            _sw.WriteLine( $"------------------------------------------------------------" );
-            _sw.Close();
+            StartBuild(StandaloneWindows64, true );
         }
 
-        private static void StartPS5Builds()
+        [MenuItem( "Vault/CI/Build PC/[Release]" )]
+        public static void RequestWin64ReleaseBuild()
         {
-            var target = PS5;
+            UpdateRuntimeVersion();
 
-            OnRefreshCompleted -= StartPS5Builds;
-            _sw.WriteLine( $"[{Now}] PS5 Builds Pending" );
+            StartBuild(StandaloneWindows64, false );
+        }
+        
+        [MenuItem( "Vault/CI/Build Android/[DEV]" )]
+        public static void RequestAndroidDevBuild()
+        {
+            UpdateRuntimeVersion();
 
-            ClearSlackMover();
-            ClearSteamMover();
+            StartBuild(Android, true );
+        }
 
-            StartBuild( target, true );
-            StartBuild( target, false );
+        [MenuItem( "Vault/CI/Build Android/[Release]" )]
+        public static void RequestAndroidReleaseBuild()
+        {
+            UpdateRuntimeVersion();
 
-            _sw.WriteLine( $"[{Now}] Build Finished" );
-            Log( $"[{Now}] Build Finished" );
+            StartBuild(Android, false );
+        }
+        
+        [MenuItem( "Vault/CI/Build PS5/[DEV]" )]
+        public static void RequestPS5DevBuild()
+        {
+            UpdateRuntimeVersion();
 
-            _sw.WriteLine( $"[{Now}] Stream Closed" );
-            _sw.WriteLine( $"------------------------------------------------------------" );
-            _sw.Close();
+            StartBuild(PS5, true );
+        }
+        
+        [MenuItem( "Vault/CI/Build PS5/[Release]" )]
+        public static void RequestPS5ReleaseBuild()
+        {
+            UpdateRuntimeVersion();
+
+            StartBuild(PS5, false );
         }
 
         private static void StartBuild( BuildTarget target, bool developmentBuild )
@@ -244,8 +196,6 @@ namespace Universe.Editor
                 }
             }
 
-            _sw.WriteLine( $"[{Now}] {fullName} Build Started" );
-
             BuildPlayer( option );
         }
 
@@ -256,7 +206,6 @@ namespace Universe.Editor
             var path            = summary.outputPath;
             var isDevelopment   = (summary.options & Development) != 0;
 
-            _sw?.WriteLine( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
             Log( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
         }
 
@@ -407,7 +356,6 @@ namespace Universe.Editor
 
         private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )
         {
-
             var useIL = PlayerSettings.GetScriptingBackend(BuildTargetGroup.Standalone) == ScriptingImplementation.IL2CPP;
             
             var prefix                 = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
@@ -419,28 +367,21 @@ namespace Universe.Editor
             var zipPath                     = $"{UPLOAD_PATH}\\{fullName}.zip";
             var doNotShipBurstPath          = $"{path}\\{doNotShipBurstName}";
             var doNotShipILPath             = $"{path}\\{doNotShipILName}";
-            var burstIsolationPath          = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipBurstName}";
-            var ILIsolationPath             = $"{batRelativeBuildPath}\\tmp\\{platform}\\{prefix}\\{doNotShipILName}";
 
             using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
-                var createBurstTmpIfNotExists    = $"if not exist \"{burstIsolationPath}\" mkdir \"{burstIsolationPath}\"";
-                var createILTmpIfNotExists    = useIL ? $"if not exist \"{ILIsolationPath}\" mkdir \"{ILIsolationPath}\"" : "";
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var isolateDoNotShipBurst   = $"move \"{doNotShipBurstPath}\" \"{burstIsolationPath}\"";
-                var isolateDoNotShipIL      = useIL ? $"move \"{doNotShipILPath}\" \"{ILIsolationPath}\"" : "";
-                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
-                var recoverDoNotShipBurst   = $"move \"{burstIsolationPath}\" \"{doNotShipBurstPath}\"";
-                var recoverDoNotShipIL      = useIL ? $"move \"{ILIsolationPath}\" \"{doNotShipILPath}\"" : "";
+                var deleteDoNotShipBurst    = $"rmdir /s /q \"{doNotShipBurstPath}\"";
+                var deleteDoNotShipIL       = $"rmdir /s /q \"{doNotShipILPath}\"";
+                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\" -sdel";
 
-                sw.WriteLine( createBurstTmpIfNotExists );
-                sw.WriteLine( createILTmpIfNotExists );
                 sw.WriteLine( createUploadIfNotExists );
-                sw.WriteLine( isolateDoNotShipBurst );
-                sw.WriteLine( isolateDoNotShipIL );
+                if (!developmentBuild)
+                {
+                    sw.WriteLine( deleteDoNotShipBurst );
+                    sw.WriteLine( deleteDoNotShipIL );
+                }
                 sw.WriteLine( zipping );
-                sw.WriteLine( recoverDoNotShipBurst );
-                sw.WriteLine( recoverDoNotShipIL );
             }
 
             var steamContentSubPath = developmentBuild ? "debug" : "release";
@@ -456,7 +397,6 @@ namespace Universe.Editor
 
         private static void PrepareAndroidPackage( string platform, string name, string version, bool developmentBuild )
         {
-
             var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
             var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
             var fullName                = $"{prefix}{name}_{platform}_{version}";
@@ -507,7 +447,6 @@ namespace Universe.Editor
 
         #region Private
 
-        private static StreamWriter _sw;
         private static string _lastVersion;
         private static int _lastAndroidBundleCode;
 
