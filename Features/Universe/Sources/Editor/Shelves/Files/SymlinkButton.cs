@@ -1,11 +1,15 @@
 using System;
+using System.IO;
 using JetBrains.Annotations;
 using UnityEngine;
+
 using static System.IO.Directory;
 using static System.IO.Path;
 using static Symlink.Editor.SymlinkEditor;
+using static UnityEngine.Debug;
 using static UnityEngine.Application;
 using static UnityEngine.GUILayout;
+using static UnityEngine.GUI;
 
 namespace Universe.Toolbar.Editor
 {
@@ -70,6 +74,18 @@ namespace Universe.Toolbar.Editor
         {
             if (Exists(targetPath))
             {
+                var attributes = File.GetAttributes(targetPath);
+                if ((attributes & FOLDER_SYMLINK_ATTRIBS) != FOLDER_SYMLINK_ATTRIBS)
+                {
+                    var defaultStyle = GUI.backgroundColor;
+                    
+                    backgroundColor = Color.red;
+                    LogError($"[SHELF FILES]{fileName} isn't a symlink");
+                    Button($"INVALID {fileName}");
+                    backgroundColor = defaultStyle;
+                    return;
+                }
+                
                 if (Button($"Unload {fileName}"))
                 {
                     RemoveSymlink(targetPath);
@@ -83,6 +99,14 @@ namespace Universe.Toolbar.Editor
                 LoadSymlink(path, targetPath);
             }
         }
+        
+        #endregion
+        
+        
+        #region Private
+        
+        private const FileAttributes FOLDER_SYMLINK_ATTRIBS = FileAttributes.Directory | FileAttributes.ReparsePoint;
+
         
         #endregion
     }

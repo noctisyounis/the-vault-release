@@ -2,6 +2,8 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEngine;
+using Universe.SceneTask.Runtime;
 
 using static System.DateTime;
 using static System.IO.File;
@@ -13,6 +15,7 @@ using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
 using static Universe.Editor.USettingsHelper;
+using static Universe.SceneTask.Runtime.Environment;
 using static Symlink.Editor.SymlinkEditor;
 
 namespace Universe.Editor
@@ -47,8 +50,12 @@ namespace Universe.Editor
         private const string PLATFORM_DISPLAY_NAME_PS5      = "PS5";
         private const string PLATFORM_EXTENSION_PS5         = "\\";
 
-        private const string PS5_WORKSPACE_DEVELOPMENT  = "workspace2";
-        private const string PS5_WORKSPACE_RELEASE      = "workspace1";
+        private const string DEPLOY_SUFFIX = "Deploy";
+        private const string DEPLOY_AND_RUN_SUFFIX = "DeployAndRun";
+            
+        private const string PS5_WORKSPACE_DEFAULT      = "workspace0";
+        private const string PS5_WORKSPACE_DEVELOPMENT  = "workspace1";
+        private const string PS5_WORKSPACE_RELEASE      = "workspace2";
 
         private const string MANAGERS_PARENT_NAME = "Managers";
         private const string OCULUS_MANAGER_NAME = "OculusManager";
@@ -116,7 +123,8 @@ namespace Universe.Editor
         public static void RequestWin64DevBuild()
         {
             UpdateRuntimeVersion();
-
+            
+            _CITriggered = true;
             StartBuild(StandaloneWindows64, true );
         }
 
@@ -124,7 +132,8 @@ namespace Universe.Editor
         public static void RequestWin64ReleaseBuild()
         {
             UpdateRuntimeVersion();
-
+            
+            _CITriggered = true;
             StartBuild(StandaloneWindows64, false );
         }
         
@@ -132,7 +141,8 @@ namespace Universe.Editor
         public static void RequestAndroidDevBuild()
         {
             UpdateRuntimeVersion();
-
+            
+            _CITriggered = true;
             StartBuild(Android, true );
         }
 
@@ -140,7 +150,8 @@ namespace Universe.Editor
         public static void RequestAndroidReleaseBuild()
         {
             UpdateRuntimeVersion();
-
+            
+            _CITriggered = true;
             StartBuild(Android, false );
         }
         
@@ -148,7 +159,8 @@ namespace Universe.Editor
         public static void RequestPS5DevBuild()
         {
             UpdateRuntimeVersion();
-
+            
+            _CITriggered = true;
             StartBuild(PS5, true );
         }
         
@@ -156,7 +168,8 @@ namespace Universe.Editor
         public static void RequestPS5ReleaseBuild()
         {
             UpdateRuntimeVersion();
-
+            
+            _CITriggered = true;
             StartBuild(PS5, false );
         }
 
@@ -176,6 +189,11 @@ namespace Universe.Editor
                 target              = target,
                 options             = developmentBuild ? Development : 0
             };
+            
+            var levelSettings = GetSettings<LevelSettings>();
+
+            levelSettings.m_startingEnvironment = developmentBuild ? BLOCK_MESH : ART;
+            levelSettings.SaveAsset();
 
             switch( target )
             {
@@ -212,22 +230,18 @@ namespace Universe.Editor
         public void OnPostprocessBuild( BuildReport report )
         {
             var name                = productName;
-            var path                = report.summary.outputPath;
-            var workspace           = isDebugBuild ? PS5_WORKSPACE_DEVELOPMENT : PS5_WORKSPACE_RELEASE;
-            var deployPath          = $"{path}{name}_Deploy.bat";
-            var deployAndRunPath    = $"{path}{name}_DeployAndRun.bat";
+            var summary                  = report.summary;
+            var path                = summary.outputPath;
+            var platform        = summary.platform;
 
-            if( !File.Exists( deployPath ) )
-                return;
+            if (platform == Android)
+                GenerateAndroidDeploymentFiles(path, name);
+            
+            if(!_CITriggered) return;
+            _CITriggered = false;
 
-            var adaptedDeploy       = ReadAllText(deployPath);
-            var adaptedDeployAndRun = ReadAllText(deployAndRunPath);
-
-            adaptedDeploy = adaptedDeploy.Replace( "workspaceX", workspace );
-            adaptedDeployAndRun = adaptedDeployAndRun.Replace( "workspaceX", workspace );
-
-            WriteAllText( deployPath, adaptedDeploy );
-            WriteAllText( deployAndRunPath, adaptedDeployAndRun );
+            if (platform == PS5)
+                UpdatePS5DeploymentFiles(path, name);
         }
 
         #endregion
@@ -354,10 +368,18 @@ namespace Universe.Editor
             version.SaveAsset();
         }
 
+        private static void ClearSlackMover()
+        {
+            WriteAllText( BUILD_SLACK_MOVER_PATH, string.Empty );
+        }
+        
+        private static void ClearSteamMover()
+        {
+            WriteAllText( BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n" );
+        }
+        
         private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )
         {
-            var useIL = PlayerSettings.GetScriptingBackend(BuildTargetGroup.Standalone) == ScriptingImplementation.IL2CPP;
-            
             var prefix                 = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
             var doNotShipBurstName          = $"{name}{DO_NOT_SHIP_BURST_SUFFIX}";
             var doNotShipILName             = $"{name}{DO_NOT_SHIP_IL_SUFFIX}";
@@ -398,22 +420,65 @@ namespace Universe.Editor
         private static void PrepareAndroidPackage( string platform, string name, string version, bool developmentBuild )
         {
             var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var doNotShipBurstName          = $"{name}{DO_NOT_SHIP_BURST_SUFFIX}";
+            var doNotShipILName             = $"{name}{DO_NOT_SHIP_IL_SUFFIX}";
             var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
             var fullName                = $"{prefix}{name}_{platform}_{version}";
-            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}\\{name}";
-            var apkPath                 = $"{path}.apk";
-            var copiedApkPath           = $"{UPLOAD_PATH}\\{fullName}.apk";
+            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
+            var zipPath                     = $"{UPLOAD_PATH}\\{fullName}.zip";
+            var doNotShipBurstPath          = $"{path}\\{doNotShipBurstName}";
+            var doNotShipILPath             = $"{path}\\{doNotShipILName}";
 
             using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var copyToUploadFolder      = $"copy \"{apkPath}\" \"{copiedApkPath}\"";
+                var deleteDoNotShipBurst    = $"rmdir /s /q \"{doNotShipBurstPath}\"";
+                var deleteDoNotShipIL       = $"rmdir /s /q \"{doNotShipILPath}\"";
+                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\" -sdel";
 
                 sw.WriteLine( createUploadIfNotExists );
-                sw.WriteLine( copyToUploadFolder );
+                if (!developmentBuild)
+                {
+                    sw.WriteLine( deleteDoNotShipBurst );
+                    sw.WriteLine( deleteDoNotShipIL );
+                }
+                sw.WriteLine( zipping );
             }
         }
 
+        private static void GenerateAndroidDeploymentFiles(string path, string projectName)
+        {
+            var deployPath          = $"{path}";
+            
+            deployPath = deployPath.Replace($"{PLATFORM_EXTENSION_ANDROID}", string.Empty);
+            var deployAndRunPath    = $"{deployPath}_{DEPLOY_AND_RUN_SUFFIX}.bat";
+            
+            deployPath = $"{deployPath}_{DEPLOY_SUFFIX}.bat";
+
+            if (!File.Exists(deployPath))
+                Create(deployPath).Close();
+            else
+                WriteAllText(deployPath, string.Empty);
+            
+            if (!File.Exists(deployAndRunPath))
+                Create(deployAndRunPath).Close();
+            else
+                WriteAllText(deployAndRunPath, string.Empty);
+
+            var id = identifier;
+            var writter = new StreamWriter(deployPath);
+            var deploy  = $"adb install \"{projectName}.apk\"";
+            var run = $"adb shell monkey -p {id} -c android.intent.category.LAUNCHER 1";
+
+            writter.WriteLine(deploy);
+            writter.Close();
+            
+            writter = new StreamWriter(deployAndRunPath);
+            writter.WriteLine(deploy);
+            writter.WriteLine(run);
+            writter.Close();
+        }
+        
         private static void PreparePS5Package( string platform, string name, string version, bool developmentBuild )
         {
             var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
@@ -432,14 +497,24 @@ namespace Universe.Editor
             }
         }
 
-        private static void ClearSlackMover()
+        private static void UpdatePS5DeploymentFiles(string path, string projectName)
         {
-            WriteAllText( BUILD_SLACK_MOVER_PATH, string.Empty );
-        }
+            
+            var deployPath          = $"{path}{projectName}_{DEPLOY_SUFFIX}.bat";
+            var deployAndRunPath    = $"{path}{projectName}_{DEPLOY_AND_RUN_SUFFIX}.bat";
+            var workspace      = isDebugBuild ? PS5_WORKSPACE_DEVELOPMENT : PS5_WORKSPACE_RELEASE;
 
-        private static void ClearSteamMover()
-        {
-            WriteAllText( BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n" );
+            if( !File.Exists( deployPath ) )
+                return;
+
+            var adaptedDeploy       = ReadAllText(deployPath);
+            var adaptedDeployAndRun = ReadAllText(deployAndRunPath);
+
+            adaptedDeploy = adaptedDeploy.Replace( PS5_WORKSPACE_DEFAULT, workspace );
+            adaptedDeployAndRun = adaptedDeployAndRun.Replace( PS5_WORKSPACE_DEFAULT, workspace );
+
+            WriteAllText( deployPath, adaptedDeploy );
+            WriteAllText( deployAndRunPath, adaptedDeployAndRun );
         }
 
         #endregion
@@ -449,6 +524,7 @@ namespace Universe.Editor
 
         private static string _lastVersion;
         private static int _lastAndroidBundleCode;
+        private static bool _CITriggered;
 
         #endregion
     }

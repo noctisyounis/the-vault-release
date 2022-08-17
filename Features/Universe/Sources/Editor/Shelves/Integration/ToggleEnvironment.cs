@@ -1,5 +1,6 @@
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Universe.Editor;
 using Universe.SceneTask.Runtime;
 
 using static System.IO.File;
@@ -10,6 +11,7 @@ using static UnityEditor.SceneManagement.EditorSceneManager;
 using static UnityEditor.SceneManagement.OpenSceneMode;
 using static UnityEngine.GUILayout;
 using static UnityEngine.PlayerPrefs;
+using static Universe.Editor.USettingsHelper;
 
 namespace Universe.Toolbar.Editor
 {
@@ -19,7 +21,8 @@ namespace Universe.Toolbar.Editor
 
         public static void Draw(string playerPref, Environment environment )
         {
-            var currentEnvironment = Situation.CurrentEnvironment;
+            var levelSettings = GetSettings<LevelSettings>();
+            var currentEnvironment = levelSettings.m_startingEnvironment;
             var currentLevelPath    = GetString(playerPref);
             var willLoad = (currentEnvironment & environment) == 0;
 
@@ -31,10 +34,14 @@ namespace Universe.Toolbar.Editor
 
             if( !Button( new GUIContent( environment.ToString(), tex, $"{labelText} {environment}" ) ) ) return;
             
-            Situation.CurrentEnvironment ^= environment;
+            currentEnvironment ^= environment;
 
             var level           = LoadAssetAtPath<LevelData>(currentLevelPath);
             var situations = level.Situations;
+
+            Situation.CurrentEnvironment = currentEnvironment;
+            levelSettings.m_startingEnvironment = currentEnvironment;
+            levelSettings.SaveAsset();
 
             foreach (var situation in situations)
             {
