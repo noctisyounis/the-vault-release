@@ -12,7 +12,8 @@ namespace Universe.Toolbar.Editor
     public enum SHELVE
     {
         Files,
-        Database,
+        Addressable,
+        Localisation,
         Graphics,
         Level_Management,
         Level_Loading
@@ -39,11 +40,14 @@ namespace Universe.Toolbar.Editor
                 case SHELVE.Files:
                     DrawFiles();
                     break;
-                case SHELVE.Database:
-                    DrawDatabase();
+                case SHELVE.Addressable:
+                    DrawAddressable();
                     break;
                 case SHELVE.Graphics:
                     DrawGraphics();
+                    break;
+                case SHELVE.Localisation:
+                    DrawLocalisation();
                     break;
                 case SHELVE.Level_Management:
                     DrawLevelManagement();
@@ -85,10 +89,15 @@ namespace Universe.Toolbar.Editor
             SymlinkButtons.Draw();
         }
 
-        static void DrawDatabase()
+        static void DrawAddressable()
         {
             OpenAddressableButton.Draw();
             ReloadAndBuildAddressable.Draw();
+            ClearAddressable.Draw();
+        }
+
+        static void DrawLocalisation()
+        {
             RefreshLocalisation.Draw();
         }
 

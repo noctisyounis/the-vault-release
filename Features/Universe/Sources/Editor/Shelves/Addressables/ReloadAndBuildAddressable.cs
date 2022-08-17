@@ -23,6 +23,7 @@ namespace Universe.Editor
 
         public static void Execute()
         {
+	        RefreshAaGroups();
 			LevelManagement.BakeLevelDebug();
             DebugWatchDictionary.TryValidate();
             OnRefreshCompleted += RebuildAddressable;
@@ -45,7 +46,7 @@ namespace Universe.Editor
 		
 		#region Private
 
-		private static  string _buttonText = " Refresh And Build Addressable";
+		private static string _buttonText = "Rebuild";
 		private static string _buttonTooltip = "Refresh addressable then rebuild them";
 		private static string _iconContext = @"d_Profiler.NetworkOperations";
 

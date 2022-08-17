@@ -15,6 +15,7 @@ using static UnityEngine.GUILayout;
 using static UnityEngine.PlayerPrefs;
 using static UnityEngine.SceneManagement.SceneManager;
 using static Universe.SceneTask.Runtime.Environment;
+using static Universe.Editor.USettingsHelper;
 
 namespace Universe.Toolbar.Editor
 {
@@ -100,9 +101,9 @@ namespace Universe.Toolbar.Editor
 			_levelPath	= path;
 			_level		= level;
 			_taskAmount = _level.Situations.Count;
-			_audioUsed = IsTaskOpen( _level.m_audio );
-			_playerUsed = IsTaskOpen( _level.m_player );
-			_currentEnvironment = BLOCK_MESH;
+			_audioUsed = true;
+			_playerUsed = true;
+			_currentEnvironment = BLOCK_MESH | ART;
 			PopulateTaskUsed( _level.Situations );
 
 			var floatPageAmount = 1.0f * _taskAmount / m_maxEntryPerPage;
@@ -248,6 +249,7 @@ namespace Universe.Toolbar.Editor
             if( !Button( new GUIContent( "Open", "Open selected level" ), style ) ) return;
 
 			var openSceneMode = Single;
+			var levelSettings = GetSettings<LevelSettings>();
 
 			SaveCurrentModifiedScenesIfUserWantsTo();
 			if( NeedAudio )
@@ -299,6 +301,8 @@ namespace Universe.Toolbar.Editor
 			}
 
 			Situation.CurrentEnvironment = _currentEnvironment;
+			levelSettings.m_startingEnvironment = _currentEnvironment;
+			levelSettings.SaveAsset();
 			Close();
 		}
 
@@ -327,9 +331,7 @@ namespace Universe.Toolbar.Editor
 
 			for( var i = 0; i < amount; i++ )
 			{
-				var situationData    = source[i];
-
-				_taskUsed[i] = IsTaskOpen(situationData.m_gameplay);
+				_taskUsed[i] = true;
 			}
 		}
 
