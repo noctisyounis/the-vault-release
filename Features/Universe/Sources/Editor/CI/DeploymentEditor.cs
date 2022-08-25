@@ -35,7 +35,7 @@ namespace Universe.Editor
         private const string BUILD_STEAM_MOVER_PATH = "..\\Jenkins_Steam_Mover.bat";
 
         //.bat relative
-        private const string UPLOAD_PATH = ".\\SlackUpload";
+        private const string UPLOAD_PATH = ".\\Export";
 
         //static names
         private const string DEVELOPMENT_BUILD_PREFIX       = "[DEV]";
