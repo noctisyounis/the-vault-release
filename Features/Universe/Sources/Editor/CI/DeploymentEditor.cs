@@ -80,7 +80,7 @@ namespace Universe.Editor
         #region Build
         
         [MenuItem( "Vault/CI/Load Version" )]
-        private static void LoadVersionBundle()
+        public static void LoadVersionBundle()
         {
             var id = "0";
             using (var fs = OpenRead(LOCAL_COMMIT_ID_PATH))
