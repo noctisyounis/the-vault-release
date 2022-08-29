@@ -91,14 +91,17 @@ namespace Universe.Editor
                 }
             }
 
-            var externalVersionPath = EXTERNAL_VERSION_PATH.Replace("{productName}", productName);
+            var externalVersionPath = EXTERNAL_VERSION_PATH.Replace("{productName}", productName.Trim());
             var versionPath = $"{externalVersionPath}\\{id}.txt";
             var version = "0.0.1";
             using (var fs = OpenRead(versionPath))
             {
                 using (var sr = new StreamReader(fs))
                 {
-                    version = sr.ReadLine();
+                    var json = sr.ReadLine();
+                    var infos = JsonUtility.FromJson<CommitInfos>(json);
+
+                    version = infos.version;
                 }
             }
 
