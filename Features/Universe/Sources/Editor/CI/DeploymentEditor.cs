@@ -14,6 +14,7 @@ using static UnityEditor.BuildPipeline;
 using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
+using static UnityEngine.Mathf;
 using static Universe.Editor.USettingsHelper;
 using static Universe.SceneTask.Runtime.Environment;
 using static Symlink.Editor.SymlinkEditor;
@@ -28,11 +29,12 @@ namespace Universe.Editor
         private const string STEAM_CONTENT_BUILDER_PATH = "D:\\steamworks_sdk_153a\\sdk\\tools\\ContentBuilder\\content";
 
         //Project relative
-        private const string TASK_GAME_STARTER_PATH = "Assets\\_\\GameStarter\\GameStarter.unity";
-        private const string BUILD_PATH             = "..\\Builds";
-        private const string BUILD_VERSION_PATH     = "..\\..\\{productName}_{platform}_LastBuildVersion.txt";
-        private const string BUILD_SLACK_MOVER_PATH = "..\\Jenkins_Slack_Uploader.bat";
-        private const string BUILD_STEAM_MOVER_PATH = "..\\Jenkins_Steam_Mover.bat";
+        private const string TASK_GAME_STARTER_PATH     = "Assets\\_\\GameStarter\\GameStarter.unity";
+        private const string BUILD_PATH                 = "..\\Builds";
+        private const string EXTERNAL_VERSION_PATH      = "..\\..\\Versions\\{productName}";
+        private const string LOCAL_COMMIT_ID_PATH       = "..\\WorkspaceCommitID.txt";
+        private const string BUILD_SLACK_MOVER_PATH     = "..\\Jenkins_Slack_Uploader.bat";
+        private const string BUILD_STEAM_MOVER_PATH     = "..\\Jenkins_Steam_Mover.bat";
 
         //.bat relative
         private const string UPLOAD_PATH = ".\\Export";
@@ -64,6 +66,9 @@ namespace Universe.Editor
 
         public int callbackOrder => 0;
 
+        //if this is set to 9, then 1.0.9 will become 1.1.0
+        private static int  s_versionIncrementUpAt = 9; 
+        
         private static string SourceDirectoryPath => $"{dataPath}\\..\\..\\Symlinks";
         private static string SourceGraphicsTiersDirectoryPath => $"{SourceDirectoryPath}\\GraphicsTier";
         private static string TargetDirectoryPath => $"{dataPath}\\_\\Content";
@@ -73,6 +78,35 @@ namespace Universe.Editor
 
 
         #region Build
+        
+        [MenuItem( "Vault/CI/Load Version" )]
+        public static void LoadVersionBundle()
+        {
+            var id = "0";
+            using (var fs = OpenRead(LOCAL_COMMIT_ID_PATH))
+            {
+                using (var sr = new StreamReader(fs))
+                {
+                    id = sr.ReadLine();
+                }
+            }
+
+            var externalVersionPath = EXTERNAL_VERSION_PATH.Replace("{productName}", productName.Replace(" ", ""));
+            var versionPath = $"{externalVersionPath}\\{id}.txt";
+            var version = "0.0.1";
+            using (var fs = OpenRead(versionPath))
+            {
+                using (var sr = new StreamReader(fs))
+                {
+                    var json = sr.ReadLine();
+                    var infos = JsonUtility.FromJson<CommitInfos>(json);
+
+                    version = infos.version;
+                }
+            }
+
+            ApplyVersion(version);
+        }
 
         [MenuItem("Vault/CI/Increment PC Version")]
         public static void RequestWin64VersionIncrement()
@@ -287,24 +321,7 @@ namespace Universe.Editor
 
         private static void UpgradeVersionBundle( string platform )
         {
-            var incrementUpAt               = 9; //if this is set to 9, then 1.0.9 will become 1.1.0
-            var versionBundleText           = PlayerSettings.bundleVersion;
-            var androidVersionBundleCode    = PlayerSettings.Android.bundleVersionCode;
-            var buildVersionPath            = BUILD_VERSION_PATH.Replace("{productName}", productName).Replace("{platform}", platform);
-
-            try
-            {
-                using( var sr = OpenText( buildVersionPath ) )
-                {
-                    try
-                    {
-                        versionBundleText = sr.ReadLine();
-                        androidVersionBundleCode = int.Parse( sr.ReadLine() );
-                    }
-                    catch { }
-                }
-            }
-            catch { }
+            var versionBundleText         = PlayerSettings.bundleVersion;
 
             if( string.IsNullOrEmpty( versionBundleText ) )
             {
@@ -312,8 +329,7 @@ namespace Universe.Editor
             }
             else
             {
-                versionBundleText = versionBundleText.Trim(); //clean up whitespace if necessary
-                var lines = versionBundleText.Split('.');
+                var lines = VersionSplit(versionBundleText);
 
                 var majorVersion = 0;
                 var minorVersion = 0;
@@ -327,34 +343,64 @@ namespace Universe.Editor
                     subMinorVersion = int.Parse( lines[2] );
 
                 subMinorVersion++;
-                if( subMinorVersion > incrementUpAt )
+                if( subMinorVersion > s_versionIncrementUpAt)
                 {
                     minorVersion++;
                     subMinorVersion = 0;
                 }
-                if( minorVersion > incrementUpAt )
+                if( minorVersion > s_versionIncrementUpAt )
                 {
                     majorVersion++;
                     minorVersion = 0;
                 }
 
                 versionBundleText = majorVersion.ToString( "0" ) + "." + minorVersion.ToString( "0" ) + "." + subMinorVersion.ToString( "0" );
-
+                
             }
+            
+            ApplyVersion(versionBundleText);
             Log( "Version Incremented to " + versionBundleText );
-            androidVersionBundleCode++;
-            _lastVersion = versionBundleText;
-            _lastAndroidBundleCode = androidVersionBundleCode;
-            PlayerSettings.bundleVersion = versionBundleText;
-            PlayerSettings.Android.bundleVersionCode = androidVersionBundleCode;
-            Log( "Bundle Version Code Incremented To " + androidVersionBundleCode );
+        }
 
-            WriteAllText( buildVersionPath, string.Empty );
-            using( var sw = AppendText( buildVersionPath ) )
-            {
-                sw.WriteLine( versionBundleText );
-                sw.WriteLine( androidVersionBundleCode );
-            }
+        private static void ApplyVersion(string version)
+        {
+            var androidVersionBundleCode = VersionToInt(version);
+            
+            _lastVersion = version;
+            _lastAndroidBundleCode = androidVersionBundleCode;
+            PlayerSettings.bundleVersion = _lastVersion;
+            PlayerSettings.Android.bundleVersionCode = _lastAndroidBundleCode;
+            Log( "Bundle Version Set To " + androidVersionBundleCode );
+        }            
+
+        private static string[] VersionSplit(string version)
+        {
+            version = version.Trim(); //clean up whitespace if necessary
+            var lines = version.Split('.');
+
+            return lines;
+        }
+
+        private static int VersionToInt(string version)
+        {
+            var result = 0;
+            var lines = VersionSplit(version);
+            var major = 0;
+            var medior = 0;
+            var minor = 0;
+
+            if( lines.Length > 0 )
+                major = int.Parse( lines[0] );
+            if( lines.Length > 1 )
+                medior = int.Parse( lines[1] );
+            if( lines.Length > 2 )
+                minor = int.Parse( lines[2] );
+
+            var versionBase = s_versionIncrementUpAt + 1;
+
+            result = minor + versionBase * medior + (int)Pow(versionBase, 2) * major;
+
+            return result;
         }
 
         private static void UpdateRuntimeVersion()
