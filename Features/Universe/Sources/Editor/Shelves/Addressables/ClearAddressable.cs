@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor.Build.Pipeline.Utilities;
 
 using static UnityEditor.EditorGUIUtility;
 using static UnityEngine.GUILayout;
@@ -16,7 +17,7 @@ namespace Universe.Toolbar.Editor
 			var tex = IconContent(_iconName).image;
 			if (Button(new GUIContent(_buttonLabel, tex, _buttonTooltip)))
 			{
-				CleanPlayerContent();
+				BuildCache.PurgeCache(true);
 			}
 		}
 		

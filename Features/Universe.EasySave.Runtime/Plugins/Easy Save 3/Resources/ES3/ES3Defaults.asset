@@ -33,12 +33,14 @@ MonoBehaviour:
     - Universe.Plugins.EasySave3
     - ShapesRuntime
     - Universe.Runtime.EasySave
-    - ShapesSamples
     - Universe.DebugWatchTools.Runtime
+    - ShapesSamples
     - CSharpExtensions
+    - URPDebugViews
     - ShapesProvider.Runtime
     - Sirenix.OdinInspector.CompatibilityLayer
     - Plugins.JSONExtension
+    - URPDebugViews_Editor
     - ShapesEditor
     - PPv2URPConverters
     - Universe.Editor

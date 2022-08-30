@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Pipeline.Utilities;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using Universe.SceneTask.Runtime;
@@ -142,7 +143,7 @@ namespace Universe.Editor
 
         public static void RequestAddressableBuild()
         {
-            CleanPlayerContent(); 
+            BuildCache.PurgeCache(false);
             ReloadAndBuildAddressable.Execute();
         }
 
