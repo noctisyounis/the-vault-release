@@ -26,7 +26,6 @@ namespace Universe.DebugWatchTools.Runtime
         public static string s_levelFolderPath = "_/Content/Levels";
 
         public CheckpointData m_debugCheckpoint;
-        public UAssetsPathTable m_assetPathTable;
 
         #endregion
 
@@ -92,11 +91,18 @@ namespace Universe.DebugWatchTools.Runtime
                 if( !type.Equals( typeof( LevelData ) ) )
                     continue;
 
-                var level = LoadAssetAtPath<LevelData>( path );
                 var situationIndex = 0;
+                var level = LoadAssetAtPath<LevelData>( path );
+                var levelName = level.name;
+                levelName = levelName.Replace("-", "");
+                levelName = levelName.Replace("\"", "");
+                levelName = levelName.Replace("\'", "");
+                levelName = levelName.Replace(",", "");
+                levelName = levelName.Trim();
+                
                 foreach( var situation in level.Situations )
                 {
-                    sw.WriteLine( $"\t\t[DebugMenu(\"Tasks.../Levels.../{level.name}/{situation.m_name}\")] public static void ChangeLevelTo{level.name}{situationIndex:00}() => LevelManagement.ChangeLevelRequest(\"{path}\", {situationIndex++});" );
+                    sw.WriteLine( $"\t\t[DebugMenu(\"Tasks.../Levels.../{levelName}/{situation.m_name}\")] public static void ChangeLevelTo{levelName}{situationIndex:00}() => LevelManagement.ChangeLevelRequest(\"{path}\", {situationIndex++});" );
                 }
             }
             
@@ -172,8 +178,6 @@ namespace Universe.DebugWatchTools.Runtime
             OnEnvironmentToggleRequested += ToggleEnvironment;
             OnChangeLevelRequested -= ChangeLevel;
         }
-
-
 
         #endregion
 
