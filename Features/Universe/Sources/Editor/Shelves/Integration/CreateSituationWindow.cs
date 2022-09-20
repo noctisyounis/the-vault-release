@@ -1,5 +1,7 @@
 using UnityEditor;
 using UnityEngine;
+using Universe.DebugWatch.Editor;
+using Universe.DebugWatchTools.Runtime;
 using Universe.Editor;
 using Universe.SceneTask.Runtime;
 
@@ -60,6 +62,7 @@ namespace Universe.Toolbar.Editor
 			    else
 				    CreateSituationHelper.CreateSituation(situationInfos);
 			    
+			    LevelManagement.BakeLevelDebug();
 			    GUIUtility.ExitGUI();
 		    }
 		    GUI.enabled = true;

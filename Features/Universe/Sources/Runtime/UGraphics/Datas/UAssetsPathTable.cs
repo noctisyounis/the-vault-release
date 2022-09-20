@@ -31,7 +31,6 @@ namespace Universe
         public void Populate()
         {
 #if UNITY_EDITOR
-
             m_paths.Clear();
             m_guids.Clear();
 

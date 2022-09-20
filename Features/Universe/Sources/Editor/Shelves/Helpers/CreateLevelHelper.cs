@@ -50,6 +50,7 @@ namespace Universe.Toolbar.Editor
 			GenerateHierarchy(!playerData, !audioData);
 			GenerateAaGroup();
 			GenerateAssets(playerData, audioData, initialSituation);
+			UGroupHelper.RefreshAaGroups();
 		}
 
 		public static void AddSituation(LevelData target, SituationInfos situationInfos)

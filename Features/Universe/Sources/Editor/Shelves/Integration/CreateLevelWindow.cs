@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using Universe.DebugWatchTools.Runtime;
 using Universe.Editor;
 using Universe.SceneTask.Runtime;
 
@@ -46,6 +47,8 @@ namespace Universe.Toolbar.Editor
             {
 	            m_initialSituation.m_isCheckpoint = true;
                 CreateLevelHelper.CreateLevel(m_newLevelName, m_audioTask, m_playerTask, m_initialSituation);
+                LevelManagement.BakeLevelDebug();
+
                 GUIUtility.ExitGUI();
             }
             GUI.enabled = true;

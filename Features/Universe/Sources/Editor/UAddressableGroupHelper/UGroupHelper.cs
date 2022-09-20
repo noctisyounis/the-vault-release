@@ -26,7 +26,7 @@ namespace Universe.Editor
 		[MenuItem("Vault/Adressable/Refresh groups")]
 		public static void RefreshAaGroups()
 		{
-			Debug.Log("Refresh started");
+			Debug.Log("Refreshing Addressables");
 			RefreshPaths();
 
 			s_currentFolder = s_folderPaths.Count - 1;
@@ -101,7 +101,7 @@ namespace Universe.Editor
 
 		private static void RefreshFolderAt(int index)
 		{
-			if(index < 0 || index >= s_folderPaths.Count) 
+			if(!s_folderPaths.GreaterThan(index)) 
 			{
 				Debug.LogWarning("[ADDRESSABLE REFRESH] No existing folder to refresh");
 				return;

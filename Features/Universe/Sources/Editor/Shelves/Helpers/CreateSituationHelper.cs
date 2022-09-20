@@ -63,6 +63,8 @@ namespace Universe.Toolbar.Editor
 				target.SaveAsset();
 			}
 			
+			UGroupHelper.RefreshAaGroups();
+
 			return situation;
 		}
 		

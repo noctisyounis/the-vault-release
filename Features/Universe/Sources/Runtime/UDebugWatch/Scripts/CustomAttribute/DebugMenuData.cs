@@ -156,6 +156,7 @@ namespace Universe.DebugWatch.Runtime
             foreach(var entry in Methods)
             {
                 var method = entry.Value;
+                if(method is null) continue;
 
                 _methodNames.Add($"{method.DeclaringType.Name}/{method.Name}");
             }

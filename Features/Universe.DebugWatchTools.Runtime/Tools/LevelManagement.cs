@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Universe.SceneTask.Runtime;
@@ -63,6 +64,9 @@ namespace Universe.DebugWatchTools.Runtime
 
         #region Main
 
+#if UNITY_EDITOR
+        [MenuItem("Vault/Debug Watch/Bake Levels")]
+#endif
         public static void BakeLevelDebug()
         {
 #if UNITY_EDITOR
@@ -108,6 +112,7 @@ namespace Universe.DebugWatchTools.Runtime
             
             sw.WriteLine( BAKED_FILE_FOOTER );
             sw.Close();
+            
             Refresh();
 #endif
         }
