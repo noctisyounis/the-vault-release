@@ -18,6 +18,7 @@ namespace Universe.Editor
         public static void Initialize()
         {
             Events.registeredPackages += UpdateCurrentBufferedManifest;
+            InitializeCurrentBufferedManifest();
         }
         
         public void OnActiveBuildTargetChanged(BuildTarget previousTarget, BuildTarget newTarget)
@@ -35,6 +36,13 @@ namespace Universe.Editor
             var currentTarget = EditorUserBuildSettings.activeBuildTarget;
 
             UpdateManifests( currentTarget, currentTarget );
+        }
+        
+        public static void InitializeCurrentBufferedManifest()
+        {
+            var currentTarget = EditorUserBuildSettings.activeBuildTarget;
+            
+            LoadNewManifestFromVariant(currentTarget);
         }
 
         public static void UpdateManifests( BuildTarget previousTarget, BuildTarget newTarget )
