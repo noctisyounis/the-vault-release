@@ -18,7 +18,6 @@ namespace Universe.Editor
         public static void Initialize()
         {
             Events.registeredPackages += UpdateCurrentBufferedManifest;
-            InitializeCurrentBufferedManifest();
         }
         
         public void OnActiveBuildTargetChanged(BuildTarget previousTarget, BuildTarget newTarget)
@@ -38,6 +37,7 @@ namespace Universe.Editor
             UpdateManifests( currentTarget, currentTarget );
         }
         
+        [MenuItem("Vault/Multiplatform Manifest/Load Current Platform")]
         public static void InitializeCurrentBufferedManifest()
         {
             var currentTarget = EditorUserBuildSettings.activeBuildTarget;
