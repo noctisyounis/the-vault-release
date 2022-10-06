@@ -234,6 +234,9 @@ namespace Universe
         protected void UnloadSituation( SituationData situation ) =>
             this.UUnloadSituation( situation );
 
+        protected void ReloadGameplay(SituationData of) =>
+            this.UReloadGameplay(of);
+
         #endregion
 
 

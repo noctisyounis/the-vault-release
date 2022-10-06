@@ -84,7 +84,8 @@ namespace Universe.SceneTask.Runtime
                     if (!IsCurrentPlayerEquals(player))
                         source.UnloadPlayerTask(s_currentLevel);
 
-                    source.UnloadSituations(s_currentLevel);
+                    source.UnloadOtherSituations(s_currentLevel, situation);
+                    source.UReloadGameplay(situation);
                 }
             }
 
@@ -187,6 +188,18 @@ namespace Universe.SceneTask.Runtime
 
             foreach (var situation in situations)
                 source.UUnloadSituation(situation);
+        }
+
+        private static void UnloadOtherSituations(this UBehaviour source, LevelData of, SituationData keep)
+        {
+            var situations = of.Situations;
+
+            foreach (var situation in situations)
+            {
+                if (situation.Equals(keep)) continue;
+                
+                source.UUnloadSituation(situation);
+            }
         }
 
         private static void OnAudioTaskLoaded(TaskData audio)

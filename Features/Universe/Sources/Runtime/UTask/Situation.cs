@@ -62,6 +62,16 @@ namespace Universe.SceneTask.Runtime
             source.TryUnloadGameplayTask( situation );
         }
 
+        public static void UReloadGameplay(this UBehaviour source, SituationData of)
+        {
+            if(!LoadedSituations.Contains( of )) return;
+            
+            var gameplay = of.m_gameplay;
+
+            source.UUnloadTask( gameplay );
+            source.ULoadTask( gameplay );
+        }
+
         #endregion
 
 
