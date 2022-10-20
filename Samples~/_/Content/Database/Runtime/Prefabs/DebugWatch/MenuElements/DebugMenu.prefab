@@ -84,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &193007720874528647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   IsVerbose: 0
   GizmosVisible: 0
   UseUpdates: 1
-  m_bakedData: {fileID: 11400000, guid: dcbe150b41b9b8d4281e01d7684e8b40, type: 2}
+  m_bakedDatabase: {fileID: 11400000, guid: dcbe150b41b9b8d4281e01d7684e8b40, type: 2}
   m_debugMenuName: DebugMenu
   m_debugMenuPanel:
     m_AssetGUID: 28501fa02f0729f459ceb888d2e24ccf
@@ -139,9 +139,19 @@ MonoBehaviour:
   m_selection:
     m_useAbsoluteValue: 1
     m_triggerThreshold: 0.5
+    m_triggerUnderThreshold: 0
   m_submission:
     m_useAbsoluteValue: 1
     m_triggerThreshold: 0.5
+    m_triggerUnderThreshold: 0
+  m_nextOption:
+    m_useAbsoluteValue: 0
+    m_triggerThreshold: 0.5
+    m_triggerUnderThreshold: 0
+  m_previousOption:
+    m_useAbsoluteValue: 0
+    m_triggerThreshold: -0.5
+    m_triggerUnderThreshold: 1
 --- !u!1 &3683285416785061268
 GameObject:
   m_ObjectHideFlags: 0

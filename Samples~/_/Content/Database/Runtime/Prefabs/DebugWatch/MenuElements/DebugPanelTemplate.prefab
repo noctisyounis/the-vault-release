@@ -473,6 +473,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e395ebb18a4362499e093b56a60d6ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   IsDebug: 0
   IsVerbose: 0
   GizmosVisible: 0
@@ -485,6 +494,11 @@ MonoBehaviour:
   m_backgroundMenu: {fileID: 9202570924280568465}
   m_prefabButton:
     m_AssetGUID: 1d9ae58a91a33a04b8de2fb9a301a4e6
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  m_prefabSelector:
+    m_AssetGUID: 7553677153143aa40b1f1e291a00f2e1
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0

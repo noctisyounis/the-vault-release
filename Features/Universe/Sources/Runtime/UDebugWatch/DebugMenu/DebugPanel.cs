@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Universe.DebugWatch.Runtime
         public TMP_Text         m_headerTitle;
         public RectTransform    m_backgroundMenu;
         public AssetReference   m_prefabButton;
+        public AssetReference   m_prefabSelector;
         public RectTransform    m_parentMenuButton;
         public RectTransform    m_mask;
 
@@ -42,16 +44,16 @@ namespace Universe.DebugWatch.Runtime
             set => _parent = value;
         }
 
-        public DebugButton CurrentButton
+        public DebugElement CurrentElement
         {
             get
             {
-                if(!_currentButton)
-                    UpdateButtons();
+                if(!_currentElement)
+                    UpdateElements();
                     
-                return _currentButton;
+                return _currentElement;
             }
-            set => _currentButton = value;
+            set => _currentElement = value;
         }
 
         #endregion
@@ -74,7 +76,7 @@ namespace Universe.DebugWatch.Runtime
             if(m_parentMenuButton.childCount == 0) return;
 
             _currentButtonChildIndex = 0;
-            UpdateButtons();
+            UpdateElements();
         }
 
         #endregion
@@ -92,14 +94,14 @@ namespace Universe.DebugWatch.Runtime
         {
             _currentButtonChildIndex++;
             ValidateCurrentButtonChildIndex();
-            UpdateButtons();
+            UpdateElements();
         }
 
         public void SelectPreviousButton()
         {
             _currentButtonChildIndex--;
             ValidateCurrentButtonChildIndex();
-            UpdateButtons();
+            UpdateElements();
         }
         
         public void StartGenerate()
@@ -118,18 +120,17 @@ namespace Universe.DebugWatch.Runtime
             GenerateButtons(paths);
         }
 
-        public void UpdateButtons()
+        public void UpdateElements()
         {
             if(m_parentMenuButton.childCount == 0) return;
 
-            if(_currentButton)
-                _currentButton.HideArrow();
+            if(_currentElement)
+                _currentElement.OnDeselected();
 
             var currentChild = m_parentMenuButton.GetChild(_currentButtonChildIndex);
 
-            _currentButton = currentChild.GetComponent<DebugButton>();
-            _currentButton.DisplayArrow();
-            _currentButton.DisplayTooltip();
+            _currentElement = currentChild.GetComponent<DebugElement>();
+            _currentElement.OnSelected();
         }
 
         #endregion
@@ -184,23 +185,56 @@ namespace Universe.DebugWatch.Runtime
 
             foreach (var item in currentPanel)
             {
-                Spawn(m_prefabButton, m_parentMenuButton, (buttonObject) => InitializeNewButton(buttonObject, item));
+                var label = item.Key;
+                var path = item.Value;
+
+                path = Clean(path, out var elementType);
+
+                if(elementType.Equals(DebugMenuDatabase.ELEMENT_SELECTOR))
+                    Spawn(m_prefabSelector, m_parentMenuButton, (selector) => InitializeNewSelector(selector, path, label));
+                else
+                    Spawn(m_prefabButton, m_parentMenuButton, (button) => InitializeNewElement(button, path, label));
 
                 _buttonAmount ++;
             }
 
             ResponsiveMenu();
-            DebugMenuRoot.s_instance.GeneratePanel(otherPanel, m_depth + 1);
+            s_instance.GeneratePanel(otherPanel, m_depth + 1);
         }
 
-        private void InitializeNewButton(GameObject buttonObject, KeyValuePair<string, string> item)
+        private string Clean(string path, out string type)
         {
-            var button = buttonObject.GetComponent<DebugButton>();
-            var buttonText = button.GetComponentInChildren<TMP_Text>();
+            var splitedPath = path.Split('/');
+            
+            path = BuildNextPath(splitedPath);
+            type = splitedPath[^1];
+            
+            return path;
+        }
 
-            buttonText.text = item.Key;
-            button.m_path = item.Value;
-            button.m_owner = this;
+        private void InitializeNewElement(GameObject elementObject, string path, string label)
+        {
+            var element = elementObject.GetComponent<DebugElement>();
+            var elementText = element.GetComponentInChildren<TMP_Text>();
+
+            element.m_path = path;
+            element.m_owner = this;
+            element.OnDeselected();
+            
+            if (elementText == null) return;
+            elementText.text = label;
+        }
+
+        private void InitializeNewSelector(GameObject selectorObject, string path, string label)
+        {
+            var options = s_instance.GetOptionsDatas(path);
+            var selector = selectorObject.GetComponentInChildren<DebugSelector>();
+            
+            InitializeNewElement(selectorObject, path, label);
+
+            if (!selector) return;
+
+            selector.Options = options;
         }
 
         ///<summary>Add the command of the path to the panel and return the depth of that command.</summary>
@@ -211,20 +245,27 @@ namespace Universe.DebugWatch.Runtime
 
             if (!currentPanel.ContainsKey(commandName))
             {
-                var nextPath = BuildNextPath(splitedPath);
+                var nextPath = BuildPath(splitedPath, m_depth + 2);
 
                 currentPanel.Add(commandName, nextPath);
             }
 
-            return splitedPath.Length;
+            return splitedPath.Length - 1;
         }
 
         private string BuildNextPath(string[] paths)
         {
-            var result = new StringBuilder();
             var nextDepth = m_depth + 1;
+            
+            return BuildPath(paths, nextDepth);
+        }
+        
+        private string BuildPath(string[] paths, int depth)
+        {
+            var result = new StringBuilder();
+            var length = paths.Length;
 
-            for (int i = 0; i <= nextDepth; i++)
+            for (int i = 0; (i <= depth && i < length); i++)
             {
                 if (i != 0)
                     result.Append("/");
@@ -256,7 +297,7 @@ namespace Universe.DebugWatch.Runtime
         private int         _buttonAmount;
         private string      _parent;
         private bool        _isGenerated;
-        private DebugButton _currentButton;
+        private DebugElement _currentElement;
         private int         _currentButtonChildIndex;
 
         #endregion

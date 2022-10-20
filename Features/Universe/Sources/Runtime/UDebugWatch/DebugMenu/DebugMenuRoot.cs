@@ -14,7 +14,7 @@ namespace Universe.DebugWatch.Runtime
 
         [Header("Generation")]
         public static DebugMenuRoot s_instance;
-        public DebugMenuData        m_bakedData;
+        public DebugMenuDatabase        m_bakedDatabase;
         public string               m_debugMenuName;
         public AssetReference       m_debugMenuPanel;
         public GameObject           m_tooltipRoot;
@@ -23,6 +23,8 @@ namespace Universe.DebugWatch.Runtime
         [Header("Inputs")]
         public AxisToButtonConverter m_selection;
         public AxisToButtonConverter m_submission;
+        public AxisToButtonConverter m_nextOption;
+        public AxisToButtonConverter m_previousOption;
 
         #endregion
 
@@ -47,7 +49,9 @@ namespace Universe.DebugWatch.Runtime
             _bufferedPaths  = new();
 
             m_selection.OnAxisPressed += UpdateSelection;
-            m_submission.OnAxisPressed += (value) => Submit();
+            m_submission.OnAxisPressed += value => Submit();
+            m_nextOption.OnAxisPressed += value => SetOption(1);
+            m_previousOption.OnAxisPressed += value => SetOption(-1);
 
             StartGeneration();
         }
@@ -70,11 +74,43 @@ namespace Universe.DebugWatch.Runtime
 
             m_submission.Evaluate( value );
         }
+        
+        public void NextOptionAxisChanged(CallbackContext context)
+        {
+            var value = context.ReadValue<Vector2>();
+
+            m_nextOption.Evaluate( value.x );
+        }
+
+        public void PreviousOptionAxisChanged( CallbackContext context )
+        {
+            var value = context.ReadValue<Vector2>();
+            
+            m_previousOption.Evaluate( value.x );
+        }
 
         public void SelectNextButton() => CurrentMenu.SelectNextButton();
         public void SelectPreviousButton() => CurrentMenu.SelectPreviousButton();
-        public void Submit() => CurrentMenu.CurrentButton.OnClick();
+
         public void Back() => CurrentMenu.ReturnToParent();
+        
+        public void Submit()
+        {
+            var element = CurrentMenu.CurrentElement;
+
+            if (!(element is IClickable clickable)) return;
+            
+            clickable.OnClick();
+        }
+
+        public void SetOption(int next)
+        {
+            var element = CurrentMenu.CurrentElement;
+
+            if (!(element is ISettable settable)) return;
+            
+            settable.SetOption(next);
+        }
 
         public void Execute(string path)
         {
@@ -86,14 +122,68 @@ namespace Universe.DebugWatch.Runtime
             
             InvokeMethod(path);
         }
+        
+        public void Execute(string path, int option)
+        {
+            if (IsValidMenu(path))
+            {
+                DisplayPanel(path);
+                return;
+            }
+            
+            InvokeMethod(path, option);
+        }
+        
+        public T Execute<T>(string path)
+        {
+            if (IsValidMenu(path))
+            {
+                DisplayPanel(path);
+                return default;
+            }
+            
+            return InvokeMethod<T>(path);
+        }
+        
+        public T Execute<T>(string path, int option)
+        {
+            if (IsValidMenu(path))
+            {
+                DisplayPanel(path);
+                return default;
+            }
+            
+            return InvokeMethod<T>(path, option);
+        }
 
         public void DisplayTooltip( string path )
         {
-            var tooltip = m_bakedData.GetTooltip( UnlinkPathFromRoot(path) );
+            var tooltip = m_bakedDatabase.GetTooltip( UnlinkPathFromRoot(path) );
             var isEmpty = string.IsNullOrEmpty(tooltip);
 
             m_tooltipRoot.SetActive( !isEmpty );
             m_tooltipText.text = tooltip;
+        }
+
+        public string[] GetOptionNames(string path)
+        {
+            path = UnlinkPathFromRoot(path);
+            
+            return m_bakedDatabase.GetOptionNames(path);
+        }
+
+        public OptionData[] GetOptionsDatas(string path)
+        {
+            path = UnlinkPathFromRoot(path);
+
+            return m_bakedDatabase.GetOptionDatas(path);
+        }
+
+        public object GetLastResult(string path)
+        {
+            path = UnlinkPathFromRoot(path);
+
+            return m_bakedDatabase.GetLastResult(path);
         }
 
         #endregion
@@ -165,7 +255,7 @@ namespace Universe.DebugWatch.Runtime
 
             menu.gameObject.SetActive(true);
             CurrentMenu = menu;
-            CurrentMenu.UpdateButtons();
+            CurrentMenu.UpdateElements();
         }
 
         private void HidePanels()
@@ -176,14 +266,32 @@ namespace Universe.DebugWatch.Runtime
         public void InvokeMethod(string path)
         {
             Verbose($"Action At {path}");
-            m_bakedData.InvokeMethod(UnlinkPathFromRoot(path));
+            m_bakedDatabase.InvokeMethod(UnlinkPathFromRoot(path));
+        }
+        
+        public void InvokeMethod(string path, int option)
+        {
+            Verbose($"Action At {path} with option n°{option}");
+            m_bakedDatabase.InvokeMethod(UnlinkPathFromRoot(path), option);
+        }
+        
+        public T InvokeMethod<T>(string path)
+        {
+            Verbose($"Action At {path}");
+            return m_bakedDatabase.InvokeMethod<T>(UnlinkPathFromRoot(path));
+        }
+        
+        public T InvokeMethod<T>(string path, int option)
+        {
+            Verbose($"Action At {path} with option n°{option}");
+            return m_bakedDatabase.InvokeMethod<T>(UnlinkPathFromRoot(path), option);
         }
 
         private void StartGeneration()
         {
             if (_generated) return;
             
-            var debugPath   = m_bakedData.GetPaths();
+            var debugPath   = m_bakedDatabase.GetPathsWithType();
             var rootedPaths = LinkPathsToRoot(new List<string>(debugPath));
 
             GeneratePanel(rootedPaths, 0);

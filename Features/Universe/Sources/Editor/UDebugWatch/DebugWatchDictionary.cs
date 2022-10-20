@@ -11,9 +11,9 @@ namespace Universe.DebugWatch.Editor
         [MenuItem("Vault/Debug Watch/Bake Methods")]
         public static void TryValidate()
         {
-            var bakeTarget = ScriptableHelper.GetScriptable<DebugMenuData>();
+            var bakeTarget = ScriptableHelper.GetScriptable<DebugMenuDatabase>();
 
-            DebugMenuRegistry.s_bakedData = bakeTarget;
+            DebugMenuRegistry.s_bakedDatabase = bakeTarget;
             DebugMenuRegistry.InitializeMethods();
             
             bakeTarget.OnValidate();

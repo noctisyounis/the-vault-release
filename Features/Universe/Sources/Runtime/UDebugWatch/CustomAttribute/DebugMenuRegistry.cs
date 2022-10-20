@@ -11,7 +11,7 @@ namespace Universe.DebugWatch.Runtime
     {
         #region Public Members
 
-        public static DebugMenuData s_bakedData;
+        public static DebugMenuDatabase s_bakedDatabase;
 
         #endregion
 
@@ -19,7 +19,7 @@ namespace Universe.DebugWatch.Runtime
         #region Public Properties
 
         public static string[] Paths => 
-            Methods.Keys.ToArray();
+            Attributes.Keys.ToArray();
 
         #endregion
 
@@ -32,8 +32,8 @@ namespace Universe.DebugWatch.Runtime
             ValidateDictionary();
         }
 
-        public static MethodInfo GetMethodInfoAt(string path) => 
-            Methods[path];
+        public static AttributeData GetAttributeDataAt(string path) => 
+            Attributes[path];
 
         #endregion
 
@@ -44,35 +44,55 @@ namespace Universe.DebugWatch.Runtime
         {
             var length = Assemblies.Length;
 
-            Methods = new Dictionary<string, MethodInfo>();
+            Attributes = new Dictionary<string, AttributeData>();
 
             for (var i = 0; i < length; i++)
             {
                 var assembly = Assemblies[i];
-                var assemblyDictionary = assembly
+                var assemblyList = assembly
                             .GetTypes()
                             .SelectMany(classType       => classType.GetMethods())
                             .Where(classMethod          => classMethod.GetCustomAttributes().OfType<DebugMenuAttribute>().Any())
-                            .ToDictionary(methodInfo    => methodInfo.GetCustomAttributes().OfType<DebugMenuAttribute>().FirstOrDefault().Path);
+                            .ToList();
 
-                if (assemblyDictionary is null) continue;
+                if (assemblyList is null) continue;
                 
-                Methods.Merge(assemblyDictionary);
+                AddAll(assemblyList);
+            }
+
+            Attributes.OrderBy(attribute =>
+                attribute.Value.m_method.GetCustomAttributes().OfType<DebugMenuAttribute>().FirstOrDefault().SortingOrder);
+        }
+
+        private static void AddAll(List<MethodInfo> methods)
+        {
+            foreach (var method in methods)
+            {
+                var attribute = method.GetCustomAttribute<DebugMenuAttribute>();
+                var data = new AttributeData()
+                {
+                    m_attributeType = attribute.GetType(),
+                    m_method = method,
+                    m_options = attribute.GetOptions()
+                };
+
+                Attributes.Add(attribute.Path, data);
             }
         }
 
         private static void ValidateDictionary()
         {
             var validCount          = 0;
-            var initialMethodCount  = Methods.Count;
+            var initialMethodCount  = Attributes.Count;
             var keys                = Paths;
 
-            s_bakedData.Methods.Clear();
+            s_bakedDatabase.Attributes.Clear();
 
             for (var i = 0; i < initialMethodCount; i++)
             {
                 var key = keys[i];
-                var method = Methods[key];
+                var attribute = Attributes[key];
+                var method = attribute.m_method;
 
                 if (!method.IsStatic)
                 {
@@ -80,7 +100,7 @@ namespace Universe.DebugWatch.Runtime
                 }
                 else
                 {
-                    s_bakedData.m_methods.Add(key, method);
+                    s_bakedDatabase.Attributes.Add(key, attribute);
                     validCount++;
                 }
             }
@@ -108,10 +128,10 @@ namespace Universe.DebugWatch.Runtime
             }
         }
 
-        private static Dictionary<string, MethodInfo> Methods
+        private static Dictionary<string, AttributeData> Attributes
         {
-            get => _methods ??= new();
-            set => _methods = value;
+            get => _attributes ??= new();
+            set => _attributes = value;
         }
 
         #endregion
@@ -120,7 +140,7 @@ namespace Universe.DebugWatch.Runtime
         #region Private Members
 
         private static Assembly[] _assemblies;
-        private static Dictionary<string, MethodInfo> _methods;
+        private static Dictionary<string, AttributeData> _attributes;
 
         #endregion
     }

@@ -106,12 +106,19 @@ namespace Universe.Toolbar.Editor
 		private static void ExpandScenes(LevelData level)
 		{
 			var loadedSceneCount = sceneCount;
-			ExecuteMenuItem("Window/General/Hierarchy");
-			var hierarchyWindow = EditorWindow.focusedWindow;
-			var type = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
-			if (type is null) return;
+			var gameType = typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView");
+			if (gameType is null) return;
 			
-			var method = type.GetMethod("SetExpanded", BindingFlags.Instance | BindingFlags.NonPublic);
+			var gameWindow = EditorWindow.GetWindow(gameType, false);
+			if (gameWindow.maximized) return;
+			
+			var hierarchyType = typeof(EditorWindow).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
+			if (hierarchyType is null) return;
+			
+			var hierarchyWindow = EditorWindow.GetWindow(hierarchyType, false);
+			if (hierarchyWindow is null) return;
+
+			var method = hierarchyType.GetMethod("SetExpanded", BindingFlags.Instance | BindingFlags.NonPublic);
 			if (method is null) return;
 
 			var selections = Selection.gameObjects;

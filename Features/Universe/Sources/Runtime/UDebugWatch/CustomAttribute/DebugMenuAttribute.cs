@@ -9,6 +9,7 @@ namespace Universe.DebugWatch.Runtime
 
         public string Path => _path;
         public string Tooltip => _tooltip;
+        public int SortingOrder => _sortingOrder;
         public bool IsQuickMenu { get; set; }
 
         #endregion
@@ -16,19 +17,29 @@ namespace Universe.DebugWatch.Runtime
 
         #region Constructor
 
-        public DebugMenuAttribute(string path, string tooltip = "")
+        public DebugMenuAttribute(string path, string tooltip = "", int sortingOrder = 0)
         {
             _path = path;
-            _tooltip = tooltip;
+            _tooltip = string.IsNullOrEmpty(tooltip) ? "" : tooltip;
+            _sortingOrder = sortingOrder;
         }
+
+        #endregion
+        
+        
+        #region Main
+
+        public virtual OptionData[] GetOptions() => 
+            new OptionData[0];
 
         #endregion
 
 
         #region Private Members
 
-        private string _path;
-        private string _tooltip;
+        protected int _sortingOrder;
+        protected string _path;
+        protected string _tooltip;
 
         #endregion
     }

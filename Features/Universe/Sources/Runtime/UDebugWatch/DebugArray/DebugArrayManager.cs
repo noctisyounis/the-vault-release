@@ -13,6 +13,7 @@ namespace Universe.DebugWatch.Runtime
 		public DebugArrayEntry m_entryTemplate;
 		public Transform[] m_columns;
 		public int m_columnCapacity;
+		public float m_tickRate;
 
 		#endregion
 
@@ -43,13 +44,20 @@ namespace Universe.DebugWatch.Runtime
 
 			var column = m_columns[nextColumn];
 			var newEntry = Instantiate<DebugArrayEntry>(m_entryTemplate, column);
+			var nextTick = Mathf.Ceil(UTime.Time);
 
 			UpdateColumn( column );
 
 			newEntry.name = name;
 			newEntry.m_computing = valueComputer;
+			newEntry.m_tickRate = m_tickRate;
 
 			_entries.Add(newEntry);
+
+			foreach (var entry in _entries)
+			{
+				entry.NextTick = nextTick;
+			}
 		}
 
 		public void RemoveEntry(string name)

@@ -10,6 +10,7 @@ namespace Universe
 
         public bool m_useAbsoluteValue;
         public float m_triggerThreshold;
+        public bool m_triggerUnderThreshold;
 
         #endregion
 
@@ -46,22 +47,49 @@ namespace Universe
 
         public void Evaluate( float next )
         {
+            if (m_triggerUnderThreshold) EvaluateUnder(next);
+            else EvaluateAbove(next);
+        }
+
+        #endregion
+        
+        
+        #region Utils
+
+        private void EvaluateAbove(float next)
+        {
             var value = m_useAbsoluteValue ? Mathf.Abs(next) : next;
+            
             if( value < m_triggerThreshold && IsPressed )
             {
                 _pressed = false;
                 OnAxisReleased?.Invoke( next );
-                return;
             }
 
             if( value >= m_triggerThreshold && !IsPressed )
             {
                 _pressed = true;
                 OnAxisPressed?.Invoke( next );
-                return;
             }
         }
 
+        private void EvaluateUnder(float next)
+        {
+            var value = m_useAbsoluteValue ? Mathf.Abs(next) : next;
+            
+            if( value > m_triggerThreshold && IsPressed )
+            {
+                _pressed = false;
+                OnAxisReleased?.Invoke( next );
+            }
+
+            if( value <= m_triggerThreshold && !IsPressed )
+            {
+                _pressed = true;
+                OnAxisPressed?.Invoke( next );
+            }
+        }
+        
         #endregion
 
 
