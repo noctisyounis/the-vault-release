@@ -1,23 +1,29 @@
 {
-  "name": "com.noctisyounis.the-vault",
-  "version": "1.8.13",
-  "displayName": "The Vault",
-  "description": "This is the vault",
-  
- "keywords": [
-    "the",
-    "vault"
-  ],
-  "author": 
-  {
-    "name": "Open Source - Cherif Younis",
-    "email": "cherifyounis@gmail.com"
-  },
-  "samples":[
-        {
+    "name": "com.noctisyounis.the-vault",
+    "version": "1.8.14",
+    "displayName": "The Vault",
+    "description": "This is the vault",
+    
+   "keywords": [
+      "the",
+      "vault"
+    ],
+    "author": 
+    {
+      "name": "Open Source - Cherif Younis",
+      "email": "cherifyounis@gmail.com"
+    },
+    "samples": 
+    [
+          {
+              "displayName": "GameStarter",
+              "description": "Contains the required scene for the Vault",
+              "path": "Samples~/GameStarter.unitypackage"
+          },
+          {
             "displayName": "Content",
             "description": "Contains all the base hierarchy used by the Vault",
-            "path": "Samples~/_"
-        }
-  ]
+            "path": "Samples~/Content.unitypackage"
+          }
+    ]
 }
