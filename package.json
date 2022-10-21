@@ -18,12 +18,12 @@
           {
               "displayName": "GameStarter",
               "description": "Contains the required scene for the Vault",
-              "path": "Samples~/GameStarter.unitypackage"
+              "path": "Samples~/GameStarter"
           },
           {
             "displayName": "Content",
             "description": "Contains all the base hierarchy used by the Vault",
-            "path": "Samples~/Content.unitypackage"
+            "path": "Samples~/Content"
           }
     ]
 }
