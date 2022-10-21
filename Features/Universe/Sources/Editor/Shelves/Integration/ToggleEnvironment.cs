@@ -1,6 +1,5 @@
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Universe.Editor;
 using Universe.SceneTask.Runtime;
 
 using static System.IO.File;
@@ -34,10 +33,14 @@ namespace Universe.Toolbar.Editor
 
             if( !Button( new GUIContent( environment.ToString(), tex, $"{labelText} {environment}" ) ) ) return;
             
-            currentEnvironment ^= environment;
-
             var level           = LoadAssetAtPath<LevelData>(currentLevelPath);
             var situations = level.Situations;
+            var next = currentEnvironment ^ environment;
+
+            if( next != 0 )
+                currentEnvironment = next;
+            else
+                currentEnvironment = Environment.BOTH ^ environment;
 
             Situation.CurrentEnvironment = currentEnvironment;
             levelSettings.m_startingEnvironment = currentEnvironment;
@@ -51,19 +54,27 @@ namespace Universe.Toolbar.Editor
                 if (!gameplayScene.IsValid()) return;
                 
                 var blockMeshGuid   = situation.m_blockMeshEnvironment.m_assetReference.AssetGUID;
+                var blockMeshPath   = GUIDToAssetPath(blockMeshGuid);
                 var artGuid         = situation.m_artEnvironment.m_assetReference.AssetGUID;
-                var environmentGuid = IsArtEnvironment(environment) ? artGuid : blockMeshGuid;
-                var environmentPath = GUIDToAssetPath(environmentGuid);
+                var artPath         = GUIDToAssetPath(artGuid);
                 
-                if( willLoad )
+                if (IsArtEnvironment(currentEnvironment))
+                    OpenScene(artPath, Additive);
+                else
                 {
-                    OpenScene( environmentPath, Additive );
-                    return;
+                    var scene = EditorSceneManager.GetSceneByPath( artPath );
+                    SaveCurrentModifiedScenesIfUserWantsTo();
+                    CloseScene( scene, false );
                 }
-
-                var environmentScene = EditorSceneManager.GetSceneByPath( environmentPath );
-                SaveCurrentModifiedScenesIfUserWantsTo();
-                CloseScene( environmentScene, false );
+                
+                if (IsBlockMeshEnvironment(currentEnvironment))
+                    OpenScene(blockMeshPath, Additive);
+                else
+                {
+                    var scene = EditorSceneManager.GetSceneByPath( blockMeshPath );
+                    SaveCurrentModifiedScenesIfUserWantsTo();
+                    CloseScene( scene, false );
+                }
             }
         }
 
@@ -80,6 +91,9 @@ namespace Universe.Toolbar.Editor
             return Exists( fullPath );
         }
 
+        private static bool IsBlockMeshEnvironment(Environment environment) => 
+            ( ( environment & Environment.BLOCK_MESH ) != 0 );
+        
         private static bool IsArtEnvironment(Environment environment) => 
             ( ( environment & Environment.ART ) != 0 );
 
