@@ -227,7 +227,7 @@ namespace Universe.Editor
             
             var levelSettings = GetSettings<LevelSettings>();
 
-            levelSettings.m_startingEnvironment = developmentBuild ? BLOCK_MESH : ART;
+            levelSettings.m_startingEnvironment = BOTH;
             levelSettings.SaveAsset();
 
             switch( target )
