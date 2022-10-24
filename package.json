@@ -1,6 +1,6 @@
 {
     "name": "com.noctisyounis.the-vault",
-    "version": "1.8.15",
+    "version": "1.8.16",
     "displayName": "The Vault",
     "description": "This is the vault",
     
@@ -18,12 +18,12 @@
           {
               "displayName": "GameStarter",
               "description": "Contains the required scene for the Vault",
-              "path": "Samples~/GameStarter"
+              "path": "Samples~/_/GameStarter"
           },
           {
             "displayName": "Content",
             "description": "Contains all the base hierarchy used by the Vault",
-            "path": "Samples~/Content"
+            "path": "Samples~/_/Content"
           }
     ]
 }

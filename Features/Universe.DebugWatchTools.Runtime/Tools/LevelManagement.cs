@@ -136,13 +136,6 @@ namespace Universe.DebugWatchTools.Runtime
         {
             var next = CurrentEnvironment ^ environment;
 
-            if( next != 0 )
-            {
-                CurrentEnvironment = next;
-                ReloadLevel();
-                return;
-            }
-
             CurrentEnvironment = BOTH ^ environment;
             ReloadLevel();
         }
@@ -180,7 +173,7 @@ namespace Universe.DebugWatchTools.Runtime
             OnSaveStateRequested -= SaveProgress;
             OnLoadStateRequested -= LoadProgress;
             OnReloadTaskRequested -= ReloadGameplayTask;
-            OnEnvironmentToggleRequested += ToggleEnvironment;
+            OnEnvironmentToggleRequested -= ToggleEnvironment;
             OnChangeLevelRequested -= ChangeLevel;
         }
 

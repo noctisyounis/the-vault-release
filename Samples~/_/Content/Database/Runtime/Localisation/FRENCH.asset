@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6644875266360010806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test3
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Bonjour le monde!
+  _defaultValue: 
+--- !u!114 &-2447110464577760678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test4
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: c'est une feuille de test
+  _defaultValue: 
+--- !u!114 &-1904736077171234566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test2
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Je veux manger des cookies
+  _defaultValue: 
+--- !u!114 &-1010264267582178931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test1
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Test
+  _defaultValue: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b020d7f56165b47bb149bb9885afd4, type: 3}
+  m_Name: FRENCH
+  m_EditorClassIdentifier: 
+  m_name: FRENCH
+  m_fontSettingsCollection: {fileID: 11400000, guid: ecc9288cfdc725a44810c88d7aea7d22, type: 2}
+  m_localisedTexts:
+  - {fileID: 3550714853346584004}
+  - {fileID: 4939292709574598025}
+  - {fileID: 3710627901132785593}
+  - {fileID: 450701130759166268}
+  - {fileID: -1010264267582178931}
+  - {fileID: -1904736077171234566}
+  - {fileID: -6644875266360010806}
+  - {fileID: -2447110464577760678}
+--- !u!114 &450701130759166268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Continue
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Continuez?
+  _defaultValue: 
+--- !u!114 &3550714853346584004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Game_Name
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Mon jeu
+  _defaultValue: 
+--- !u!114 &3710627901132785593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Loss
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: Tu as perdu!
+  _defaultValue: 
+--- !u!114 &4939292709574598025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Victory
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: La victoire!
+  _defaultValue: 

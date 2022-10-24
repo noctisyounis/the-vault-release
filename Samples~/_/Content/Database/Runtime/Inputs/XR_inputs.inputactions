@@ -1,0 +1,1174 @@
+{
+    "name": "XR_inputs",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "94d3b375-6ba5-4187-9162-3a1c5f9dc26b",
+            "actions": [
+                {
+                    "name": "Headset_UserPresence",
+                    "type": "Button",
+                    "id": "37e4aaf1-91ed-4cb5-a55f-ee12fd149e70",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Headset_Button",
+                    "type": "Button",
+                    "id": "d9326db4-fe5c-4d2c-8d04-ee1478be8c55",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_TriggerButton",
+                    "type": "Button",
+                    "id": "722ebd22-6a35-460b-a7f0-6555385bfab8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_GripButton",
+                    "type": "Button",
+                    "id": "f145f7dd-baef-4f1d-9215-1248e1e56fba",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_ACrossButton",
+                    "type": "Button",
+                    "id": "ce3b85ba-4ccd-4c21-85c5-93d9c9e4a3b5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_BCircleButton",
+                    "type": "Button",
+                    "id": "c99debc6-7740-4b7b-983b-51ceef01854a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_ThumbstickButton",
+                    "type": "Button",
+                    "id": "9ef2f307-47fc-4374-a381-4d08d1650e23",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_SelectButton",
+                    "type": "Button",
+                    "id": "361ee259-7435-4048-a3c9-0734e50ecc41",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_TriggerAxis",
+                    "type": "PassThrough",
+                    "id": "f3127c53-d2a8-4827-9c6b-f4b74c9e182d",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightController_GripAxis",
+                    "type": "PassThrough",
+                    "id": "8267a84d-98a5-4be5-af25-1eab0963bb9b",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightController_ThumbstickAxis",
+                    "type": "Value",
+                    "id": "437779c8-d077-4a27-b57c-5b657133f525",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftController_TriggerButton",
+                    "type": "Button",
+                    "id": "6def846e-9ebc-4097-a315-7d2004c69fbb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_GripButton",
+                    "type": "Button",
+                    "id": "245bfc5c-40b1-43ef-a2a2-6a3734d74fe2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_XSquareButton",
+                    "type": "Button",
+                    "id": "ee13c5a2-d26c-4b86-baf6-cb026b8349b7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_YTriangleButton",
+                    "type": "Button",
+                    "id": "53b67b2b-e883-46fd-ad1d-346f19f66048",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_ThumbstickButton",
+                    "type": "Button",
+                    "id": "53eb9af5-4b12-42f7-8402-f8f58ac36629",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_PauseButton",
+                    "type": "Button",
+                    "id": "38979915-da37-43ab-9563-576dc1b1eae5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_TriggerAxis",
+                    "type": "PassThrough",
+                    "id": "6e736f78-c692-4dc4-8330-71ee33966845",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftController_GripAxis",
+                    "type": "PassThrough",
+                    "id": "efedf310-94b9-4c26-a4ff-a41d32ef95fd",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftController_ThumbstickAxis",
+                    "type": "Value",
+                    "id": "1b3a912f-a391-4b4e-be0e-6994af9bd0e6",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8255d333-5683-4943-a58a-ccb207ff1dce",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d882845-81e4-4f98-8f7d-c50b93c68aaf",
+                    "path": "<PSVR2Controller>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "25b01565-6de8-4850-9203-670dda800fc2",
+                    "path": "<XRController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9424a325-1e0c-47eb-a234-65c39308cca4",
+                    "path": "<PSVR2Controller>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f70e617-09ec-415f-acc7-d7df47ceda08",
+                    "path": "<XRHMD>/userPresence",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "Headset_UserPresence",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "724ec34a-84f5-4c70-98f0-12a650328931",
+                    "path": "<XRHMD>/back",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "Headset_Button",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44a6b42f-5dad-4bc8-8e3e-7105585c1eeb",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_ACrossButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d56eb703-b3b5-49d2-85ee-2e907449c82f",
+                    "path": "<PSVR2Controller>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_ACrossButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6ca557be-4b23-4b7f-a3df-ebee6f4bbc67",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_BCircleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a0c89fa8-266b-4c66-8727-e848cc392f7d",
+                    "path": "<PSVR2Controller>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_BCircleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "22ddb69a-6f8f-4250-accd-8ef451c30d82",
+                    "path": "<XRController>{RightHand}/thumbstickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "RightController_ThumbstickButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "90f66f64-e91d-487d-b2d8-2134434b3a3a",
+                    "path": "<XRController>{RightHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "RightController_SelectButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf4d5690-93f7-4efc-a16e-1de121a5de8c",
+                    "path": "<XRController>{RightHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_GripAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "62a3f9eb-97cd-4ee5-ac2e-3d6aba1ca2fb",
+                    "path": "<PSVR2Controller>/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_GripAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a5f3a6c7-73b9-4017-a6ab-7856bf72fac2",
+                    "path": "<XRController>{RightHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_ThumbstickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1bbd8e54-f7f5-466e-82c4-b1285c29fc99",
+                    "path": "<XRController>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ddda175-d9e7-4434-8874-631750e8ff78",
+                    "path": "<PSVR2Controller>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8a638f58-38c5-41a4-be8b-ac9c4d294467",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b92d96ff-0d8c-4dae-ba34-4f888cfb3890",
+                    "path": "<PSVR2Controller>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78ab038f-536a-487a-a0c2-bed4f08454ef",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_XSquareButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "38eca353-2d3e-4fc5-8d47-66ce79963c75",
+                    "path": "<PSVR2Controller>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_XSquareButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "63566abc-1232-418d-83e4-bd919833cd3a",
+                    "path": "<XRController>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_YTriangleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e475f46c-e2f0-42d6-b144-e97063c08991",
+                    "path": "<PSVR2Controller>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_YTriangleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ba192838-862b-4bf8-aa9e-d3cd2602a1a0",
+                    "path": "<XRController>{LeftHand}/thumbstickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_ThumbstickButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cce0a4d9-9eb7-4339-a58c-e5334b5a3fc2",
+                    "path": "<XRController>{LeftHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_PauseButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2630e18a-512d-4914-a23c-d3a0cdd93d2b",
+                    "path": "<XRController>{LeftHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_TriggerAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9c7a46fb-b098-4ef4-9321-16b502a29765",
+                    "path": "<XRController>{LeftHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_GripAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce631545-6d04-45d8-91da-31c3b3d13994",
+                    "path": "<XRController>{LeftHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_ThumbstickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "df3cb7b8-39ff-467f-a231-6a3316a0b859",
+                    "path": "<XRController>{RightHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_TriggerAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6789bbe-045d-4252-a874-5477769debbb",
+                    "path": "<Keyboard>/backspace",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RightController_BCircleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1ccec93-47ad-49f3-9ed5-bbf610e6fa64",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RightController_ACrossButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "48716783-2389-49bc-a2da-8a72cb010176",
+            "actions": [
+                {
+                    "name": "Headset_UserPresence",
+                    "type": "Button",
+                    "id": "4369cf24-863d-43ed-abcb-8f48cc4d75fc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Headset_Button",
+                    "type": "Button",
+                    "id": "d48b01ff-db71-48b6-b7d2-cae57ce1e46f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_TriggerButton",
+                    "type": "Button",
+                    "id": "71721409-244b-4725-8ed1-e8a0cbd2c89f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_GripButton",
+                    "type": "Button",
+                    "id": "bb99e026-7d5b-4bd9-91f7-7fe3af8cd998",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_ACrossButton",
+                    "type": "Button",
+                    "id": "dc03322c-ad08-4f5b-9e88-7af5eef08c6e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_BCircleButton",
+                    "type": "Button",
+                    "id": "5459d6b2-bd07-43b5-9526-0960dea1da1e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_ThumbstickButton",
+                    "type": "Button",
+                    "id": "cbd2b940-ded2-4b80-bb61-3631fe275d9f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_SelectButton",
+                    "type": "Button",
+                    "id": "418ccd42-1ac1-4b50-a986-e928a60e38b6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightController_TriggerAxis",
+                    "type": "PassThrough",
+                    "id": "bfbd2007-6529-412f-8237-dbe40db81c48",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightController_GripAxis",
+                    "type": "PassThrough",
+                    "id": "2a4112ee-7e55-40ad-8508-78958c05b720",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightController_ThumbstickAxis",
+                    "type": "Value",
+                    "id": "9787c5cd-0448-4792-861a-6b01f2211340",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftController_TriggerButton",
+                    "type": "Button",
+                    "id": "b8b23f1d-412b-4007-9c06-ca795514ae6a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_GripButton",
+                    "type": "Button",
+                    "id": "245cb242-fa38-4499-98bf-c01ddb81615e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_XSquareButton",
+                    "type": "Button",
+                    "id": "87bb5264-012a-4136-85b6-07d19115cb89",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_YTriangleButton",
+                    "type": "Button",
+                    "id": "6fdd50d0-9757-42ca-9461-25b269236ad4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_ThumbstickButton",
+                    "type": "Button",
+                    "id": "104fe507-afa0-499b-ae73-acbd6909a94c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_PauseButton",
+                    "type": "Button",
+                    "id": "13efc34a-7f1d-415b-890c-19ceb5a8f3a7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftController_TriggerAxis",
+                    "type": "PassThrough",
+                    "id": "11c3e30a-28f8-4ff1-bc0f-bc4a7d2ae3ab",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftController_GripAxis",
+                    "type": "PassThrough",
+                    "id": "d2ea134b-a668-403c-a66d-be60fd35be6e",
+                    "expectedControlType": "Axis",
+                    "processors": "Normalize(max=1),AxisDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LeftController_ThumbstickAxis",
+                    "type": "Value",
+                    "id": "7737a3a4-5645-4fd5-aed2-fc89b56f9093",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "TrackedDevicePosition",
+                    "type": "PassThrough",
+                    "id": "44369ca8-ab1f-46b4-9ab3-05a42a9adf06",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TrackedDeviceOrientation",
+                    "type": "PassThrough",
+                    "id": "96fea384-f584-4d85-84f9-7f5c8809e6cc",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4be97453-7dea-4acd-b2db-2741dc153765",
+                    "path": "<XRHMD>/userPresence",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "Headset_UserPresence",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d75a0909-c4f4-4799-9b90-944bcd83bd25",
+                    "path": "<XRHMD>/back",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "Headset_Button",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2b5a2224-0267-4c6c-8eba-f5aed892d947",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4bc4b7dd-8991-43cb-bde9-f902b465f2cd",
+                    "path": "<PSVR2Controller>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a94d56b0-be4c-4109-8be9-d78a658bf2e4",
+                    "path": "<XRController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "276a3728-2548-42c8-bb64-61e77bc82227",
+                    "path": "<PSVR2Controller>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ceb8e9a1-2dcf-445a-bc99-f07f427d571d",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_ACrossButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6ef259d1-8071-411e-8e78-e64965cb7cab",
+                    "path": "<PSVR2Controller>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_ACrossButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3ca5a26e-c70e-4187-a5c1-6a8dbc474028",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_BCircleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50f57bbd-ded6-4f24-9e3e-3da2068410db",
+                    "path": "<PSVR2Controller>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_BCircleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "69eaac61-ffc8-493e-9184-567cdcd8d775",
+                    "path": "<XRController>{RightHand}/thumbstickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "RightController_ThumbstickButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f427afaf-1442-44ab-8dcc-89dd0c0cbf73",
+                    "path": "<XRController>{RightHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR;PSVR",
+                    "action": "RightController_SelectButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44222106-0d9c-4c25-8bcf-6d0b0b4d8305",
+                    "path": "<XRController>{RightHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_TriggerAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e7b07fa8-ed6f-467f-ab99-a5e1f06c46a1",
+                    "path": "<XRController>{RightHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_GripAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f02e334-47c7-46c1-855c-98dca6b007f2",
+                    "path": "<PSVR2Controller>/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PSVR",
+                    "action": "RightController_GripAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6c323c62-d2fe-40ae-8d32-b5488bacb481",
+                    "path": "<XRController>{RightHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "RightController_ThumbstickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "84d2b256-193e-498a-88d5-dcad5261b6b8",
+                    "path": "<XRController>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "02b6844f-fc61-44f8-b048-8bde6a74be45",
+                    "path": "<PSVR2Controller>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_TriggerButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "79069e89-10bb-44fa-a400-d46d8f521c95",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "85e176d2-6ee4-485b-8256-ab07a1cb0733",
+                    "path": "<PSVR2Controller>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_GripButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7b21682-4774-42c7-a514-ab93c092df25",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_XSquareButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5e4f22b2-2b03-4de7-96f6-d24d28993b41",
+                    "path": "<PSVR2Controller>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_XSquareButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99c9b333-cbf6-4302-b3b1-d2aaaf778345",
+                    "path": "<XRController>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_YTriangleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "21fb5d08-2f45-493a-8787-4bd7e2690244",
+                    "path": "<PSVR2Controller>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_YTriangleButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7a15282-bffd-4934-adef-d485bf4e07f9",
+                    "path": "<XRController>{LeftHand}/thumbstickClicked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_ThumbstickButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74576016-2ce5-4d6d-9176-818b432bd5da",
+                    "path": "<XRController>{LeftHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_PauseButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb20050d-8604-4f53-bd7d-119ad1cbe354",
+                    "path": "<XRController>{LeftHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_TriggerAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0232b155-ed05-4a5f-a8fd-7bd48381a72d",
+                    "path": "<XRController>{LeftHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_GripAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74442656-252a-45dc-a657-550cdaf35518",
+                    "path": "<XRController>{LeftHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "LeftController_ThumbstickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7236c0d9-6ca3-47cf-a6ee-a97f5b59ea77",
+                    "path": "<XRController>/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "TrackedDevicePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23e01e3a-f935-4948-8d8b-9bcac77714fb",
+                    "path": "<XRController>/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Keyboard&Mouse",
+            "bindingGroup": "Keyboard&Mouse",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Gamepad",
+            "bindingGroup": "Gamepad",
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Touch",
+            "bindingGroup": "Touch",
+            "devices": [
+                {
+                    "devicePath": "<Touchscreen>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Joystick",
+            "bindingGroup": "Joystick",
+            "devices": [
+                {
+                    "devicePath": "<Joystick>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "XR",
+            "bindingGroup": "XR",
+            "devices": [
+                {
+                    "devicePath": "<XRController>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<XRHMD>",
+                    "isOptional": true,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "PSVR",
+            "bindingGroup": "PSVR",
+            "devices": [
+                {
+                    "devicePath": "<PSVR2Controller>{LeftHand}",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<PSVR2Controller>{RightHand}",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<PSVR2Controller>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<PSVR2HMD>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

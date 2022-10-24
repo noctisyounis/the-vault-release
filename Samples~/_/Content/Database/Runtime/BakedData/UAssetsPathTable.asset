@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c69075eca996d3843bdda9242b9e635b, type: 3}
+  m_Name: UAssetsPathTable
+  m_EditorClassIdentifier: 
+  m_targetFolders:
+  - Assets/_/Content/GraphicsTier
+  - Assets/_/Content/Levels
+  m_guids:
+  - e2d8a8b09fd71cf4aab900a514c31ec3
+  - 466039f8decdbdb4d8882ca46d6d2ad6
+  - 47de0b9ce928c86409890ed557ca4695
+  - 2cd3ab4556185f244915ddfc9ad1116e
+  - dd3009f242b4c3c46bf2300d4a273778
+  m_paths:
+  - Assets/_/Content/Levels/Interfaces/DebugWatch/DebugWatch.asset
+  - Assets/_/Content/Levels/LevelsHelper.asset
+  - Assets/_/Content/Levels/Tech/PersistantScene/Persistant Scene.asset
+  - Assets/_/Content/Levels/Interfaces/DebugWatch/DebugWatch.unity
+  - Assets/_/Content/Levels/Tech/PersistantScene/Persistant Scene.unity

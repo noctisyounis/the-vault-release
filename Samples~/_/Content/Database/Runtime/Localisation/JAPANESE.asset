@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9055174105134615462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test1
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u30C6\u30B9\u30C8"
+  _defaultValue: 
+--- !u!114 &-9006256672370615006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test2
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u79C1\u306F\u3044\u304F\u3064\u304B\u306E\u30AF\u30C3\u30AD\u30FC\u3092\u98DF\u3079\u305F\u3044\u3067\u3059"
+  _defaultValue: 
+--- !u!114 &-8669873130264682732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Victory
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u52DD\u5229\uFF01"
+  _defaultValue: 
+--- !u!114 &-2225951171666262613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test3
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\\\"\u3053\u3093\u306B\u3061\u306F\u4E16\u754C\\\""
+  _defaultValue: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b020d7f56165b47bb149bb9885afd4, type: 3}
+  m_Name: JAPANESE
+  m_EditorClassIdentifier: 
+  m_name: JAPANESE
+  m_fontSettingsCollection: {fileID: 11400000, guid: ecc9288cfdc725a44810c88d7aea7d22, type: 2}
+  m_localisedTexts:
+  - {fileID: 132424671045052996}
+  - {fileID: -8669873130264682732}
+  - {fileID: 8788581915177296520}
+  - {fileID: 4193011040519424048}
+  - {fileID: -9055174105134615462}
+  - {fileID: -9006256672370615006}
+  - {fileID: -2225951171666262613}
+  - {fileID: 6486772195753309281}
+--- !u!114 &132424671045052996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Game_Name
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u79C1\u306E\u30B2\u30FC\u30E0"
+  _defaultValue: 
+--- !u!114 &4193011040519424048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Continue
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u7D99\u7D9A\u3059\u308B\uFF1F"
+  _defaultValue: 
+--- !u!114 &6486772195753309281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_02_Test4
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u305D\u308C\u306F\u30C6\u30B9\u30C8\u30B7\u30FC\u30C8\u3067\u3059"
+  _defaultValue: 
+--- !u!114 &8788581915177296520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4abdf7b986d97e04fa8277534eb897cb, type: 3}
+  m_Name: LOC_01_Loss
+  m_EditorClassIdentifier: 
+  m_isFavorite: 0
+  m_useVerboseOnChange: 0
+  m_isAnalytics: 0
+  m_saveLevel: 0
+  m_isReadOnly: 0
+  m_washOnAwakeAndCompilation: 0
+  _value: "\u3042\u306A\u305F\u306F\u8CA0\u3051\u307E\u3057\u305F\uFF01"
+  _defaultValue: 
