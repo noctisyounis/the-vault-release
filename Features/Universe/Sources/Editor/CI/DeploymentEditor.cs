@@ -68,7 +68,7 @@ namespace Universe.Editor
         public int callbackOrder => 0;
 
         //if this is set to 9, then 1.0.9 will become 1.1.0
-        private static int  s_versionIncrementUpAt = 9; 
+        private static int  s_versionIncrementUpAt = 999; 
         
         private static string SourceDirectoryPath => $"{dataPath}\\..\\..\\Symlinks";
         private static string SourceGraphicsTiersDirectoryPath => $"{SourceDirectoryPath}\\GraphicsTier";
@@ -94,7 +94,7 @@ namespace Universe.Editor
 
             var externalVersionPath = EXTERNAL_VERSION_PATH.Replace("{productName}", productName.Replace(" ", ""));
             var versionPath = $"{externalVersionPath}\\{id}.txt";
-            var version = "0.0.1";
+            var version = "0.000.001";
             using (var fs = OpenRead(versionPath))
             {
                 using (var sr = new StreamReader(fs))
@@ -326,7 +326,7 @@ namespace Universe.Editor
 
             if( string.IsNullOrEmpty( versionBundleText ) )
             {
-                versionBundleText = "0.0.1";
+                versionBundleText = "0.000.001";
             }
             else
             {
@@ -355,7 +355,7 @@ namespace Universe.Editor
                     minorVersion = 0;
                 }
 
-                versionBundleText = majorVersion.ToString( "0" ) + "." + minorVersion.ToString( "0" ) + "." + subMinorVersion.ToString( "0" );
+                versionBundleText = majorVersion.ToString( "0" ) + "." + minorVersion.ToString( "000" ) + "." + subMinorVersion.ToString( "000" );
                 
             }
             

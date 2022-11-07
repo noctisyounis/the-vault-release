@@ -27,6 +27,16 @@ namespace Universe.DebugWatchTools.Runtime
 		[DebugMenu( "Vision.../World Normals", "Display meshes normals", 200 )] public static void ToggleWorldNormals() => DebugViews.ChangeView( 10 );
 		[DebugMenu( "Vision.../World Tangents", "Display meshes tangents", 200 )] public static void ToggleWorldTangents() => DebugViews.ChangeView( 11 );
 
+		[DebugMenuSelector("Vision.../Filter",
+			new string[] { "Overdraw", "UV0", "World Normals", "World Tangents" },
+			new object[] { 0, 2, 10, 11 },
+			"Other visions in one", 200)]
+		public static int ToggleFilter(int next)
+		{
+			DebugViews.ChangeView(next);
+			return next;
+		}
+
 		#endregion
 
 

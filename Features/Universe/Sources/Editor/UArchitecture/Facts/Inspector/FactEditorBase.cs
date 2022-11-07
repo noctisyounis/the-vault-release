@@ -1,6 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 
+using static Universe.Editor.GenericPropertyDrawer;
+
 namespace Universe.Editor
 {
     [CustomEditor(typeof(FactBase), true)]
@@ -33,36 +35,48 @@ namespace Universe.Editor
             
                 GUILayout.BeginVertical(EditorStyles.helpBox);
                 
-                GUILayout.Label("Editor");
+                GUILayout.Label("Editor", EditorStyles.boldLabel);
+                GUILayout.Space(5);
+                GUILayout.BeginHorizontal();
                 DrawToggle("Is Favorite", ref selection.m_isFavorite, Color.yellow);
+                if (GUILayout.Button("Open Fact Browser"))
+                {
+                    FactBrowserWindow.ShowDialog();
+                }
+                GUILayout.EndHorizontal();
                 DrawToggle("Use Verbose Log On Change", ref selection.m_useVerboseOnChange, Color.green);
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Clone")) Clone(selection);
                 GUILayout.EndHorizontal();
                 
                 GUILayout.EndVertical();
-                
+
+                GUILayout.Space(5);
                 
                 GUILayout.BeginVertical(EditorStyles.helpBox);
                 
-                GUILayout.Label("Options");
+                GUILayout.Label("Options", EditorStyles.boldLabel);
+                GUILayout.Space(5);
+                selection.m_saveLevel = (USaveLevel)EditorGUILayout.EnumPopup("Save Level: ", selection.m_saveLevel);
                 DrawToggle("Is Analytics", ref selection.m_isAnalytics, Color.green);
                 
                 GUILayout.EndVertical(); 
                 
+                GUILayout.Space(5);
                  
                 GUILayout.BeginVertical(EditorStyles.helpBox);  
                 
-                GUILayout.Label("Gameplay");
+                GUILayout.Label("Gameplay", EditorStyles.boldLabel);
+                GUILayout.Space(5);
                 DrawToggle("Is Read Only", ref selection.m_isReadOnly, Color.green);
                 DrawToggle("Wash On Awake And Compilation", ref selection.m_washOnAwakeAndCompilation, Color.green);
                 GUILayout.BeginHorizontal();
                 EditorGUIUtility.labelWidth = 50;
                 EditorGUIUtility.fieldWidth = 100;
-                GenericPropertyDrawer.DrawObjectPropertyDrawer(Target.Type, new GUIContent("Value"), _valueProperty, new GUIContent( "content", "content" ) );
+                DrawObjectPropertyDrawer(Target.Type, new GUIContent("Value"), _valueProperty, new GUIContent( "content", "content" ) );
                 if (selection.m_washOnAwakeAndCompilation)
                 {
-                    GenericPropertyDrawer.DrawObjectPropertyDrawer(Target.Type, new GUIContent("Wash To:"), _washProperty, new GUIContent( "content", "content" ) );    
+                    DrawObjectPropertyDrawer(Target.Type, new GUIContent("Wash To:"), _washProperty, new GUIContent( "content", "content" ) );    
                 }
                 GUILayout.EndHorizontal();
             
