@@ -33,12 +33,12 @@ namespace Universe.Editor
         private const string TASK_GAME_STARTER_PATH     = "Assets\\_\\GameStarter\\GameStarter.unity";
         private const string BUILD_PATH                 = "..\\Builds";
         private const string EXTERNAL_VERSION_PATH      = "..\\..\\Versions\\{productName}";
-        private const string LOCAL_COMMIT_ID_PATH       = "..\\WorkspaceCommitID.txt";
-        private const string BUILD_SLACK_MOVER_PATH     = "..\\Jenkins_Slack_Uploader.bat";
-        private const string BUILD_STEAM_MOVER_PATH     = "..\\Jenkins_Steam_Mover.bat";
+        private const string LOCAL_COMMIT_ID_PATH       = "..\\JenkinsUtility\\Common\\WorkspaceCommitID.txt";
+        private const string BUILD_SLACK_MOVER_PATH     = "..\\JenkinsUtility\\Common\\Jenkins_Slack_Uploader.bat";
+        private const string BUILD_STEAM_MOVER_PATH     = "..\\JenkinsUtility\\Win64\\Jenkins_Steam_Mover.bat";
 
         //.bat relative
-        private const string UPLOAD_PATH = ".\\Export";
+        private const string UPLOAD_PATH = ".\\JenkinsUtility\\Export";
 
         //static names
         private const string DEVELOPMENT_BUILD_PREFIX       = "[DEV]";
@@ -95,6 +95,7 @@ namespace Universe.Editor
             var externalVersionPath = EXTERNAL_VERSION_PATH.Replace("{productName}", productName.Replace(" ", ""));
             var versionPath = $"{externalVersionPath}\\{id}.txt";
             var version = "0.000.001";
+            
             using (var fs = OpenRead(versionPath))
             {
                 using (var sr = new StreamReader(fs))
@@ -144,6 +145,11 @@ namespace Universe.Editor
         public static void RequestAddressableBuild()
         {
             BuildCache.PurgeCache(false);
+            ReloadAndBuildAddressable.Execute();
+        }
+        
+        public static void RequestAddressableBuildWithCache()
+        {
             ReloadAndBuildAddressable.Execute();
         }
 
@@ -532,15 +538,15 @@ namespace Universe.Editor
             var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
             var fullName                = $"{prefix}{name}_{platform}_{version}";
             var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}\\{name}";
-            var zipPath                 = $"{UPLOAD_PATH}\\{fullName}.zip";
+            var exportPath                 = $"{UPLOAD_PATH}\\{fullName}";
 
             using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
-                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\"";
+                var exporting               = $"move \"{path}\" \"{exportPath}\"";
 
                 sw.WriteLine( createUploadIfNotExists );
-                sw.WriteLine( zipping );
+                sw.WriteLine( exporting );
             }
         }
 
