@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System;
 using CSharpExtensions;
 using UnityEditor;
@@ -23,7 +23,7 @@ namespace Universe.Editor
                 {
                     using (new DisabledGroupScope(true))
                     {
-                        ObjectField(rect, label, property.objectReferenceValue, type, false);
+                        property.objectReferenceValue = ObjectField( rect, label, property.objectReferenceValue, type, false);
                     }
                 }
                 else if (type.IsAssignableFrom(typeof(Quaternion)))
@@ -60,7 +60,7 @@ namespace Universe.Editor
                     {
                         using (new DisabledGroupScope(true))
                         {
-                            ObjectField(label, referenceValue, type, false);
+                            property.objectReferenceValue = ObjectField( label, referenceValue, type, false);
                         }
                     }
                 }

@@ -19,9 +19,17 @@ namespace Universe
 
         public abstract void Save(USaveLevel saveLevel);
 
+        public abstract void Save(FactBase fact);
+
+        public abstract void Save(List<FactBase> facts);
+
         public abstract void SaveAll();
 
         public abstract void Load(USaveLevel saveLevel);
+
+        public abstract void Load( FactBase fact );
+
+        public abstract void Load( List<FactBase> facts );
 
         public abstract void LoadAll();
     }

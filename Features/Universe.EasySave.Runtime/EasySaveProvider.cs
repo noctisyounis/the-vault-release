@@ -34,6 +34,27 @@ namespace Universe.EasySave.Runtime
             LoadListFacts( levelFacts );
         }
 
+        public override void Load( FactBase fact )
+        {
+            if( SaveDoesntExist() ) return;
+
+            var levelFacts = new List<FactBase>();
+            levelFacts.Add( fact );
+
+            CacheSaveFile();
+            InitializeCompletionPercentage( GetCountSaveLevelFacts( levelFacts ) );
+            LoadListFacts( levelFacts );
+        }
+
+        public override void Load( List<FactBase> levelFacts )
+        {
+            if( SaveDoesntExist() ) return;
+
+            CacheSaveFile();
+            InitializeCompletionPercentage( GetCountSaveLevelFacts( levelFacts ) );
+            LoadListFacts( levelFacts );
+        }
+
         public override void LoadAll()
         {
             if( SaveDoesntExist() ) return;
@@ -43,6 +64,25 @@ namespace Universe.EasySave.Runtime
             InitializeCompletionPercentage( GetCountAllSaveLevelFactsCount );
 
             LoadAllSaveLevels();
+        }
+
+        public override void Save( List<FactBase> facts )
+        {
+            Verbose( "Save facts list  = ", facts );
+
+            InitializeCompletionPercentage( GetCountSaveLevelFacts( facts ) );
+            SaveListFacts( facts );
+        }
+
+        public override void Save( FactBase fact )
+        {
+            Verbose( "Save fact  = ", fact );
+
+            var listfact = new List<FactBase>();
+            listfact.Add( fact );
+
+            InitializeCompletionPercentage( GetCountSaveLevelFacts( listfact ) );
+            SaveListFacts( listfact );
         }
 
         public override void Save( USaveLevel saveLevel )
