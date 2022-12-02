@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Universe.SceneTask;
 using Universe.SceneTask.Runtime;
+
 using static UnityEditor.AssetDatabase;
 using static UnityEditor.EditorApplication;
 using static UnityEditor.EditorBuildSettings;
@@ -18,13 +16,22 @@ using static UnityEngine.SceneManagement.SceneManager;
 namespace Universe.Toolbar.Editor
 {
 	[InitializeOnLoad]
-	public class SceneSwitchLeftButton
+	public class SceneSwitcher
 	{
+		#region Exposed
+
+		public const string OVERRIDE_PREF_NAME = "[OverridePlayMode]";
+		
+		#endregion
+		
+
 		#region Constructor
 		
-		static SceneSwitchLeftButton()
+		static SceneSwitcher()
 		{
 			playModeStateChanged += OverridePlayMode;
+
+			UpdateOverrideState();
 		}
 		
 		#endregion
@@ -40,13 +47,20 @@ namespace Universe.Toolbar.Editor
 		
 		private static void OverridePlayMode(PlayModeStateChange state)
 		{
+			UpdateOverrideState();
+
+			if (s_overridePlaymode) UseLevel(state);
+			else					UseDefault(state);
+		}
+
+		public static void UseLevel(PlayModeStateChange state)
+		{
 			if (state == ExitingEditMode)
 			{
 				CacheCurrentSelection();
 				SaveOpenScenes();
 				CacheCurrentScenes();
 				LoadGameStarter();
-
 				isPlaying = true;
 				return;
 			}
@@ -54,8 +68,33 @@ namespace Universe.Toolbar.Editor
 			if (state == ExitingPlayMode)
 			{
 				LoadCachedScenes();
-				
 				isPlaying = false;
+				return;
+			}
+
+			if (state == EnteredEditMode)
+			{
+				ClearBuffers();
+				CleanStartScene();
+				SaveOpenScenes();
+			}
+		}
+
+		private static void UseDefault(PlayModeStateChange state)
+		{
+			if (state == ExitingEditMode)
+			{
+				SaveOpenScenes();
+				CacheCurrentScenes();
+				isPlaying = true;
+				return;
+			}
+			
+			if (state == ExitingPlayMode)
+			{
+				LoadCachedScenes();
+				isPlaying = false;
+				return;
 			}
 
 			if (state == EnteredEditMode)
@@ -70,6 +109,13 @@ namespace Universe.Toolbar.Editor
 
 		#region Utils
 
+		private static void  UpdateOverrideState()
+		{
+			var overrideBit = GetInt(OVERRIDE_PREF_NAME);
+			
+			s_overridePlaymode = (overrideBit == 1);
+		}
+
 		private static void CacheCurrentScenes()
 		{
 			var c = sceneCount;
@@ -77,6 +123,7 @@ namespace Universe.Toolbar.Editor
 			for (var i = 1; i < c; i++) 
 			{
 				var scene = GetSceneAt (i);
+				
 				SetString($"[CustomPlayMode]{i.ToString()}", scene.path);
 			}
 		}
@@ -84,6 +131,7 @@ namespace Universe.Toolbar.Editor
 		private static void LoadCachedScenes()
 		{
 			var j = 1;
+			
 			while (HasKey($"[CustomPlayMode]{j.ToString()}"))
 			{
 				LoadScene(GetString($"[CustomPlayMode]{j.ToString()}"), LoadSceneMode.Additive);
@@ -102,6 +150,10 @@ namespace Universe.Toolbar.Editor
 			
 			playModeStartScene = LoadAssetAtPath<SceneAsset>(scenes[0].path);
 		}
+
+		private static void CleanStartScene() =>
+			playModeStartScene = null;
+		
 
 		private static void ExpandScenes(LevelData level)
 		{
@@ -206,11 +258,11 @@ namespace Universe.Toolbar.Editor
 					var newBuffer = gameObjectTemplate.AddComponent<SelectionBuffer>();
 
 					sceneSelectionBuffers.Add(scene, newBuffer);
-					
 					MarkSceneDirty(scene);
 				}
 				
 				var buffer = sceneSelectionBuffers[scene];
+				
 				buffer.Add(gameObject);
 			}
 		}
@@ -229,7 +281,6 @@ namespace Universe.Toolbar.Editor
 				for (var j = 0; j < rootAmount; j++)
 				{
 					var root = roots[j];
-
 					if (!root.name.Equals(SELECTION_BUFFER_NAME)) continue;
 					
 					GameObject.DestroyImmediate(root);
@@ -244,6 +295,8 @@ namespace Universe.Toolbar.Editor
 		#region Private
 
 		private const string SELECTION_BUFFER_NAME = "[SelectionBuffer]";
+		
+		public static bool s_overridePlaymode;
 
 		#endregion
 	}

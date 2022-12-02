@@ -19,11 +19,8 @@ namespace Universe.Editor
     {
         #region Unity API
 
-        protected virtual void OnEnable()
-        {
-            _buttonDefaultBackgroundColor = backgroundColor;
-        }
-
+        protected virtual void OnEnable() => _buttonDefaultBackgroundColor = backgroundColor; 
+        
         public override void OnInspectorGUI()
         {
             var selection = activeObject as SignalBase;
@@ -38,7 +35,15 @@ namespace Universe.Editor
                 return;
             }
                 
+            BeginHorizontal();
+            
             DrawToggle("Is Favorite", ref selection.m_isFavorite, Color.yellow);
+            if (Button("Open Signal Profiler"))
+            {
+                ScriptableObjectProfilerWindow.ShowDialog();
+            }
+            EndHorizontal();
+            
             DrawToggle("Use Verbose Log On Emit", ref selection.m_useVerboseLog, Color.green);
 
             BeginHorizontal();
@@ -68,9 +73,9 @@ namespace Universe.Editor
 
         #region Utilities
 
-        protected virtual void DrawEmitButton(SignalBase target)
+        protected virtual void DrawEmitButton(SignalBase emitTarget)
         {
-            if (Button("Emit")) target.Emit();
+            if (Button("Emit")) emitTarget.Emit();
         }
 
         private void DrawToggle(string label, ref bool target, Color enabledColor)

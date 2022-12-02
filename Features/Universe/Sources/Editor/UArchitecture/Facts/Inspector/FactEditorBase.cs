@@ -39,9 +39,9 @@ namespace Universe.Editor
                 GUILayout.Space(5);
                 GUILayout.BeginHorizontal();
                 DrawToggle("Is Favorite", ref selection.m_isFavorite, Color.yellow);
-                if (GUILayout.Button("Open Fact Browser"))
+                if (GUILayout.Button("Open Fact Profiler"))
                 {
-                    FactBrowserWindow.ShowDialog();
+                    ScriptableObjectProfilerWindow.ShowDialog();
                 }
                 GUILayout.EndHorizontal();
                 DrawToggle("Use Verbose Log On Change", ref selection.m_useVerboseOnChange, Color.green);

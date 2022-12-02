@@ -15,8 +15,7 @@ namespace Universe.Toolbar.Editor
         Addressable,
         Localisation,
         Graphics,
-        Level_Management,
-        Level_Loading
+        Level
     }
 
     public enum SIDE
@@ -32,6 +31,7 @@ namespace Universe.Toolbar.Editor
             FlexibleSpace();
 
             var currentShelve = GetPlayerPrefShelveOrDefault(side);
+            
             currentShelve = (SHELVE)EditorGUILayout.EnumPopup("", currentShelve, Width(130));
             SetPlayerPrefShelve(currentShelve, side);
 
@@ -49,11 +49,8 @@ namespace Universe.Toolbar.Editor
                 case SHELVE.Localisation:
                     DrawLocalisation();
                     break;
-                case SHELVE.Level_Management:
-                    DrawLevelManagement();
-                    break;
-                case SHELVE.Level_Loading:
-                    DrawLevelLoading();
+                case SHELVE.Level:
+                    DrawLevel();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -81,6 +78,7 @@ namespace Universe.Toolbar.Editor
         static void SetPlayerPrefShelve(SHELVE currentShelve, SIDE side)
         {
             var currentSide = side.ToString();
+            
             SetString(side + _shelvePlayerPrefKey, currentShelve.ToString());
         }
 
@@ -106,21 +104,11 @@ namespace Universe.Toolbar.Editor
             GraphicTierChanger.Draw();
         }
 
-        static void DrawLevelManagement()
+        static void DrawLevel()
         {
-            if( SelectLevel.Draw( "Play: ", "PlaymodeLevelPath", true ) )
-            {
-                SelectTask.Draw( " On: ", "PlaymodeLevelPath", true );
-            }
+            SelectLevel.Draw("Current", "EditorLevelPath", false);
             CreateLevelButton.Draw();
             AddSituationToLevel.Draw();
-        }
-
-        static void DrawLevelLoading()
-        {
-            ToggleEnvironment.Draw( "EditorLevelPath", BLOCK_MESH );
-            ToggleEnvironment.Draw( "EditorLevelPath", ART );
-            OpenLevel.Draw();
         }
 
         private static string _shelvePlayerPrefKey = "shelve";

@@ -49,7 +49,7 @@ namespace Universe.Toolbar.Editor
 
 		#region Private Members
 
-		private static string _playerPrefName = "PlaymodeLevelPath";
+		private static string _playerPrefName = "EditorLevelPath";
 
 		#endregion
 	}

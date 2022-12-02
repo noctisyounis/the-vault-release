@@ -27,8 +27,10 @@ namespace Universe.EasySave.Runtime
         public override void Load( USaveLevel saveLevel )
         {
             if( SaveDoesntExist() ) return;
-
+            
             var levelFacts = GetAllFactsInCurrentSaveLevel( saveLevel );
+            
+            Verbose( "Load level  = ", saveLevel );
             CacheSaveFile();
             InitializeCompletionPercentage( GetCountSaveLevelFacts( levelFacts ) );
             LoadListFacts( levelFacts );
@@ -39,8 +41,9 @@ namespace Universe.EasySave.Runtime
             if( SaveDoesntExist() ) return;
 
             var levelFacts = new List<FactBase>();
+            
+            Verbose( "Load fact  = ", fact );
             levelFacts.Add( fact );
-
             CacheSaveFile();
             InitializeCompletionPercentage( GetCountSaveLevelFacts( levelFacts ) );
             LoadListFacts( levelFacts );
@@ -49,7 +52,8 @@ namespace Universe.EasySave.Runtime
         public override void Load( List<FactBase> levelFacts )
         {
             if( SaveDoesntExist() ) return;
-
+            
+            Verbose( "Load facts list  = ", levelFacts );
             CacheSaveFile();
             InitializeCompletionPercentage( GetCountSaveLevelFacts( levelFacts ) );
             LoadListFacts( levelFacts );
@@ -58,7 +62,8 @@ namespace Universe.EasySave.Runtime
         public override void LoadAll()
         {
             if( SaveDoesntExist() ) return;
-
+            
+            Verbose( "Load All" );
             CacheSaveFile();
             ParseAllSaveLevelSetter();
             InitializeCompletionPercentage( GetCountAllSaveLevelFactsCount );
@@ -233,7 +238,7 @@ namespace Universe.EasySave.Runtime
 
         private void OnSaveFinished()
         {
-            Verbose( "OnSaveFInished" );
+            Verbose( "OnSaveFinished" );
             DontParseAllSaveLevels();
             EmitSaveFinishSignal();
             StoreEasySaveCacheFile();
@@ -257,6 +262,7 @@ namespace Universe.EasySave.Runtime
 
         private void OnLoadFinished()
         {
+            Verbose( "OnLoadFinished" );
             EmitLoadFinishSignal();
             DontParseAllSaveLevels();
         }

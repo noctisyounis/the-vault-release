@@ -250,6 +250,7 @@ namespace Universe.Toolbar.Editor
 
 			var openSceneMode = Single;
 			var levelSettings = GetSettings<LevelSettings>();
+			var firstSituation = -1;
 
 			SaveCurrentModifiedScenesIfUserWantsTo();
 			if( NeedAudio )
@@ -276,6 +277,8 @@ namespace Universe.Toolbar.Editor
 
 				var situation = _level.Situations[i];
 				
+				firstSituation = (firstSituation > -1) ? firstSituation : i; 
+				
 				if( NeedBlockMesh )
 				{
 					var blockMeshGuid   = situation.m_blockMeshEnvironment.m_assetReference.AssetGUID;
@@ -300,9 +303,17 @@ namespace Universe.Toolbar.Editor
 				OpenScene( gameplay, openSceneMode );
 			}
 
+			var checkpoint = levelSettings.m_editorCheckpoint;
+			var path = GetAssetPath(_level);
+				
+			firstSituation = (firstSituation > -1) ? firstSituation : 0;
+			checkpoint.m_level = _level;
+			checkpoint.m_situation = _level.GetSituation(firstSituation);
+
 			Situation.CurrentEnvironment = _currentEnvironment;
 			levelSettings.m_startingEnvironment = _currentEnvironment;
 			levelSettings.SaveAsset();
+			SetString(m_levelPlayerPref, path);
 			Close();
 		}
 
