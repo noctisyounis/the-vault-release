@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
@@ -286,10 +287,7 @@ namespace Universe.Editor
             _CITriggered = false;
 
             if (summary.result.Equals(BuildResult.Failed))
-            {
-                EditorApplication.Exit( 1 );
-                return;
-            }
+                throw new Exception("Automated build failed");
 
             if (platform == Android)
                 GenerateAndroidDeploymentFiles(path, name);
