@@ -4,6 +4,8 @@ using UnityEditor.Build;
 using UnityEditor.Build.Pipeline.Utilities;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using Universe.DebugWatch.Editor;
+using Universe.DebugWatchTools.Runtime;
 using Universe.SceneTask.Runtime;
 
 using static System.DateTime;
@@ -12,10 +14,10 @@ using static System.IO.Directory;
 using static UnityEditor.BuildTarget;
 using static UnityEditor.BuildOptions;
 using static UnityEditor.BuildPipeline;
-using static UnityEditor.AddressableAssets.Settings.AddressableAssetSettings;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
 using static UnityEngine.Mathf;
+using static Universe.Editor.UGroupHelper;
 using static Universe.Editor.USettingsHelper;
 using static Universe.SceneTask.Runtime.Environment;
 using static Symlink.Editor.SymlinkEditor;
@@ -142,15 +144,19 @@ namespace Universe.Editor
             RemoveAllSymlinks( graphicsDirectories, TargetGraphicsTiersDirectoryPath );
         }
 
-        public static void RequestAddressableBuild()
+        public static void RequestAddressablePurgeAndRefresh()
         {
             BuildCache.PurgeCache(false);
-            ReloadAndBuildAddressable.Execute();
+            
+            RequestAddressableRefresh();
         }
         
-        public static void RequestAddressableBuildWithCache()
+        public static void RequestAddressableRefresh()
         {
-            ReloadAndBuildAddressable.Execute();
+            RefreshAaGroups();
+            LevelManagement.BakeLevelDebug();
+            DebugWatchDictionary.TryValidate();
+            RefreshAaGroups();
         }
 
         [MenuItem("Vault/CI/Clear Movers .bat")]
@@ -274,12 +280,19 @@ namespace Universe.Editor
             var summary                  = report.summary;
             var path                = summary.outputPath;
             var platform        = summary.platform;
+            
+            if(!_CITriggered) return;
+            
+            _CITriggered = false;
+
+            if (summary.result.Equals(BuildResult.Failed))
+            {
+                EditorApplication.Exit( 1 );
+                return;
+            }
 
             if (platform == Android)
                 GenerateAndroidDeploymentFiles(path, name);
-            
-            if(!_CITriggered) return;
-            _CITriggered = false;
 
             if (platform == PS5)
                 UpdatePS5DeploymentFiles(path, name);
