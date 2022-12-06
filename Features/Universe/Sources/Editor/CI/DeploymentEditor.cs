@@ -1,10 +1,11 @@
-using System;
+using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Pipeline.Utilities;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 using Universe.DebugWatch.Editor;
 using Universe.DebugWatchTools.Runtime;
 using Universe.SceneTask.Runtime;
@@ -287,7 +288,7 @@ namespace Universe.Editor
             _CITriggered = false;
 
             if (summary.result.Equals(BuildResult.Failed))
-                throw new Exception("Automated build failed");
+                Utils.ForceCrash(ForcedCrashCategory.Abort);
 
             if (platform == Android)
                 GenerateAndroidDeploymentFiles(path, name);
