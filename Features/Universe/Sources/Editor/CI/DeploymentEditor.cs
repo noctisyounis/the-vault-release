@@ -38,6 +38,7 @@ namespace Universe.Editor
         private const string BUILD_PATH                 = "..\\Builds";
         private const string EXTERNAL_VERSION_PATH      = "..\\..\\Versions\\{productName}";
         private const string LOCAL_COMMIT_ID_PATH       = "..\\JenkinsUtility\\Common\\WorkspaceCommitID.txt";
+        private const string BUILD_RESULT_PATH          = "..\\JenkinsUtility\\Common\\Result.txt";
         private const string BUILD_SLACK_MOVER_PATH     = "..\\JenkinsUtility\\Common\\Jenkins_Slack_Uploader.bat";
         private const string BUILD_STEAM_MOVER_PATH     = "..\\JenkinsUtility\\Win64\\Jenkins_Steam_Mover.bat";
 
@@ -233,7 +234,7 @@ namespace Universe.Editor
             var folderPath  = $"{BUILD_PATH}\\{targetName}\\{fullName}";
             var option      = new BuildPlayerOptions
             {
-                scenes              = new string[] { TASK_GAME_STARTER_PATH },
+                scenes              = new [] { TASK_GAME_STARTER_PATH },
                 locationPathName    = $"{folderPath}\\{name}{extension}",
                 target              = target,
                 options             = developmentBuild ? Development : 0
@@ -285,11 +286,11 @@ namespace Universe.Editor
             
             if(!_CITriggered) return;
             
+            var result = summary.result.Equals(BuildResult.Failed) ? "1" : "0";
+            
             _CITriggered = false;
-
-            if (summary.result.Equals(BuildResult.Failed))
-                Utils.ForceCrash(ForcedCrashCategory.Abort);
-
+            WriteBuildResult(result);
+            
             if (platform == Android)
                 GenerateAndroidDeploymentFiles(path, name);
 
@@ -441,6 +442,12 @@ namespace Universe.Editor
         private static void ClearSteamMover()
         {
             WriteAllText( BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n" );
+        }
+
+        private static void WriteBuildResult(string result)
+        {
+            using (var sw = AppendText(BUILD_RESULT_PATH))
+                sw.WriteLine(result);
         }
         
         private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )
