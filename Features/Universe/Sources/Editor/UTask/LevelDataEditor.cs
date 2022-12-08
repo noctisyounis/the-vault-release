@@ -15,6 +15,8 @@ namespace Universe.SceneTask.Editor
 		{
 			DrawAddTaskButton();
 			DrawDefaultInspector();
+			
+			serializedObject.ApplyModifiedProperties();
 		}
 
 		#endregion

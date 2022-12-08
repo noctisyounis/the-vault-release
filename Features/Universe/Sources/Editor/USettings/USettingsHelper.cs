@@ -1,15 +1,12 @@
-using UnityEngine;
-
 namespace Universe.Editor
 {
 	public static class USettingsHelper
 	{
 		#region Main
 
-		public static T GetSettings<T>() where T : UniverseScriptableObject
-		{
-			return ScriptableHelper.GetScriptable<T>(_settingsFolder);
-		}	
+		public static T GetSettings<T>() where T : UniverseScriptableObject =>
+			ScriptableHelper.GetScriptable<T>(_settingsFolder);
+		
 
 		#endregion
 
