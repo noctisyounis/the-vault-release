@@ -39,7 +39,7 @@ namespace Universe.Editor
                 GUILayout.Space(5);
                 GUILayout.BeginHorizontal();
                 DrawToggle("Is Favorite", ref selection.m_isFavorite, Color.yellow);
-                if (GUILayout.Button("Open Fact Profiler"))
+                if (GUILayout.Button("Open Fact/Signal Profiler"))
                 {
                     ScriptableObjectProfilerWindow.ShowDialog();
                 }

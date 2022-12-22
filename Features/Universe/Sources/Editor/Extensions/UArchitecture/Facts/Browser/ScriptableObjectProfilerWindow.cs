@@ -30,8 +30,8 @@ namespace Universe.Editor
 
             if (Button("Refresh", MaxWidth(100))) _facts =  GetAllInstances<FactBase>();
             Space(15);
-            if (Button(_showFact ? "Show signal" : "Show fact", MaxWidth(100))) _showFact = !_showFact;
-            if (Button( _onlyFavorite ? "Show all" : "Show favorite", MaxWidth(100))) _onlyFavorite = !_onlyFavorite;
+            if (Button(GetShowFact() ? "Show signal" : "Show fact", MaxWidth(100))) SetShowFact(!GetShowFact());
+            if (Button(GetShowFavorite() ? "Show all" : "Show favorite", MaxWidth(100))) SetShowFavorite(!GetShowFavorite());
             
             EditorGUILayout.EndHorizontal();
 
@@ -46,7 +46,7 @@ namespace Universe.Editor
             
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos, Width(Screen.width), Height(Screen.height - 60));
 
-            if(_showFact) DrawFactEnumeration();
+            if(GetShowFact()) DrawFactEnumeration();
             else DrawSignalEnumeration();
 
             EditorGUILayout.EndScrollView();
@@ -80,7 +80,7 @@ namespace Universe.Editor
         {
             foreach (var fact in _facts)
             {
-                if (_onlyFavorite && !fact.m_isFavorite) continue;
+                if (GetShowFavorite() && !fact.m_isFavorite) continue;
                 
                 BeginHorizontal();
                 _contentStyle.alignment = TextAnchor.MiddleLeft;
@@ -99,7 +99,7 @@ namespace Universe.Editor
         {
             foreach (var signal in _signals)
             {
-                if (_onlyFavorite && !signal.m_isFavorite) continue;
+                if (GetShowFavorite() && !signal.m_isFavorite) continue;
                 
                 BeginHorizontal();
                 _contentStyle.alignment = TextAnchor.MiddleLeft;
@@ -107,7 +107,6 @@ namespace Universe.Editor
                 {
                     Selection.activeObject = signal;
                 }
-                //Label($"=> {signal.ToString()}");
                 EndHorizontal();
                 GUILine(1);
             }
@@ -123,6 +122,22 @@ namespace Universe.Editor
             EditorGUI.DrawRect(rect, new Color ( 0.5f,0.5f,0.5f, 1 ) );
 
         }
+
+        private void SetShowFact(bool state) => PlayerPrefs.SetInt("[Vault]ShowFact", state ? 1 : 0);
+
+        private bool GetShowFact()
+        {
+            if (!PlayerPrefs.HasKey("[Vault]ShowFact")) PlayerPrefs.SetInt("[Vault]ShowFact", 0);
+            return PlayerPrefs.GetInt("[Vault]ShowFact") == 1;
+        }
+        
+        private void SetShowFavorite(bool state) => PlayerPrefs.SetInt("[Vault]ShowFavorite", state ? 1 : 0);
+
+        private bool GetShowFavorite()
+        {
+            if (!PlayerPrefs.HasKey("[Vault]ShowFavorite")) PlayerPrefs.SetInt("[Vault]ShowFavorite", 0);
+            return PlayerPrefs.GetInt("[Vault]ShowFavorite") == 1;
+        }
         
         #endregion
         
@@ -131,10 +146,7 @@ namespace Universe.Editor
 
         private static FactBase[] _facts;
         private static SignalBase[] _signals;
-        
-        private static bool _showFact;
-        private static bool _onlyFavorite;
-        
+
         private Vector2 _scrollPos;
         private static GUIStyle _contentStyle;
         

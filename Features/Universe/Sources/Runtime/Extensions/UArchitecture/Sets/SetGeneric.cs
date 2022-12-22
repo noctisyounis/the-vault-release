@@ -45,6 +45,9 @@ namespace Universe
         public int IndexOf(T value) => _list.IndexOf(value);
         public void RemoveAt(int index) => _list.RemoveAt(index);
         public void Insert(int index, T value) => _list.Insert(index, value);
+        public virtual void SortSet() => _list.Sort();
+        public virtual void SortSetDescending() => _list.Sort();
+        public void SortSet(Comparison<T> comparator) => _list.Sort(comparator);
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         #pragma warning disable
         public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();

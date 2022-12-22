@@ -1,14 +1,12 @@
 using UnityEngine;
+using Universe.Stores.Runtime;
 
 namespace Universe
 {
     public class U3rdPartyWrapper : UBehaviour
     {
-
-        public Input test;
+        #region Exposed
         
-        #region Save
-
         [Header("Wrapper"), Space(15)]
         public ISaveProvider m_saveProvider;
         private static ISaveProvider s_saveProvider;
@@ -18,23 +16,28 @@ namespace Universe
 
         public IGizmosProvider m_gizmosProvider;
         private static IGizmosProvider s_gizmosProvider;
+
+        public IStoreProvider m_storeProvider;
+        private static IStoreProvider s_storeProvider;
+        
+        #endregion
         
         
+        #region Save
 
         public static ISaveProvider GetSaveProvider()
-        {
-            return s_saveProvider;
-        }
+            => s_saveProvider;
+        
 
         public static IInputProvider GetInputProvider()
-        {
-            return s_inputProvider;
-        }
+            => s_inputProvider;
+        
 
         public static IGizmosProvider GetGizmosProvider()
-        {
-            return s_gizmosProvider;
-        }
+            => s_gizmosProvider;
+
+        public static IStoreProvider GetStoreProvider()
+            => s_storeProvider;
 
         #endregion
 
@@ -47,6 +50,7 @@ namespace Universe
             s_saveProvider = m_saveProvider;
             s_inputProvider = m_inputProvider;
             s_gizmosProvider = m_gizmosProvider;
+            s_storeProvider = m_storeProvider;
         }
 
         #endregion
