@@ -46,7 +46,7 @@ namespace Universe.Leaderboard.Runtime
 
 					m_entries[i].gameObject.SetActive(false);
 					
-					return;
+					continue;
 				}
 				
 				var currentValue = m_content[i];
