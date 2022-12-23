@@ -10,7 +10,7 @@ namespace Universe.Stores.Offline.Runtime
 		#region Exposed
 
 		[Header("Parameters")]
-		public List<EntrySet> m_leaderboards;
+		public List<EntryListFact> m_leaderboards;
 		public int m_maxEntry;
 
 		#endregion
@@ -30,7 +30,7 @@ namespace Universe.Stores.Offline.Runtime
 			Verbose($"[Leaderboard] Posted {entry.m_score}");
 			var board = m_leaderboards[id];
 			board.Add(entry);
-			board.SortSetDescending();
+			board.Sort();
 			
 			if (m_maxEntry > 0) Clean(board);
 
@@ -65,7 +65,7 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Utils
 
-		private void Clean(EntrySet board)
+		private void Clean(EntryListFact board)
 		{
 			var count = board.Count;
 			
@@ -76,7 +76,7 @@ namespace Universe.Stores.Offline.Runtime
 			}
 		}
 
-		private void Refresh(EntrySet board)
+		private void Refresh(EntryListFact board)
 		{
 			var count = board.Count;
 			var rank = 0;

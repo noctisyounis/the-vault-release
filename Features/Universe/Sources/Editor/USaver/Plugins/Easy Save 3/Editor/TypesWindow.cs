@@ -563,7 +563,7 @@ namespace ES3Editor
 				propertyNames += "\"" + fields[i].Name + "\"";
 			}
 
-			var easySaveEditorPath = ES3Settings.PathToEasySaveFolder()+"Editor/";
+			var easySaveEditorPath = ES3Settings.PathToEasySaveFolder()+"Editor/USaver/Plugins/Easy Save 3/Editor/";
 
 			// Insert the relevant strings into the template.
 			string template;
