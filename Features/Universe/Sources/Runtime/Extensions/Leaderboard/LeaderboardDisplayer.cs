@@ -73,6 +73,7 @@ namespace Universe.Leaderboard.Runtime
 		
 		#region Private
 
+		[SerializeField]
 		private List<EntryDisplayer> m_entries = new();
 
 		#endregion
