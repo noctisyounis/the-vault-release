@@ -8,43 +8,45 @@ namespace Universe
 	{
 		#region Main
 
-		public int Count => Value.Count;
-		public virtual void Sort() => Value.Sort();
+
+		public List<T> SafeValue => Value ??= new();
+		public int Count => SafeValue.Count;
+		public virtual void Sort() => SafeValue.Sort();
 
 		
 		public T this[int index]
 		{
-			get => Value[index];
-			set => Value[index] = value;
+			get => SafeValue[index];
+			set => SafeValue[index] = value;
 		}
         
-		public IList List => Value;
+		public IList List => SafeValue;
 		public override Type Type => typeof(T);
 
 		public virtual void Add(T obj)
 		{
-			if (Value.Contains(obj)) return;
+			if (SafeValue.Contains(obj)) return;
             
-			Value.Add(obj);
+			SafeValue.Add(obj);
 		}
         
 		public virtual void Remove(T obj)
 		{
-			if (!Value.Contains(obj)) return;
+			if (!SafeValue.Contains(obj)) return;
             
-			Value.Remove(obj);
+			SafeValue.Remove(obj);
 		}
         
-		public void Clear() => Value.Clear();
-		public bool Contains(T value) => Value.Contains(value);
-		public int IndexOf(T value) => Value.IndexOf(value);
-		public void RemoveAt(int index) => Value.RemoveAt(index);
-		public void Insert(int index, T value) => Value.Insert(index, value);
+		public void Clear() => SafeValue.Clear();
+		public bool Contains(T value) => SafeValue.Contains(value);
+		public int IndexOf(T value) => SafeValue.IndexOf(value);
+		public void RemoveAt(int index) => SafeValue.RemoveAt(index);
+		public void Insert(int index, T value) => SafeValue.Insert(index, value);
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 #pragma warning disable
-		public IEnumerator<T> GetEnumerator() => Value.GetEnumerator();
+		public IEnumerator<T> GetEnumerator() => SafeValue.GetEnumerator();
 		public override string ToString() => "Collection<" + typeof(T) + ">(" + Count + ")";
-		public T[] ToArray() => Value.ToArray();
+		public T[] ToArray() => SafeValue.ToArray();
 		
 		#endregion
 	}
