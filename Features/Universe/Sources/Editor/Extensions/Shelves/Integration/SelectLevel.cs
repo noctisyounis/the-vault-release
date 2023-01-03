@@ -1,5 +1,4 @@
 using System.Linq;
-using UnityEngine;
 using Universe.Editor;
 using Universe.SceneTask.Runtime;
 
@@ -32,7 +31,9 @@ namespace Universe.Toolbar.Editor
 		{
 			FindLevelDatas();
 
-			if( _levelPaths.Length == 0 )
+			var pathAmount = _levelPaths.Length;
+			
+			if( pathAmount == 0 )
 			{
 				Label( "No existing level found." );
 				return false;

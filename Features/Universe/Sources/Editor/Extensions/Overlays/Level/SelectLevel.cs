@@ -62,9 +62,11 @@ namespace Universe.Overlays
 
 		private void InitializeValues(string label)
 		{
+			var length = _levelPaths.Length;
+			
 			text = label;
             
-            if (_levelPaths.Length == 0)
+            if (length == 0)
             {
             	text = "No existing level found.";
             }
@@ -73,6 +75,7 @@ namespace Universe.Overlays
             	var levelPath = GetString(_playerPref);
             	
             	_selection = FindAssociatedLevel(levelPath);
+                _selection = Mathf.Clamp(_selection, 0, length);
             	text = _levelNames[_selection];
             	m_value = _levelPaths[_selection];
             }

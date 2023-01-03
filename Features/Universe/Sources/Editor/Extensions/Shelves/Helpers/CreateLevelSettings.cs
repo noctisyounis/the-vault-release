@@ -1,5 +1,6 @@
 using UnityEditor.SceneTemplate;
 using UnityEditor.AddressableAssets.Settings;
+using UnityEngine;
 
 namespace Universe.Toolbar.Editor
 {
@@ -7,6 +8,7 @@ namespace Universe.Toolbar.Editor
 	{
         #region Exposed
 
+        [Header("Parameters")]
         public string m_levelFolder = "Assets/_/Content/Levels/Gameplay";
         public string m_playerTaskName = "Player";
         public string m_audioTaskName = "Audio";
@@ -23,5 +25,5 @@ namespace Universe.Toolbar.Editor
         public AddressableAssetGroupTemplate m_addressableGroupTemplate;
 
         #endregion
-    }
+	}
 }

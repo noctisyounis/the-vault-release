@@ -13,7 +13,7 @@ namespace Universe.SceneTask.Editor
 
 		public override void OnInspectorGUI()
 		{
-			DrawAddTaskButton();
+			DrawAddSituationButton();
 			DrawDefaultInspector();
 			
 			serializedObject.ApplyModifiedProperties();
@@ -24,7 +24,7 @@ namespace Universe.SceneTask.Editor
 
 		#region Main
 
-		private void DrawAddTaskButton()
+		private void DrawAddSituationButton()
 		{
 			if(!GUILayout.Button("Add Situation")) return;
 			

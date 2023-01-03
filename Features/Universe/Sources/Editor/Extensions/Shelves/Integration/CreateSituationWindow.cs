@@ -1,8 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-using Universe.DebugWatch.Editor;
 using Universe.DebugWatchTools.Runtime;
-using Universe.Editor;
 using Universe.SceneTask.Runtime;
 
 using static UnityEditor.EditorGUIUtility;
@@ -14,12 +12,14 @@ namespace Universe.Toolbar.Editor
 	{
 	    #region Exposed
 
+	    public const string DEFAULT_NAME = "NewSituation";
+
 	    public static float m_spacingSize = 5.0f;
 	    public static float m_fieldSize = 20.0f;
 	    
 	    public static string m_editorWindowText = "Name : ";
-	    public static LevelData m_target;
 	    
+	    public LevelData m_target;
 	    public string m_newSituationName = "";
 	    public TaskData m_blockMeshTask;
 	    public TaskData m_artTask;
@@ -60,7 +60,10 @@ namespace Universe.Toolbar.Editor
 			    if (m_target)
 				    CreateLevelHelper.AddSituation(m_target, situationInfos);
 			    else
+			    {
+				    situationInfos.m_name = DEFAULT_NAME;
 				    CreateSituationHelper.CreateSituation(situationInfos);
+			    }
 			    
 			    LevelManagement.BakeLevelDebug();
 			    GUIUtility.ExitGUI();
@@ -120,7 +123,7 @@ namespace Universe.Toolbar.Editor
 		    var window = CreateInstance<CreateSituationWindow>();
 		    var title = new GUIContent("Create new situation", IconContent(@"SceneSet Icon").image);
 		    
-		    m_target = target;
+		    window.m_target = target;
 		    window.titleContent = title;
 		    window.ShowUtility();
 	    }

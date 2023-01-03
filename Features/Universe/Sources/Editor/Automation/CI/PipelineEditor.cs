@@ -377,7 +377,7 @@ namespace Universe.Editor
         
         
         private static void ClearSteamMover() =>
-        WriteAllText( BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n" );
+            WriteAllText( BUILD_STEAM_MOVER_PATH, $"del /s /q {STEAM_CONTENT_BUILDER_PATH}\n" );
         
         
         private static void PrepareWin64Package( string platform, string name, string version, bool developmentBuild )
