@@ -81,6 +81,31 @@ namespace Universe.Stores.Offline.Runtime
 		#endregion
 		
 		
+		#region Trophy
+
+		public override void SubscribeOnTrophyUnlocked(Action<int> target)
+		{
+			//throw new NotImplementedException();
+		}
+
+		public override void UnlockTrophy(int id, Action callback)
+		{
+			//throw new NotImplementedException();
+		}
+
+		public override void SetTrophyProgress(int id, long value, Action<long> callback)
+		{
+			//throw new NotImplementedException();
+		}
+
+		public override void SetStatProgress(string stat, long value, Action<long> callback)
+		{
+			//throw new NotImplementedException();
+		}
+
+		#endregion
+		
+		
 		#region Utils
 
 		private void HighlightLastEntry(Entry[] entries)
