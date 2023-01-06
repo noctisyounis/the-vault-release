@@ -1,6 +1,6 @@
 namespace Universe.Trophy.Runtime
 {
-	public class TrophyProgressive : Trophy
+	public class TrophyProgressive : TrophyBinary
 	{
 		#region Exposed
 
@@ -14,10 +14,12 @@ namespace Universe.Trophy.Runtime
 
 		public override bool Evaluate()
 		{
-			m_unlocked = m_value.Value >= m_target;
+			m_unlocked.Value = m_value.Value >= m_target;
 
-			return m_unlocked;
+			return m_unlocked.Value;
 		}
+
+		public override FactBase GetValue() => m_value;
 
 		#endregion
 	}

@@ -22,5 +22,13 @@ namespace Universe
         public bool m_washOnAwakeAndCompilation = true;
 
         #endregion
+        
+        
+        #region Events
+
+        public delegate void OnValueChangedHandler(FactBase next);
+        public OnValueChangedHandler OnValueChanged;
+
+        #endregion
     }
 }

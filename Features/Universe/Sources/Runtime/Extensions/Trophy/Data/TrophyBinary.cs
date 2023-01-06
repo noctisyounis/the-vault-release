@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace Universe.Trophy.Runtime
 {
-	public class Trophy : UniverseScriptableObject
+	public class TrophyBinary : UniverseScriptableObject
 	{
 		#region Exposed
 
 		public StringFact m_name;
 		public StringFact m_description;
 		public Sprite m_icon;
-		public bool m_unlocked;
+		public BoolFact m_unlocked;
 
 		#endregion
 		
@@ -17,8 +17,9 @@ namespace Universe.Trophy.Runtime
 		#region Main
 
 		public virtual bool Evaluate() => m_unlocked;
-		public virtual void Unlock() => m_unlocked = true;
-		public virtual void Lock() => m_unlocked = false;
+		public virtual void Unlock() => m_unlocked.Value = true;
+		public virtual void Lock() => m_unlocked.Value = false;
+		public virtual FactBase GetValue() => m_unlocked;
 
 		#endregion
 	}

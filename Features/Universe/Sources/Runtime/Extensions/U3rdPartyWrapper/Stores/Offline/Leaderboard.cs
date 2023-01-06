@@ -10,7 +10,7 @@ namespace Universe.Stores.Offline.Runtime
 		#region Exposed
 
 		[Header("Parameters")]
-		public List<EntryListFact> m_leaderboards;
+		public List<EntryListFact> m_leaderboards = new();
 		public int m_maxEntry;
 
 		#endregion
@@ -18,12 +18,12 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Main
 
-		public void PostScore(int id, Entry entry, Action<int> callback)
+		public void PostScore(int id, Entry entry, Action<int> callback = null)
 		{
 			if (!m_leaderboards.GreaterThan(id))
 			{
 				VerboseError($"[Leaderboard] No board found for id: {id}");
-				callback(-1);
+				callback?.Invoke(-1);
 				return;
 			}
 
@@ -37,12 +37,12 @@ namespace Universe.Stores.Offline.Runtime
 			Refresh(board);
 		}
 
-		public void GetRankings(int id, int amount, EntryAlignment alignment, Action<Entry[]> callback)
+		public void GetRankings(int id, int amount, EntryAlignment alignment, Action<Entry[]> callback = null)
 		{
 			if (!m_leaderboards.GreaterThan(id))
 			{
 				VerboseError($"[Leaderboard] No board found for id: {id}");
-				callback(default);
+				callback?.Invoke(default);
 				return;
 			}
 

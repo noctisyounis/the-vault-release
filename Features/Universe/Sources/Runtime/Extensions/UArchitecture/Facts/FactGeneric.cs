@@ -26,10 +26,11 @@ namespace Universe
             }
             
             _value = value;
+            OnValueChanged?.Invoke(this);
             
             return _value;
         }
-
+        
         #endregion
         
         
@@ -88,6 +89,7 @@ namespace Universe
         private T _value = default(T);
         [SerializeField]
         protected T _defaultValue = default(T);
+        
         #endregion
     }
 }

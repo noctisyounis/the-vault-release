@@ -12,6 +12,8 @@ namespace Universe.Stores.Offline.Runtime
 		[Header("References")] 
 		public Leaderboard m_leaderboard;
 		public StringFact m_lastPlayer;
+
+		public Trophy m_trophy;
 		
 		#endregion
 		
@@ -43,7 +45,7 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Leaderboard
 
-		public override void PostScore(int toId, long value, Action<int> callback)
+		public override void PostScore(int toId, int value, Action<int> callback = null)
 		{
 			_lastEntry = new()
 			{
@@ -53,27 +55,31 @@ namespace Universe.Stores.Offline.Runtime
 				m_rank = 0
 			};
 
+			if (!m_leaderboard) return;
+
 			m_leaderboard.PostScore(toId, _lastEntry, rank =>
 			{
 				_lastEntry.m_rank = rank;
-				callback(rank);
+				callback?.Invoke(rank);
 			});
 		}
 
-		public override void GetScore(int fromId, Action<Entry> callback)
+		public override void GetScore(int fromId, Action<Entry> callback = null)
 		{
 			var result = (fromId == _lastBoard) ? _lastEntry : default;
 
-			callback(result);
+			callback?.Invoke(result);
 		}
 
-		public override void GetRankings(int fromId, int amount, EntryAlignment alignment, Action<Entry[]> callback)
+		public override void GetRankings(int fromId, int amount, EntryAlignment alignment, Action<Entry[]> callback = null)
 		{
+			if (!m_leaderboard) return;
+			
 			m_leaderboard.GetRankings(fromId, amount, alignment, (entries) =>
 			{
 				if(fromId == _lastBoard) HighlightLastEntry(entries);
 
-				callback(entries);
+				callback?.Invoke(entries);
 			});
 			
 		}
@@ -83,24 +89,24 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Trophy
 
-		public override void SubscribeOnTrophyUnlocked(Action<int> target)
+		public override void SubscribeOnTrophyUnlocked(OnTrophyUnlockedHandler handler)
 		{
-			//throw new NotImplementedException();
+			if(m_trophy) m_trophy.OnTrophyUnlocked += handler;
 		}
 
-		public override void UnlockTrophy(int id, Action callback)
+		public override void UnlockTrophy(int id, Action callback = null)
 		{
-			//throw new NotImplementedException();
+			if(m_trophy) m_trophy.UnlockTrophy(id, callback);
 		}
 
-		public override void SetTrophyProgress(int id, long value, Action<long> callback)
+		public override void SetTrophyProgress(int id, int value, Action<int> callback = null)
 		{
-			//throw new NotImplementedException();
+			if(m_trophy) m_trophy.SetTrophyProgress(id, value, callback);
 		}
 
-		public override void SetStatProgress(string stat, long value, Action<long> callback)
+		public override void SetStatProgress(string statName, int value, Action<int> callback = null)
 		{
-			//throw new NotImplementedException();
+			if(m_trophy) m_trophy.SetStatProgress(statName, value, callback);
 		}
 
 		#endregion
