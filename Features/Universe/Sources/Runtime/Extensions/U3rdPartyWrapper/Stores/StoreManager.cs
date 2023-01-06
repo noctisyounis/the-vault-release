@@ -15,8 +15,6 @@ namespace Universe.Stores.Runtime
 		[Header("Parameters")]
 		public bool m_skipEntitlement;
 		public OfflineProvider m_offline;
-		public BoolFact m_unlockTest;
-		public IntFact m_progressTest;
 
 		#endregion
 		
@@ -30,30 +28,6 @@ namespace Universe.Stores.Runtime
 		
 		
 		#region Unity API
-
-		private void OnGUI()
-		{
-			if (GUILayout.Button("Unlock Trophy"))
-			{
-				Debug.Log("Try to unlock");
-				m_unlockTest.Value = true;
-				//RequestTrophyUnlock(0, () => Debug.Log($"Unlocked"));
-			}
-
-			if (GUILayout.Button("Progress Trophy"))
-			{
-				//_debugProgress++;
-				//RequestSetTrophyProgress(1, _debugProgress, (next) => Debug.Log($"Progress set to {next}"));
-			}
-			
-			if (GUILayout.Button("Progress Stat"))
-			{
-				m_progressTest.Value += 1;
-
-				//_debugProgress++;
-				//RequestSetStatProgress("TrophyProgress", _debugProgress, (next) => Debug.Log($"Progress set to {next}"));
-			}
-		}
 
 		public override void Awake()
 		{
@@ -73,10 +47,6 @@ namespace Universe.Stores.Runtime
 			{
 				OnEntitlementSucceed?.Invoke();
 				_entitlement = SUCCEED;
-				yield return new WaitForSeconds(3.0f);
-				Debug.LogWarning($"Requesting update progress: {_entitlement}");
-				m_progressTest.Value = 11;
-				yield break;
 			}
 			
 			_entitlement = STARTED;
@@ -254,8 +224,6 @@ namespace Universe.Stores.Runtime
 		private bool _initResult;
 		private IStoreProvider _provider;
 		private AsyncProgress _entitlement;
-
-		private int _debugProgress;
 
 		#endregion
 	}
