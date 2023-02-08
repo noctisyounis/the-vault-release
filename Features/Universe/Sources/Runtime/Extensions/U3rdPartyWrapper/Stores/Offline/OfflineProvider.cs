@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Universe.Leaderboard.Runtime;
 using Universe.Stores.Runtime;
@@ -20,10 +22,20 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Lifecycle
 
-		public override bool Initialize()
+		public override IEnumerator Initialize(Action<AsyncState> callback = null)
 		{
-			_lastEntry = new Entry() { m_name = "" };
-			return true;
+			try
+			{
+				_lastEntry = new Entry() { m_name = "" };
+				callback?.Invoke(AsyncState.SUCCEED);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+				callback?.Invoke(AsyncState.FAILED);
+			}
+
+			yield return 0;
 		}
 
 		public override void Tick()
@@ -37,8 +49,8 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Entitlement Check
 
-		public override void DoEntitlementCheck(Action<bool> callback)
-			=> callback(true);
+		public override void DoEntitlementCheck(Action<bool> callback = null)
+			=> callback?.Invoke(true);
 		
 		#endregion
 		
@@ -109,6 +121,19 @@ namespace Universe.Stores.Offline.Runtime
 			if(m_trophy) m_trophy.SetStatProgress(statName, value, callback);
 		}
 
+		#endregion
+		
+		
+		#region Activity
+		
+		public override void StartActivity(string activityId, Action callback = null) => callback?.Invoke();
+		public override void ResumeActivity(string activityId, string[] progressIds, string[] completedIds, Action callback = null) => callback?.Invoke();
+		public override void CompleteActivity(string activityId, Action callback = null) => callback?.Invoke();
+		public override void FailActivity(string activityId, Action callback = null) => callback?.Invoke();
+		public override void CancelActivity(string activityId, Action callback = null) => callback?.Invoke();
+		public override void UnlockActivities(string[] activityIds, Action callback = null) => callback?.Invoke();
+		public override void LockActivities(string[] activityIds, Action callback = null) => callback?.Invoke();
+		
 		#endregion
 		
 		

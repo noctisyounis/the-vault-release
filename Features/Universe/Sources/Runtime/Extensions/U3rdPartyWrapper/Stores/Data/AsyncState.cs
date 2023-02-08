@@ -1,6 +1,6 @@
 namespace Universe.Stores.Runtime
 {
-	public enum AsyncProgress
+	public enum AsyncState
 	{
 		INVALID = -1,
 		WAITING = 0,

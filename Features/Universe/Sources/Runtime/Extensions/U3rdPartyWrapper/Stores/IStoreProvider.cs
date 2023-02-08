@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Universe.Leaderboard.Runtime;
 
 namespace Universe.Stores.Runtime
@@ -7,7 +8,7 @@ namespace Universe.Stores.Runtime
 	{
 		#region Lifecycle
 
-		public abstract bool Initialize();
+		public abstract IEnumerator Initialize(Action<AsyncState> callback = null);
 		public abstract void Tick();
 		public abstract void ShutDown();
 		
@@ -37,12 +38,25 @@ namespace Universe.Stores.Runtime
 		#endregion
 		
 		
-		#region Achievement
+		#region Trophy
 
 		public abstract void SubscribeOnTrophyUnlocked(OnTrophyUnlockedHandler handler);
 		public abstract void UnlockTrophy(int id, Action callback = null);
 		public abstract void SetTrophyProgress(int id, int value, Action<int> callback = null);
 		public abstract void SetStatProgress(string statName, int value, Action<int> callback = null);
+
+		#endregion
+		
+		
+		#region Activity
+		
+		public abstract void StartActivity(string activityId, Action callback = null);
+		public abstract void ResumeActivity(string activityId, string[] progressIds, string[] completedIds, Action callback = null);
+		public abstract void CompleteActivity(string activityId, Action callback = null);
+		public abstract void CancelActivity(string activityId, Action callback = null);
+		public abstract void FailActivity(string activityId, Action callback = null);
+		public abstract void UnlockActivities(string[] activityIds, Action callback = null);
+		public abstract void LockActivities(string[] activityIds, Action callback = null);
 
 		#endregion
 	}
