@@ -55,6 +55,7 @@ namespace Universe.Leaderboard.Runtime
 				{
 					var entry = m_entries[i];
 
+					entry.gameObject.SetActive(true);
 					entry.Value = currentValue;
 				}
 				else Spawn(m_entryTemplate, Vector3.zero, Quaternion.identity, m_holder, go =>
