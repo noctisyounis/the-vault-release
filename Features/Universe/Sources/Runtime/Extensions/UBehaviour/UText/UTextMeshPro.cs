@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -11,6 +12,9 @@ namespace Universe
         #region Public
 
         [HideInInspector]
+        public bool m_overrideFontAsset;
+
+        [ShowIf("m_overrideFontAsset")] 
         public TMP_FontAsset m_font;
 
         #endregion
@@ -55,7 +59,9 @@ namespace Universe
 
         protected override void UpdateFont()
         {
-            m_font = (TMP_FontAsset)GetFont( m_fontSettingsType );
+            if (!m_overrideFontAsset) 
+                m_font = (TMP_FontAsset)GetFont( m_fontSettingsType );
+            
             m_component.font = m_font;
 
             Verbose( $"UTextMeshPro.UpdateFont m_font = {m_font}" );
