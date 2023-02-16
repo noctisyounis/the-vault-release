@@ -4,79 +4,93 @@ using UnityEngine.AddressableAssets;
 
 namespace Universe.Leaderboard.Runtime
 {
-	public class LeaderboardDisplayer : UBehaviour
-	{
-		#region Exposed
+    public class LeaderboardDisplayer : UBehaviour
+    {
+        #region Exposed
 
-		[Header("References")] 
-		public Transform m_holder;
-		public AssetReferenceGameObject m_entryTemplate;
+        [Header("References")] 
+        public Transform m_holder;
+        public AssetReferenceGameObject m_entryTemplate;
 		
-		[Header("Parameters")]
-		public int m_maxDisplayedAmount;
-		public Entry[] m_content;
+        [Header("Parameters")]
+        public int m_maxDisplayedAmount;
+        public Entry[] m_content;
 		
-		#endregion
+        #endregion
 
 
-		#region Unity API
+        #region Unity API
 
-		public void Start()
-		{
-			Refresh();
-		}
+        public void Start()
+        {
+            Refresh();
+        }
 
-		#endregion
+        public override void OnLateUpdate(float deltaTime)
+        {
+            base.OnLateUpdate(deltaTime);
+			
+            if(_needRefresh) Refresh();
+        }
+
+        #endregion
 		
 		
-		#region Main
+        #region Main
 
-		public void SetContent(Entry[] next) => m_content = next;
+        public void SetContent(Entry[] next)
+        {
+            m_content = next;
+            _needRefresh = true;
+        }
 		
-		public void Refresh()
-		{
-			var contentAmount = m_content.Length;
-			var currentEntryAmount = m_entries.Count;
+        public void Refresh()
+        {
+            var contentAmount = m_content.Length;
+            var currentEntryAmount = m_entries.Count;
 
-			for (var i = 0; i < m_maxDisplayedAmount; i++)
-			{
-				if (i >= contentAmount)
-				{
-					if (!m_entries.GreaterThan(i)) return;
+            for (var i = 0; i < m_maxDisplayedAmount; i++)
+            {
+                if (i >= contentAmount)
+                {
+                    if (!m_entries.GreaterThan(i)) return;
 
-					m_entries[i].gameObject.SetActive(false);
+                    m_entries[i].gameObject.SetActive(false);
 					
-					continue;
-				}
+                    continue;
+                }
 				
-				var currentValue = m_content[i];
+                var currentValue = m_content[i];
 
-				if (i < currentEntryAmount)
-				{
-					var entry = m_entries[i];
+                if (i < currentEntryAmount)
+                {
+                    var entry = m_entries[i];
 
-					entry.gameObject.SetActive(true);
-					entry.Value = currentValue;
-				}
-				else Spawn(m_entryTemplate, Vector3.zero, Quaternion.identity, m_holder, go =>
-				{
-					var entry = go.GetComponent<EntryDisplayer>();
-					entry.Value = currentValue;
+                    entry.gameObject.SetActive(true);
+                    entry.Value = currentValue;
+                }
+                else Spawn(m_entryTemplate, Vector3.zero, Quaternion.identity, m_holder, go =>
+                {
+                    var entry = go.GetComponent<EntryDisplayer>();
+                    entry.Value = currentValue;
 					
-					m_entries.Add(entry);
-				}); 
+                    m_entries.Add(entry);
+                });
+            }
 
-			}
-		}
+            _needRefresh = false;
+        }
 		
-		#endregion
+        #endregion
 		
 		
-		#region Private
+        #region Private
 
-		[SerializeField]
-		private List<EntryDisplayer> m_entries = new();
+        [SerializeField]
+        private List<EntryDisplayer> m_entries = new();
 
-		#endregion
-	}
+        private bool _needRefresh;
+
+        #endregion
+    }
 }
