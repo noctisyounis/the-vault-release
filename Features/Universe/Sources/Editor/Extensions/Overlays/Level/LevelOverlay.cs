@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 using static Universe.SceneTask.Runtime.Environment;
-using static UnityEngine.UIElements.FlexDirection;
 using static Universe.Editor.UPrefs;
 
 namespace Universe.Overlays
@@ -38,7 +37,7 @@ namespace Universe.Overlays
 			
 			collapsed = true;
 
-			panel.style.flexDirection = Column;
+			panel.style.flexDirection = FlexDirection.Column;
 			
 			panel.Add(new Label(s_labelName));
 			panel.Add(contentBlock);
@@ -57,7 +56,7 @@ namespace Universe.Overlays
 			var environmentBlock = BuildEnvironmentBlock();
 			var playmodeOverrideBlock = BuildPlaymodeOverrideBlock();
 			
-			contentBlock.style.flexDirection = Row;
+			contentBlock.style.flexDirection =FlexDirection.Row;
 
 			contentBlock.Add(new OpenLevel());
 			contentBlock.Add(new ToolbarSpacer());
@@ -72,7 +71,7 @@ namespace Universe.Overlays
 		{
 			var environmentBlock = new VisualElement { name = s_environmentName };
 			
-			environmentBlock.style.flexDirection = Column;
+			environmentBlock.style.flexDirection =FlexDirection.Column;
 			
 			_toggleBlock	= new(EDITOR_LEVEL_PATH, BLOCK_MESH, "Toggle the block mesh situations");
 			_toggleArt		= new(EDITOR_LEVEL_PATH, ART, "Toggle the art situations"); 
@@ -90,7 +89,7 @@ namespace Universe.Overlays
 			var playmodeOverrideBlock = new VisualElement { name = s_playmodeOverrideName };
 			var playmodeSceneBlock = BuildPlaymodeSceneBlock();
 			
-			playmodeOverrideBlock.style.flexDirection = Column;
+			playmodeOverrideBlock.style.flexDirection =FlexDirection.Column;
 			
 			playmodeOverrideBlock.Add(new TogglePlayOverride());
 			playmodeOverrideBlock.Add(playmodeSceneBlock);
@@ -102,7 +101,7 @@ namespace Universe.Overlays
 		{
 			var playmodeSceneBlock = new VisualElement { name = s_playmodeLevelName };
 			
-			playmodeSceneBlock.style.flexDirection = Row;
+			playmodeSceneBlock.style.flexDirection =FlexDirection.Row;
 			
 			_selectLevel	= new("Play:", EDITOR_LEVEL_PATH);
 			_selectTask		= new("On:");
