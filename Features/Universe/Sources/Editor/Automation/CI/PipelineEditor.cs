@@ -397,7 +397,7 @@ namespace Universe.Editor
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
                 var deleteDoNotShipBurst    = $"rmdir /s /q \"{doNotShipBurstPath}\"";
                 var deleteDoNotShipIL       = $"rmdir /s /q \"{doNotShipILPath}\"";
-                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\" -sdel";
+                var zipping                 = $"powershell -Command \"Compress-Archive -Path './{path}/*' -Destination './{zipPath}'\"";
 
                 sw.WriteLine( createUploadIfNotExists );
                 if (!developmentBuild)
@@ -436,7 +436,7 @@ namespace Universe.Editor
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
                 var deleteDoNotShipBurst    = $"rmdir /s /q \"{doNotShipBurstPath}\"";
                 var deleteDoNotShipIL       = $"rmdir /s /q \"{doNotShipILPath}\"";
-                var zipping                 = $"7z a -tzip \"{zipPath}\" \"{path}\\*\" -sdel";
+                var zipping                 = $"powershell -Command \"Compress-Archive -Path './{path}/*' -Destination './{zipPath}'\"";
 
                 sw.WriteLine( createUploadIfNotExists );
                 if (!developmentBuild)
