@@ -67,8 +67,7 @@ namespace Universe.Editor
                 }
             }
 
-            var externalVersionPath = EXTERNAL_VERSION_PATH.Replace("{productName}", productName.Replace(" ", ""));
-            var versionPath = $"{externalVersionPath}\\{id}.txt";
+            var versionPath = $"{VERSION_PATH}";
             var version = "0.000.001";
             
             using (var fs = OpenRead(versionPath))
