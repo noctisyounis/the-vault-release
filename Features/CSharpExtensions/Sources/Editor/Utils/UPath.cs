@@ -18,7 +18,7 @@ namespace Universe.Editor
 		public const string BUILD_STEAM_MOVER_PATH     = "..\\JenkinsUtility\\Win64\\Jenkins_Steam_Mover.bat";
 
 		//.bat relative
-		public const string UPLOAD_PATH = ".\\JenkinsUtility\\Export";
+		public const string UPLOAD_PATH = "..\\Builds";
 
 		//static names
 		public const string DEVELOPMENT_BUILD_PREFIX       = "[DEV]";
