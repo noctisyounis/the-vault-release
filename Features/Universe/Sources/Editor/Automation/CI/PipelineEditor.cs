@@ -420,12 +420,18 @@ namespace Universe.Editor
 
         private static void PrepareAndroidPackage( string platform, string name, string version, bool developmentBuild )
         {
-            var prefix                  = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
+            var androidBundleName      = identifier;
+            var androidBundleVersion     = PlayerSettings.Android.bundleVersionCode;
+            var baseObbName                 = $"{name}.main.obb";
+            var finalObbName                = $"main.{androidBundleVersion}.{androidBundleName}.obb";
+            
+            var prefix                 = developmentBuild ? DEVELOPMENT_BUILD_PREFIX : RELEASE_BUILD_PREFIX;
             var doNotShipBurstName          = $"{name}{DO_NOT_SHIP_BURST_SUFFIX}";
             var doNotShipILName             = $"{name}{DO_NOT_SHIP_IL_SUFFIX}";
-            var batRelativeBuildPath    = BUILD_PATH.Replace("..", ".");
-            var fullName                = $"{prefix}{name}_{platform}_{version}";
-            var path                    = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
+            var batRelativeBuildPath   = BUILD_PATH.Replace("..", ".");
+            var fullName                    = $"{prefix}{name}_{platform}_{version}";
+            var path                        = $"{batRelativeBuildPath}\\{platform}\\{fullName}";
+            var obbPath                     = $"{path}\\{baseObbName}";
             var zipPath                     = $"{UPLOAD_PATH}\\{fullName}.zip";
             var doNotShipBurstPath          = $"{path}\\{doNotShipBurstName}";
             var doNotShipILPath             = $"{path}\\{doNotShipILName}";
@@ -433,11 +439,13 @@ namespace Universe.Editor
             using( var sw = AppendText( BUILD_SLACK_MOVER_PATH ) )
             {
                 var createUploadIfNotExists = $"if not exist \"{UPLOAD_PATH}\" mkdir \"{UPLOAD_PATH}\"";
+                var renameObb               = $"ren \"{obbPath}\" \"{finalObbName}\"";
                 var deleteDoNotShipBurst    = $"rmdir /s /q \"{doNotShipBurstPath}\"";
                 var deleteDoNotShipIL       = $"rmdir /s /q \"{doNotShipILPath}\"";
                 var zipping                 = $"powershell -Command \"Add-Type -Assembly 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::CreateFromDirectory('./{path}/', './{zipPath}')\"";
 
                 sw.WriteLine( createUploadIfNotExists );
+                sw.WriteLine( renameObb );
                 if (!developmentBuild)
                 {
                     sw.WriteLine( deleteDoNotShipBurst );
@@ -462,16 +470,29 @@ namespace Universe.Editor
             if (!File.Exists(deployAndRunPath)) Create(deployAndRunPath).Close();
             else WriteAllText(deployAndRunPath, string.Empty);
 
-            var id = identifier;
+            var androidBundleName      = identifier;
+            var androidBundleVersion     = PlayerSettings.Android.bundleVersionCode;
+            var obbName                = $"main.{androidBundleVersion}.{androidBundleName}.obb";
             var writter = new StreamWriter(deployPath);
-            var deploy  = $"adb install \"{projectName}.apk\"";
-            var run = $"adb shell monkey -p {id} -c android.intent.category.LAUNCHER 1";
 
-            writter.WriteLine(deploy);
+            var uninstallPrevious = $"adb uninstall \"{androidBundleName}\"";
+            
+            var installApk  = $"adb install \"{projectName}.apk\"";
+            var createObbFolder = $"adb shell mkdir \"/sdcard/Android/obb/{androidBundleName}/\"";
+            var installObb = $"adb push -p \"{obbName}\" \"/sdcard/Android/obb/{androidBundleName}/\"";
+            var run = $"adb shell monkey -p {androidBundleName} -c android.intent.category.LAUNCHER 1";
+
+            writter.WriteLine(uninstallPrevious);
+            writter.WriteLine(installApk);
+            writter.WriteLine(createObbFolder);
+            writter.WriteLine(installObb);
             writter.Close();
             
             writter = new StreamWriter(deployAndRunPath);
-            writter.WriteLine(deploy);
+            writter.WriteLine(uninstallPrevious);
+            writter.WriteLine(installApk);
+            writter.WriteLine(createObbFolder);
+            writter.WriteLine(installObb);
             writter.WriteLine(run);
             writter.Close();
         }
