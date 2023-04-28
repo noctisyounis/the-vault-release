@@ -10,6 +10,7 @@ namespace Universe
     public class UTextMeshPro : UTextGeneric<TMP_Text>
     {
         #region Public
+        
         public bool m_overrideFontAsset;
 
         [ShowIf("m_overrideFontAsset")] 

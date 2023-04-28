@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using TMPro;
-
+using UnityEngine.UI;
 using static Universe.DebugWatch.Runtime.DebugMenuRoot;
 
 namespace Universe.DebugWatch.Runtime
@@ -12,6 +12,8 @@ namespace Universe.DebugWatch.Runtime
     public class DebugPanel : UBehaviour
     {
         #region Public Members
+
+        public bool m_invertedScrolling;
 
         public int m_depth;
 
@@ -25,6 +27,7 @@ namespace Universe.DebugWatch.Runtime
         public AssetReference   m_prefabSelector;
         public RectTransform    m_parentMenuButton;
         public RectTransform    m_mask;
+        public ScrollRect       m_scrollRect;
 
         #endregion
 
@@ -133,6 +136,14 @@ namespace Universe.DebugWatch.Runtime
             _currentElement.OnSelected();
         }
 
+        public void Scroll(float speed)
+        {
+            var delta = speed * UTime.UnscaledDeltaTime;
+            if (m_invertedScrolling) delta *= -1;
+
+            m_scrollRect.verticalNormalizedPosition += delta;
+        }
+
         #endregion
 
 
@@ -149,21 +160,17 @@ namespace Universe.DebugWatch.Runtime
                 _currentButtonChildIndex = 0;
         }
 
-        #endregion
-
-
-        #region Utils
-
         private void ResponsiveMenu()
         {
             var titleHeigth     = m_headerTitle.rectTransform.rect.height;
             var parentWidth     = m_parentMenuButton.rect.width;
             var backGroundWidth = m_backgroundMenu.rect.width;
             var displayedAmount = IsBelowDisplayCapacity ? _buttonAmount : m_displayCapacity;
-            var menuSize        = m_buttonHeight * displayedAmount;
-
+            var menuSize        = m_buttonHeight * _buttonAmount;
+            var maskSize        = m_buttonHeight * displayedAmount;
+            
             m_backgroundMenu.sizeDelta      = new Vector2(backGroundWidth, titleHeigth + menuSize + m_textSpacing);
-            m_mask.sizeDelta                = new Vector2(backGroundWidth, menuSize);
+            m_mask.sizeDelta                = new Vector2(backGroundWidth, maskSize);
             m_parentMenuButton.sizeDelta    = new Vector2(parentWidth, menuSize);
         }
 

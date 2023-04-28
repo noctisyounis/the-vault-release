@@ -89,6 +89,13 @@ namespace Universe.DebugWatch.Runtime
             m_previousOption.Evaluate( value.x );
         }
 
+        public void ScrollAxisChanged(CallbackContext context)
+        {
+            var value = context.ReadValue<Vector2>();
+
+            _currentMenu.Scroll(value.y);
+        }
+
         public void SelectNextButton() => CurrentMenu.SelectNextButton();
         public void SelectPreviousButton() => CurrentMenu.SelectPreviousButton();
 
