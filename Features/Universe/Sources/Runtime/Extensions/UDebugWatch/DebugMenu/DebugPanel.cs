@@ -85,6 +85,16 @@ namespace Universe.DebugWatch.Runtime
         #endregion
 
 
+        #region UniverseAPI
+
+        public override void OnUpdate(float deltatime)
+        {
+            UpdateScroll();
+        }
+
+        #endregion
+
+
         #region Public API
 
         public void ReturnToParent()
@@ -112,6 +122,8 @@ namespace Universe.DebugWatch.Runtime
             if (_isGenerated) return;
 
             _isGenerated = true;
+            _currentScroll = ComputeScrollAt(0);
+            _currentUpperScroll = _currentScroll;
             GenerateButtons(Paths.ToArray());
         }
 
@@ -134,6 +146,9 @@ namespace Universe.DebugWatch.Runtime
 
             _currentElement = currentChild.GetComponent<DebugElement>();
             _currentElement.OnSelected();
+
+            var scroll = ComputeScrollAt(_currentButtonChildIndex);
+            EvaluateNewScroll(scroll);
         }
 
         public void Scroll(float speed)
@@ -141,7 +156,9 @@ namespace Universe.DebugWatch.Runtime
             var delta = speed * UTime.UnscaledDeltaTime;
             if (m_invertedScrolling) delta *= -1;
 
-            m_scrollRect.verticalNormalizedPosition += delta;
+            _currentScroll = Mathf.Clamp01(_currentScroll + delta);
+            _currentLowerScroll = Mathf.Clamp(_currentLowerScroll + delta, 0.0f, 1.0f - _scrollSpan);
+            _currentUpperScroll = Mathf.Clamp(_currentUpperScroll + delta, 0.0f + _scrollSpan, 1.0f);
         }
 
         #endregion
@@ -169,7 +186,7 @@ namespace Universe.DebugWatch.Runtime
             var menuSize        = m_buttonHeight * _buttonAmount;
             var maskSize        = m_buttonHeight * displayedAmount;
             
-            m_backgroundMenu.sizeDelta      = new Vector2(backGroundWidth, titleHeigth + menuSize + m_textSpacing);
+            m_backgroundMenu.sizeDelta      = new Vector2(backGroundWidth, titleHeigth + maskSize + m_textSpacing);
             m_mask.sizeDelta                = new Vector2(backGroundWidth, maskSize);
             m_parentMenuButton.sizeDelta    = new Vector2(parentWidth, menuSize);
         }
@@ -207,6 +224,15 @@ namespace Universe.DebugWatch.Runtime
 
             ResponsiveMenu();
             s_instance.GeneratePanel(otherPanel, m_depth + 1);
+            
+            _scrollOffsetStep = 1.0f;
+            _scrollElementStep = 1.0f;
+            
+            if (_buttonAmount > (m_displayCapacity + 1)) _scrollOffsetStep /= (_buttonAmount - m_displayCapacity);
+            if (_buttonAmount > 1) _scrollElementStep /= (_buttonAmount - 1);
+            
+            _scrollSpan = Mathf.Clamp01(Mathf.Floor(m_displayCapacity) / _buttonAmount);
+            _currentLowerScroll = _currentUpperScroll - _scrollSpan;
         }
 
         private string Clean(string path, out string type)
@@ -286,6 +312,45 @@ namespace Universe.DebugWatch.Runtime
         private bool IsOtherPanel(int commandDepth) => 
             commandDepth - m_depth > 2;
 
+        private void UpdateScroll()
+        {
+            var current = m_scrollRect.verticalNormalizedPosition;
+
+            m_scrollRect.verticalNormalizedPosition = Mathf.Lerp(current, _currentScroll, 0.5f);
+        }
+        
+        private float ComputeScrollAt(int index)
+        {
+            var result = 1 - (index * _scrollElementStep);
+            
+            return Mathf.Clamp01(result);
+        }
+
+        private void EvaluateNewScroll(float scroll)
+        {
+            if (scroll < _currentLowerScroll)
+            {
+                var delta = _currentLowerScroll - scroll;
+                var steps = delta / _scrollElementStep;
+                
+                steps = Mathf.Clamp(steps, 1, _buttonAmount);
+                _currentScroll = Mathf.Clamp01(_currentScroll - (steps * _scrollOffsetStep));
+                _currentLowerScroll = Mathf.Clamp01(_currentLowerScroll - steps * _scrollElementStep);
+                _currentUpperScroll = Mathf.Clamp01(_currentLowerScroll + _scrollSpan);
+            }
+
+            if (scroll > _currentUpperScroll)
+            {
+                var delta = scroll - _currentUpperScroll;
+                var steps = delta / _scrollElementStep;
+                
+                steps = Mathf.Clamp(steps, 1, _buttonAmount);
+                _currentScroll = Mathf.Clamp01(_currentScroll + (steps * _scrollOffsetStep));
+                _currentUpperScroll = Mathf.Clamp01(_currentUpperScroll + (steps * _scrollElementStep));
+                _currentLowerScroll = Mathf.Clamp01(_currentUpperScroll - _scrollSpan);
+            }
+        }
+
         #endregion
 
 
@@ -306,6 +371,13 @@ namespace Universe.DebugWatch.Runtime
         private bool        _isGenerated;
         private DebugElement _currentElement;
         private int         _currentButtonChildIndex;
+        
+        private float       _currentLowerScroll;
+        private float       _currentUpperScroll;
+        private float       _scrollElementStep;
+        private float       _scrollOffsetStep;
+        private float       _scrollSpan;
+        private float       _currentScroll;
 
         #endregion
     }
