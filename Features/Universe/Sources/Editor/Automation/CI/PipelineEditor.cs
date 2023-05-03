@@ -158,6 +158,8 @@ namespace Universe.Editor
             UpdateRuntimeVersion();
             
             _CITriggered = true;
+           
+            InjectAndroidKeystore();
             StartBuild(Android, true );
         }
 
@@ -167,6 +169,8 @@ namespace Universe.Editor
             UpdateRuntimeVersion();
             
             _CITriggered = true;
+            
+            InjectAndroidKeystore();
             StartBuild(Android, false );
         }
         
@@ -418,6 +422,22 @@ namespace Universe.Editor
             }
         }
 
+        private static void InjectAndroidKeystore()
+        {
+            using (var fs = OpenRead(KEYSTORE_PATH))
+            {
+                using (var sr = new StreamReader(fs))
+                {
+                    var password = sr.ReadLine();
+                    
+                    PlayerSettings.Android.keystorePass = password;
+                    PlayerSettings.Android.keyaliasPass = password;
+                }
+            }
+            
+            PlayerSettings.Android.keyaliasName = productName.Replace(" ", "").ToLower();
+        }
+        
         private static void PrepareAndroidPackage( string platform, string name, string version, bool developmentBuild )
         {
             var androidBundleName      = identifier;
