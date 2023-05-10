@@ -233,6 +233,7 @@ namespace Universe.Editor
                 }
             }
 
+            UpdateBundleCode( developmentBuild );
             BuildPlayer( option );
         }
 
@@ -362,6 +363,16 @@ namespace Universe.Editor
             result = minor + versionBase * medior + (int)Pow(versionBase, 2) * major;
 
             return result;
+        }
+
+        private static void UpdateBundleCode(bool developmentBuild)
+        {
+            var bundleCode = PlayerSettings.Android.bundleVersionCode;
+            
+            bundleCode *= 10;
+            bundleCode += developmentBuild ? 0 : 5;
+
+            PlayerSettings.Android.bundleVersionCode = bundleCode;
         }
 
         private static void UpdateRuntimeVersion()
