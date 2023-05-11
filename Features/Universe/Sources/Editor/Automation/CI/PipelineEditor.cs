@@ -367,10 +367,13 @@ namespace Universe.Editor
 
         private static void UpdateBundleCode(bool developmentBuild)
         {
-            var bundleCode = PlayerSettings.Android.bundleVersionCode;
+            var version = PlayerSettings.bundleVersion;
+            var bundleCode = VersionToInt(version);
             
-            bundleCode *= 10;
+            bundleCode *= 100;
             bundleCode += developmentBuild ? 0 : 5;
+
+            Debug.Log(bundleCode);
 
             PlayerSettings.Android.bundleVersionCode = bundleCode;
         }
