@@ -213,6 +213,7 @@ namespace Universe.Editor
 
             levelSettings.m_startingEnvironment = BOTH;
             levelSettings.SaveAsset();
+            UpdateBundleCode( developmentBuild );
 
             switch( target )
             {
@@ -233,7 +234,6 @@ namespace Universe.Editor
                 }
             }
 
-            UpdateBundleCode( developmentBuild );
             BuildPlayer( option );
         }
 
