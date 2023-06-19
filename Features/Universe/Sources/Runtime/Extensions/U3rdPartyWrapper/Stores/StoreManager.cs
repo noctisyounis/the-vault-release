@@ -71,12 +71,16 @@ namespace Universe.Stores.Runtime
 
 		private void Initialize()
 		{
-			if (_provider)
+			try
 			{
-				StartCoroutine(m_offline.Initialize());
 				StartCoroutine(_provider.Initialize(OnProviderInitializationEnded));
+				StartCoroutine(m_offline.Initialize());
 			}
-			else if(m_offline) StartCoroutine(m_offline.Initialize(OnProviderInitializationEnded));
+			catch (Exception e)
+			{
+				Debug.LogError("[[StoreManager] Store provider initialization failed, going offline mode]");
+				StartCoroutine(m_offline.Initialize(OnProviderInitializationEnded));
+			}
 		}
 
 		private void OnProviderInitializationEnded(AsyncState state)
