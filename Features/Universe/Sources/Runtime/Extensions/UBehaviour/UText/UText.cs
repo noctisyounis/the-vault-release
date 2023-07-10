@@ -36,6 +36,8 @@ namespace Universe
 
         public void Refresh()
         {
+            if (CurrentLanguage) OnLanguageChangedCallback(this, CurrentLanguage);
+            
             SetFontSettings();
             SetTextAttributes();
             UpdateText();
