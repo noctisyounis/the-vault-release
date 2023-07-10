@@ -54,7 +54,7 @@ namespace Universe
         }
 
         protected override void UpdateText() =>
-            m_component.text = m_text;
+            m_component.text = m_localisedData ? m_localisedData.Value : m_text;
 
         protected override void UpdateFont()
         {

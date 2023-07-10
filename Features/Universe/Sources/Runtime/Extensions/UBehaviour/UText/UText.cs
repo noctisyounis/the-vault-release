@@ -38,6 +38,9 @@ namespace Universe
         {
             SetFontSettings();
             SetTextAttributes();
+            
+            if (!CurrentLanguage) UpdateText();
+            else OnLanguageChangedCallback(this, CurrentLanguage);
         }
 
         #endregion
