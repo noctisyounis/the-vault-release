@@ -38,9 +38,7 @@ namespace Universe
         {
             SetFontSettings();
             SetTextAttributes();
-            
-            if (!CurrentLanguage) UpdateText();
-            else OnLanguageChangedCallback(this, CurrentLanguage);
+            UpdateText();
         }
 
         #endregion
@@ -88,7 +86,7 @@ namespace Universe
             if( IsLocalisedTextNull( translatedText ) )
                 m_text = m_localisedData.name;
             else
-                m_text = translatedText;
+                m_localisedData = translatedText;
 
             UpdateText();
         }
