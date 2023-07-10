@@ -53,6 +53,10 @@ namespace Universe
             GetTextComponent();
             OnLanguageChanged += OnLanguageChangedCallback;
             AddListenerToOnFontsLoaded( OnFontsLoaded );
+
+            if (!CurrentLanguage) return;
+
+            OnLanguageChangedCallback(this, CurrentLanguage);
         }
 
         private void OnFontsLoaded( object font )
