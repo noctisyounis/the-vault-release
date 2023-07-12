@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -12,8 +13,9 @@ namespace Universe
     public class TextServices
     {
         #region Public Methods
-
+        
         public static void Register( UText uText ) => AddToList( uText );
+        public static void Unregister( UText uText ) => RemoveFromList( uText );
 
         public static void RegisterManager( TextManager manager )
         {
@@ -97,7 +99,7 @@ namespace Universe
                 var correspondingSetting = _fontSettings.m_list.Find( x => GetAssetKey( x.m_font ) == key );
                 if( correspondingSetting == null )
                 {
-                    if( isPlaying && _fontsHandle.ContainsKey( font ) )
+                    if( isPlaying && (font != null) && _fontsHandle.ContainsKey( font ) )
                     {
                         Release( _fontsHandle[font] );
                         _fontsHandle.Remove( font );
@@ -189,6 +191,13 @@ namespace Universe
 
             _listUTexts.Add( uText );
         }
+        
+        private static void RemoveFromList( UText uText )
+        {
+            if( !_listUTexts.Contains( uText ) ) return;
+
+            _listUTexts.Remove( uText );
+        }
 
         private static bool AssertFontCollectionIsNull( string message )
         {
@@ -227,14 +236,20 @@ namespace Universe
 
         public static void AddListenerToOnFontsLoaded( ObjectEventHandler handler )
         {
-            if( !_onFontsLoadedListeners.Contains( handler ) )
+            if (!_onFontsLoadedListeners.Contains(handler))
+            {
                 OnFontsLoaded += handler;
+                _onFontsLoadedListeners.Add(handler);
+            }
         }
 
-        public static void RemoveListenerToOnFontsLoaded( ObjectEventHandler handler )
+        public static void RemoveListenerFromOnFontsLoaded( ObjectEventHandler handler )
         {
-            if( _onFontsLoadedListeners.Contains( handler ) )
+            if (_onFontsLoadedListeners.Contains(handler))
+            {
                 OnFontsLoaded -= handler;
+                _onFontsLoadedListeners.Remove(handler);
+            }
         }
 
         private static event ObjectEventHandler OnFontsLoaded;

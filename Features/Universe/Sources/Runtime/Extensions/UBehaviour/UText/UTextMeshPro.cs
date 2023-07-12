@@ -60,10 +60,10 @@ namespace Universe
         {
             if (!m_overrideFontAsset) 
                 m_font = (TMP_FontAsset)GetFont( m_fontSettingsType );
-            
-            m_component.font = m_font;
 
             Verbose( $"UTextMeshPro.UpdateFont m_font = {m_font}" );
+            
+            m_component.font = m_font;
         }
 
         #endregion

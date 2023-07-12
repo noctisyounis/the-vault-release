@@ -73,6 +73,14 @@ namespace Universe
 
         private void OnValidate() => 
             Refresh();
+        
+        private void OnDestroy()
+        {
+            base.Awake();
+            Unregister(this);
+            OnLanguageChanged -= OnLanguageChangedCallback;
+            RemoveListenerFromOnFontsLoaded(OnFontsLoaded);
+        }
 
         #endregion
 
