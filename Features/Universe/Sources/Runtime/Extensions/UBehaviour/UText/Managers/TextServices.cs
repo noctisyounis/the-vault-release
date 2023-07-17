@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
 using static UnityEngine.AddressableAssets.Addressables;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
@@ -131,35 +133,10 @@ namespace Universe
                 _refreshAfterLoad = false;
                 RefreshAllUTexts();
             }
-            //#if UNITY_EDITOR
-            //            if( NotInPlayMode() )
-            //                RefreshAllUTexts();
-            //#endif
+            
             if( InPlayMode() )
                 OnFontsLoaded?.Invoke( _fontsDictionary );
         }
-
-        //        private static void LoadFont(AssetReference fontRef)
-        //        {
-        //            if (_assetsToLoad.Contains(fontRef)) return;
-        //            _assetsToLoad.Add(fontRef);
-        //            _fontToLoadCount++;
-        //            if (!isPlaying)
-        //            {
-        //#if UNITY_EDITOR
-        //                //OnFontLoaded( fontRef, fontRef.editorAsset );
-        //#endif
-        //            }
-        //            else
-        //            {
-        //                //if( _fontsHandleRef.ContainsKey( fontRef ) ) return;
-        //                var casted = LoadAssetAsync<object>(fontRef);
-        //                if (!_fontsHandleRef.ContainsKey(casted))
-        //                    _fontsHandleRef.Add(casted, fontRef);
-        //                casted.Completed += OnFontLoaded_Completed;
-        //                //UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<object>( fontRef, obj => OnFontLoaded( fontRef, obj.Result, obj ) );
-        //            }
-        //        }
 
         private static void LoadFont( AssetReference fontRef )
         {
@@ -167,32 +144,24 @@ namespace Universe
 
             _assetsToLoad.Add( fontRef );
             _fontToLoadCount++;
+            
+            ////#if UNITY_EDITOR
             //            if (!isPlaying)
             //            {
-            ////#if UNITY_EDITOR
             ////                OnFontLoaded( fontRef, fontRef.editorAsset );
-            ////#endif
             //            }
-            //            else
-            //            {
-            //#if UNITY_EDITOR
-            //                OnFontLoaded( fontRef, fontRef.editorAsset );
-            //#else
-            //fontRef.LoadAssetAsync<UnityEngine.Object>().Completed += obj =>
-            //    OnFontLoaded(fontRef, obj.Result, obj);
+            ////#endif
+            
             var casted = LoadAssetAsync<UnityEngine.Object>( fontRef );
             if( !_fontsHandleRef.ContainsKey( casted ) )
                 _fontsHandleRef.Add( casted, fontRef );
             casted.Completed += OnFontLoaded_Completed;
-            //#endif
-            //            }
         }
 
-        //private static IEnumerator
-        private static void OnFontLoaded_Completed( UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object> handle )
+        private static void OnFontLoaded_Completed( AsyncOperationHandle<UnityEngine.Object> handle )
         {
             handle.Completed -= OnFontLoaded_Completed; ;
-            if( handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded )
+            if( handle.Status == AsyncOperationStatus.Succeeded )
             {
                 var fontref = _fontsHandleRef[handle];
                 OnFontLoaded( fontref, handle.Result );
@@ -201,7 +170,7 @@ namespace Universe
             }
         }
 
-        private static void OnFontLoaded( AssetReference fontRef, object result/*, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<object> obj*/)
+        private static void OnFontLoaded( AssetReference fontRef, object result/*, AsyncOperationHandle<object> obj*/)
         {
             _fontLoadedCount++;
 
@@ -210,17 +179,6 @@ namespace Universe
             if( !_fontsDictionary.ContainsKey( key ) )
                 _fontsDictionary.Add( key, result );
 
-            //if( obj != null )
-            //{
-            //var casted = obj;
-            //if (!_fontsHandle.ContainsValue(casted))
-            //    _fontsHandle.Add(result, casted);
-            //}
-            //if (_fontsHandleRef.ContainsKey(obj))
-            //{
-            //    //_fontsHandleRef[fontRef].Completed -= obj => OnFontLoaded( fontRef, obj.Result, obj );
-            //    _fontsHandleRef.Remove(obj);
-            //}
             _assetsToLoad.Remove( fontRef );
             if( _fontToLoadCount == _fontLoadedCount )
             {
@@ -378,13 +336,13 @@ namespace Universe
 
         private static int _fontToLoadCount;
         private static int _fontLoadedCount;
-        private static List<UText> _listUTexts = new List<UText>();
+        private static List<UText> _listUTexts = new ();
         private static TextManager _textManager;
         private static FontSettingsTable _fontSettings;
-        private static Dictionary<string, object> _fontsDictionary = new Dictionary<string, object>();
-        private static Dictionary<object, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>> _fontsHandle = new Dictionary<object, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>>();
-        private static Dictionary<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>, AssetReference> _fontsHandleRef = new Dictionary<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>, AssetReference>();
-        private static List<AssetReference> _assetsToLoad = new List<AssetReference>();
+        private static Dictionary<string, object> _fontsDictionary = new ();
+        private static Dictionary<object, AsyncOperationHandle<UnityEngine.Object>> _fontsHandle = new ();
+        private static Dictionary<AsyncOperationHandle<UnityEngine.Object>, AssetReference> _fontsHandleRef = new ();
+        private static List<AssetReference> _assetsToLoad = new ();
         private static TextServicesSettings _settings;
         private static bool _refreshAfterLoad;
 
