@@ -1,26 +1,23 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-
 using static UnityEngine.AddressableAssets.Addressables;
 using static UnityEngine.Debug;
 using static UnityEngine.Application;
-
 namespace Universe
 {
     public class TextServices
     {
         #region Public Methods
-        
+
         public static void Register( UText uText ) => AddToList( uText );
+
         public static void Unregister( UText uText ) => RemoveFromList( uText );
 
         public static void RegisterManager( TextManager manager )
         {
             if( DoesTextManagerExist() ) return;
-
             UpdateTextManager( manager );
         }
 
@@ -28,36 +25,42 @@ namespace Universe
         {
             if( NotInPlayMode() )
                 FillUTextsList();
-
-
             if( IsUTextListEmpty() ) return;
-
             RefreshAllUTexts();
         }
 
         public static FontSettings GetFontSettings( FontSettingsType fontSettingsType )
         {
             //if( AssertFontCollectionIsNull( $".GetFontSettings({fontSettingsType})" ) ) return null;
-            if(IsFontSettingsCollectionNull()) FontSettings = Settings.m_defaultFontSettings;
-
+            if( IsFontSettingsCollectionNull() ) FontSettings = Settings.m_defaultFontSettings;
             return GetFontSettingsCorrespondingTo( fontSettingsType );
         }
 
         public static object GetFont( FontSettingsType fontSettingsType )
         {
-            AssetReference fontRef;
             //if( AssertFontCollectionIsNull( $".GetFont({fontSettingsType})" ) ) return null;
-
             if( IsFontSettingsCollectionNull() ) FontSettings = Settings.m_defaultFontSettings;
+            
+            var settings = GetFontSettingsCorrespondingTo( fontSettingsType );
 
-            fontRef = GetFontSettingsCorrespondingTo( fontSettingsType ).m_font;
+            if (!settings)
+            {
+                Debug.LogError($"[TextService] No settings found for {fontSettingsType}");
+                return default;
+            }
+            var fontRef = settings.m_font;
 
+#if UNITY_EDITOR
+            if (!isPlaying)
+            {
+                return fontRef.editorAsset;
+            }
+#endif
             if( IsNotLoaded( fontRef ) )
             {
-                if(Settings.m_showErrors) LogError( $"font {GetAssetKey( fontRef )} not loaded" );
+                if( Settings.m_showErrors ) LogError( $"font {GetAssetKey( fontRef )} {fontRef} not loaded" );
                 return null;
             }
-
             return GetFontOf( fontRef );
         }
 
@@ -88,22 +91,27 @@ namespace Universe
         private static void ReleaseUnusedFonts()
         {
             string[] keys = GetDictionaryKeysArray();
-
             var fontCount = keys.Length;
             for( var i = 0; i < fontCount; i++ )
             {
                 var key = keys[i];
                 if( string.IsNullOrEmpty( key ) ) continue;
-
                 var font = _fontsDictionary[keys[i]];
+                if( font == null )
+                {
+                    //_fontsDictionary.Remove( key );
+                    continue;
+                }
                 var correspondingSetting = _fontSettings.m_list.Find( x => GetAssetKey( x.m_font ) == key );
                 if( correspondingSetting == null )
                 {
-                    if( isPlaying && (font != null) && _fontsHandle.ContainsKey( font ) )
+                    //#if !UNITY_EDITOR
+                    if( isPlaying && _fontsHandle.ContainsKey( font ) )
                     {
-                        Release( _fontsHandle[font] );
+                        Release( font );
                         _fontsHandle.Remove( font );
                     }
+                    //#endif
                     _fontsDictionary.Remove( key );
                 }
             }
@@ -118,14 +126,40 @@ namespace Universe
 
         private static void OnAllFontsLoaded()
         {
-#if UNITY_EDITOR
-            if( NotInPlayMode() )
+            if( _refreshAfterLoad )
+            {
+                _refreshAfterLoad = false;
                 RefreshAllUTexts();
-#endif
-
+            }
+            //#if UNITY_EDITOR
+            //            if( NotInPlayMode() )
+            //                RefreshAllUTexts();
+            //#endif
             if( InPlayMode() )
                 OnFontsLoaded?.Invoke( _fontsDictionary );
         }
+
+        //        private static void LoadFont(AssetReference fontRef)
+        //        {
+        //            if (_assetsToLoad.Contains(fontRef)) return;
+        //            _assetsToLoad.Add(fontRef);
+        //            _fontToLoadCount++;
+        //            if (!isPlaying)
+        //            {
+        //#if UNITY_EDITOR
+        //                //OnFontLoaded( fontRef, fontRef.editorAsset );
+        //#endif
+        //            }
+        //            else
+        //            {
+        //                //if( _fontsHandleRef.ContainsKey( fontRef ) ) return;
+        //                var casted = LoadAssetAsync<object>(fontRef);
+        //                if (!_fontsHandleRef.ContainsKey(casted))
+        //                    _fontsHandleRef.Add(casted, fontRef);
+        //                casted.Completed += OnFontLoaded_Completed;
+        //                //UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<object>( fontRef, obj => OnFontLoaded( fontRef, obj.Result, obj ) );
+        //            }
+        //        }
 
         private static void LoadFont( AssetReference fontRef )
         {
@@ -133,51 +167,82 @@ namespace Universe
 
             _assetsToLoad.Add( fontRef );
             _fontToLoadCount++;
+            //            if (!isPlaying)
+            //            {
+            ////#if UNITY_EDITOR
+            ////                OnFontLoaded( fontRef, fontRef.editorAsset );
+            ////#endif
+            //            }
+            //            else
+            //            {
+            //#if UNITY_EDITOR
+            //                OnFontLoaded( fontRef, fontRef.editorAsset );
+            //#else
+            //fontRef.LoadAssetAsync<UnityEngine.Object>().Completed += obj =>
+            //    OnFontLoaded(fontRef, obj.Result, obj);
+            var casted = LoadAssetAsync<UnityEngine.Object>( fontRef );
+            if( !_fontsHandleRef.ContainsKey( casted ) )
+                _fontsHandleRef.Add( casted, fontRef );
+            casted.Completed += OnFontLoaded_Completed;
+            //#endif
+            //            }
+        }
 
-            if( !isPlaying )
+        //private static IEnumerator
+        private static void OnFontLoaded_Completed( UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object> handle )
+        {
+            handle.Completed -= OnFontLoaded_Completed; ;
+            if( handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded )
             {
-#if UNITY_EDITOR
-                OnFontLoaded( fontRef, fontRef.editorAsset );
-#endif
-            }
-            else
-            {
-                LoadAssetAsync<object>( fontRef ).Completed += obj =>
-                        OnFontLoaded( fontRef, obj.Result, obj );
+                var fontref = _fontsHandleRef[handle];
+                OnFontLoaded( fontref, handle.Result );
+                if( !_fontsHandle.ContainsKey( handle.Result ) )
+                    _fontsHandle.Add( handle.Result, handle );
             }
         }
 
-        private static void OnFontLoaded( AssetReference fontRef, object result, object obj = null )
+        private static void OnFontLoaded( AssetReference fontRef, object result/*, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<object> obj*/)
         {
             _fontLoadedCount++;
 
             var key = GetAssetKey( fontRef );
+
             if( !_fontsDictionary.ContainsKey( key ) )
                 _fontsDictionary.Add( key, result );
 
-            if( obj != null )
-            {
-                var casted = (UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<object>)obj;
-                if( _fontsHandle.ContainsValue( casted ) )
-                    _fontsHandle.Add( result, casted );
-            }
-
+            //if( obj != null )
+            //{
+            //var casted = obj;
+            //if (!_fontsHandle.ContainsValue(casted))
+            //    _fontsHandle.Add(result, casted);
+            //}
+            //if (_fontsHandleRef.ContainsKey(obj))
+            //{
+            //    //_fontsHandleRef[fontRef].Completed -= obj => OnFontLoaded( fontRef, obj.Result, obj );
+            //    _fontsHandleRef.Remove(obj);
+            //}
             _assetsToLoad.Remove( fontRef );
-
             if( _fontToLoadCount == _fontLoadedCount )
+            {
                 OnAllFontsLoaded();
+                _assetsToLoad.Clear();
+            }
         }
 
         private static void FillUTextsList()
         {
             var uTexts = TextManager?.GetUTexts();
-
             if( uTexts == null ) return;
             _listUTexts = new List<UText>( uTexts );
         }
 
         private static void RefreshAllUTexts()
         {
+            if( FontsAreLoading() )
+            {
+                _refreshAfterLoad = true;
+                return;
+            }
             var uTextCount = _listUTexts.Count;
             for( var i = 0; i < uTextCount; i++ )
             {
@@ -188,21 +253,18 @@ namespace Universe
         private static void AddToList( UText uText )
         {
             if( _listUTexts.Contains( uText ) ) return;
-
             _listUTexts.Add( uText );
         }
-        
+
         private static void RemoveFromList( UText uText )
         {
             if( !_listUTexts.Contains( uText ) ) return;
-
             _listUTexts.Remove( uText );
         }
 
         private static bool AssertFontCollectionIsNull( string message )
         {
             if( !IsFontSettingsCollectionNull() ) return false;
-
             if( Settings.m_showErrors ) LogErrorFontSettingsNull( message );
             return true;
         }
@@ -222,7 +284,6 @@ namespace Universe
         private static bool DoesTextManagerExist() => _textManager != null;
         private static bool NotInPlayMode() => !isPlaying;
         private static bool InPlayMode() => isPlaying;
-
         private static object GetFontOf( AssetReference fontRef ) => _fontsDictionary[GetAssetKey( fontRef )];
         private static string GetAssetKey( AssetReference asset ) => $"{asset.RuntimeKey}";
         private static FontSettings GetFontSettingsCorrespondingTo( FontSettingsType fontSettingsType ) => FontSettings.m_list[Convert.ToInt32( fontSettingsType )];
@@ -236,25 +297,18 @@ namespace Universe
 
         public static void AddListenerToOnFontsLoaded( ObjectEventHandler handler )
         {
-            if (!_onFontsLoadedListeners.Contains(handler))
-            {
+            if( !_onFontsLoadedListeners.Contains( handler ) )
                 OnFontsLoaded += handler;
-                _onFontsLoadedListeners.Add(handler);
-            }
         }
 
         public static void RemoveListenerFromOnFontsLoaded( ObjectEventHandler handler )
         {
-            if (_onFontsLoadedListeners.Contains(handler))
-            {
+            if( _onFontsLoadedListeners.Contains( handler ) )
                 OnFontsLoaded -= handler;
-                _onFontsLoadedListeners.Remove(handler);
-            }
         }
 
         private static event ObjectEventHandler OnFontsLoaded;
         private static List<ObjectEventHandler> _onFontsLoadedListeners = new List<ObjectEventHandler>();
-
 
         #endregion
 
@@ -289,7 +343,6 @@ namespace Universe
                 if( !isPlaying )
                 {
                     if( _textManager != null ) return _textManager;
-
                     GetManager();
                 }
 #endif
@@ -298,13 +351,12 @@ namespace Universe
             set => _textManager = value;
         }
 
-        public static FontSettingsTable FontSettings {
+        public static FontSettingsTable FontSettings
+        {
             get => _fontSettings;
-
             set
             {
                 if( value == _fontSettings ) return;
-
                 _fontSettings = value;
                 LoadFonts();
             }
@@ -315,7 +367,6 @@ namespace Universe
             get
             {
                 if( _settings == null ) _settings = TextServicesSettings.GetOrCreateSettings();
-
                 return _settings;
             }
         }
@@ -327,15 +378,16 @@ namespace Universe
 
         private static int _fontToLoadCount;
         private static int _fontLoadedCount;
-
         private static List<UText> _listUTexts = new List<UText>();
         private static TextManager _textManager;
         private static FontSettingsTable _fontSettings;
         private static Dictionary<string, object> _fontsDictionary = new Dictionary<string, object>();
-        private static Dictionary<object, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<object>> _fontsHandle = new Dictionary<object, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<object>>();
+        private static Dictionary<object, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>> _fontsHandle = new Dictionary<object, UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>>();
+        private static Dictionary<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>, AssetReference> _fontsHandleRef = new Dictionary<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Object>, AssetReference>();
         private static List<AssetReference> _assetsToLoad = new List<AssetReference>();
         private static TextServicesSettings _settings;
+        private static bool _refreshAfterLoad;
 
-#endregion
+        #endregion
     }
 }

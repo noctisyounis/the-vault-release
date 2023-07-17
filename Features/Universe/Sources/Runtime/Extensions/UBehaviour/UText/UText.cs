@@ -68,19 +68,19 @@ namespace Universe
             Refresh();
         }
 
+        override public void OnDestroy()
+        {
+            base.OnDestroy();
+            Unregister( this );
+            OnLanguageChanged -= OnLanguageChangedCallback;
+            RemoveListenerFromOnFontsLoaded( OnFontsLoaded );
+        }
+
         private void Start() => 
             Refresh();
 
         private void OnValidate() => 
             Refresh();
-        
-        private void OnDestroy()
-        {
-            base.Awake();
-            Unregister(this);
-            OnLanguageChanged -= OnLanguageChangedCallback;
-            RemoveListenerFromOnFontsLoaded(OnFontsLoaded);
-        }
 
         #endregion
 
