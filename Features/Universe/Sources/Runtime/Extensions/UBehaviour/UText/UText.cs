@@ -76,11 +76,17 @@ namespace Universe
             RemoveListenerFromOnFontsLoaded( OnFontsLoaded );
         }
 
-        private void Start() => 
+        private void Start()
+        {
+            if (FontsAreLoading()) return;
             Refresh();
+        }
 
-        private void OnValidate() => 
+        private void OnValidate()
+        {
+            if (FontsAreLoading()) return;
             Refresh();
+        }
 
         #endregion
 

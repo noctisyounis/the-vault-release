@@ -60,7 +60,7 @@ namespace Universe
 #endif
             if( IsNotLoaded( fontRef ) )
             {
-                if( Settings.m_showErrors ) LogError( $"font {GetAssetKey( fontRef )} {fontRef} not loaded" );
+                if( Settings && Settings.m_showErrors ) LogError( $"font {GetAssetKey( fontRef )} {fontRef} not loaded" );
                 return null;
             }
             return GetFontOf( fontRef );
@@ -141,6 +141,9 @@ namespace Universe
         private static void LoadFont( AssetReference fontRef )
         {
             if( _assetsToLoad.Contains( fontRef ) ) return;
+
+            var key = GetAssetKey(fontRef);
+            if ( _fontsDictionary.ContainsKey( key ) ) return;
 
             _assetsToLoad.Add( fontRef );
             _fontToLoadCount++;
@@ -238,7 +241,7 @@ namespace Universe
         private static bool IsFontSettingsCollectionNull() => FontSettings == null || FontSettings.ListIsNullOrEmpty();
         private static bool IsNotLoaded( AssetReference fontRef ) => !_fontsDictionary.ContainsKey( GetAssetKey( fontRef ) );
         private static bool NoFontsToLoad() => _fontToLoadCount == 0 && _fontLoadedCount == 0;
-        private static bool FontsAreLoading() => _assetsToLoad.Count > 0;
+        public static bool FontsAreLoading() => _assetsToLoad.Count > 0;
         private static bool DoesTextManagerExist() => _textManager != null;
         private static bool NotInPlayMode() => !isPlaying;
         private static bool InPlayMode() => isPlaying;
