@@ -293,6 +293,7 @@ public class ES3Settings : System.ICloneable
         if (AssetDatabase.IsValidFolder(PathToEasySaveFolder() + "Resources/ES3"))
             return;
         // Remove leading slash from PathToEasySaveFolder.
+        if(PathToEasySaveFolder().Contains("PackageCache")) return;
         AssetDatabase.CreateFolder(PathToEasySaveFolder().Remove(PathToEasySaveFolder().Length - 1, 1), "Resources");
         AssetDatabase.CreateFolder(PathToEasySaveFolder() + "Resources", "ES3");
     }
