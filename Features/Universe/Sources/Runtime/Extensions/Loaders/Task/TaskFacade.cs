@@ -37,7 +37,7 @@ namespace Universe.SceneTask.Runtime
             Load();
         }
 
-        private void OnEnable()
+        public override void OnEnable()
         {
             if (!IsOnEnable()) return;
             

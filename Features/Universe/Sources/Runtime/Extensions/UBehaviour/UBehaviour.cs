@@ -31,9 +31,9 @@ namespace Universe
 
         public virtual void Awake() => Register();
         
-        private void OnEnable() => Register();
+        public virtual void OnEnable() => Register();
 
-        private void OnDisable() => Unregister();
+        public virtual void OnDisable() => Unregister();
 
         public virtual void OnDestroy() => Unregister();
 

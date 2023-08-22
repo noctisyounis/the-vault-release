@@ -24,12 +24,12 @@ namespace Universe.DebugWatch.Runtime
 
         #region Unity API
 
-        private void Awake()
+        public override void Awake()
         {
             OnDeselected();
             FetchStatus(false);
         }
-        private void OnDisable() => OnDeselected();
+        public override void OnDisable() => OnDeselected();
 
         #endregion
 

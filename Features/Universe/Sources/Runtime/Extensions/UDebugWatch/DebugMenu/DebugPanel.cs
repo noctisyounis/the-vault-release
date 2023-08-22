@@ -74,8 +74,9 @@ namespace Universe.DebugWatch.Runtime
         }
 #endif
 
-        private void OnEnable()
+        public override void OnEnable()
         {
+            base.OnEnable();
             if(m_parentMenuButton.childCount == 0) return;
 
             _currentButtonChildIndex = 0;
