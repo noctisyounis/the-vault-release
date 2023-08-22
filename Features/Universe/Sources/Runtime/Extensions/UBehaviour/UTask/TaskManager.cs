@@ -52,6 +52,9 @@ namespace Universe
         public void Update()
         {
             if (!CanUpdate) return;
+            
+            ApplyUnregistingUpdate();
+            
             var deltaTime = DeltaTime;
             var length = _registeredUpdate.Count;
 
@@ -69,6 +72,9 @@ namespace Universe
         {
             SetActiveTaskInput(IsFocused);
             if (!CanUpdate) return;
+            
+            ApplyUnregistingFixedUpdate();
+            
             var fixedDeltaTime = FixedDeltaTime;
             var length = _registeredFixedUpdate.Count;
 
@@ -87,6 +93,8 @@ namespace Universe
             if (!CanUpdate) return;
             var deltaTime = DeltaTime;
             var length = _registeredLateUpdate.Count;
+            
+            ApplyUnregistingLateUpdate();
 
             for (int i = 0; i < length; i++)
             {
@@ -164,14 +172,13 @@ namespace Universe
             SafeAddTargetToList(target, _registeredLateUpdate);
 
         public void RemoveFromLateUpdate(UBehaviour target) =>
-            SafeRemoveTargetFromList(target, _registeredLateUpdate);
+            SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
         
         public void RemoveFromFixedUpdate(UBehaviour target) =>
-            SafeRemoveTargetFromList(target, _registeredFixedUpdate);
+            SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
 
         public void RemoveFromUpdate(UBehaviour target) =>
-            SafeRemoveTargetFromList(target, _registeredUpdate);
-
+            SafeRemoveTargetFromList(target, _unregisteringUpdate);
 
         private void SafeAddTargetToList(UBehaviour target, List<UBehaviour> list)
         {
@@ -187,6 +194,36 @@ namespace Universe
             if (!alreadyExist) return;
 
             list.Remove(target);
+        }
+        
+        private void ApplyUnregistingUpdate()
+        {
+            if (_unregisteringUpdate.Count == 0) return;
+
+            foreach (var item in _unregisteringUpdate)
+            {
+                _registeredUpdate.Remove(item);
+            }
+        }
+        
+        private void ApplyUnregistingFixedUpdate()
+        {
+            if (_unregisteringFixedUpdate.Count == 0) return;
+
+            foreach (var item in _unregisteringFixedUpdate)
+            {
+                _registeredFixedUpdate.Remove(item);
+            }
+        }
+        
+        private void ApplyUnregistingLateUpdate()
+        {
+            if (_unregisteringLateUpdate.Count == 0) return;
+
+            foreach (var item in _unregisteringLateUpdate)
+            {
+                _registeredLateUpdate.Remove(item);
+            }
         }
 
         public bool IsAlwaysUpdated() => Priority.Equals( TaskPriority.ALWAYS_UPDATE );
@@ -232,9 +269,9 @@ namespace Universe
         private List<UBehaviour> _registeredUpdate = new();
         private List<UBehaviour> _registeredFixedUpdate = new();
         private List<UBehaviour> _registeredLateUpdate = new();
-        private List<UBehaviour> _updatableBehaviours = new();
-        private List<UBehaviour> _fixedUpdatableBehaviours = new();
-        private List<UBehaviour> _lateUpdatableBehaviours = new();
+        private List<UBehaviour> _unregisteringUpdate = new();
+        private List<UBehaviour> _unregisteringFixedUpdate = new();
+        private List<UBehaviour> _unregisteringLateUpdate = new();
 
         #endregion
     }
