@@ -393,9 +393,9 @@ namespace Universe
 
         #region Private
 
-        private bool _useUpdate = true;
-        private bool _useFixedUpdate = true;
-        private bool _useLateUpdate = true;
+        private bool _useUpdate;
+        private bool _useFixedUpdate;
+        private bool _useLateUpdate;
 
         #endregion
     }

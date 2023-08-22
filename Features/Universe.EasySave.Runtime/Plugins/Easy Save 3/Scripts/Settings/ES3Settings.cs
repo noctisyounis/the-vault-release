@@ -42,7 +42,7 @@ public class ES3Settings : System.ICloneable
                         RemoveOldSettings();
                     }
 
-                    if(!CreateDefaultSettingsFolder()) return;
+                    if(!CreateDefaultSettingsFolder()) return _defaultSettingsScriptableObject;
                     AssetDatabase.CreateAsset(_defaultSettingsScriptableObject, PathToDefaultSettings());
                     AssetDatabase.SaveAssets();
                 }
