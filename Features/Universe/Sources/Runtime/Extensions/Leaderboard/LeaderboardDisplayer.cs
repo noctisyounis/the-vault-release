@@ -28,8 +28,6 @@ namespace Universe.Leaderboard.Runtime
 
         public override void OnLateUpdate(float deltaTime)
         {
-            base.OnLateUpdate(deltaTime);
-			
             if(_needRefresh) Refresh();
         }
 
