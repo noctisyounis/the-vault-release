@@ -29,23 +29,81 @@ namespace Universe
         
         #region Universe Core Loop
 
-        public virtual void Awake()
+        public virtual void Awake() => Register();
+        
+        private void OnEnable() => Register();
+
+        private void OnDisable() => Unregister();
+
+        public virtual void OnDestroy() => Unregister();
+
+        public virtual void OnUpdate(float deltatime) => UnregisterUpdate();
+
+        public virtual void OnFixedUpdate(float fixedDeltaTime) => UnregisterFixedUpdate();
+
+        public virtual void OnLateUpdate(float deltaTime) => UnregisterLateUpdate();
+
+        private void Register()
         {
-            Task.RegisterUpdate(this);
+            RegisterUpdate();
+            RegisterFixedUpdate();
+            RegisterLateUpdate();
+        }
+
+        private void RegisterFixedUpdate()
+        {
+            if (_useFixedUpdate) return;
+            
+            _useFixedUpdate = true;
             Task.RegisterFixedUpdate(this);
+        }
+        
+        private void RegisterUpdate()
+        {
+            if (_useUpdate) return;
+            
+            _useUpdate = true;
+            Task.RegisterUpdate(this);
+        }
+        
+        private void RegisterLateUpdate()
+        {
+            if (_useLateUpdate) return;
+            
+            _useLateUpdate = true;
             Task.RegisterLateUpdate(this);
         }
 
-        public virtual void OnDestroy()
+        private void Unregister()
         {
-            Task.UnregisterUpdate(this);
-            Task.UnregisterFixedUpdate(this);
-            Task.UnregisterLateUpdate(this);
+            UnregisterUpdate();
+            UnregisterFixedUpdate();
+            UnregisterLateUpdate();
         }
-
-        public virtual void OnUpdate(float deltatime) {}
-        public virtual void OnFixedUpdate(float fixedDeltaTime) {}
-        public virtual void OnLateUpdate(float deltaTime) {}
+        
+        private void UnregisterFixedUpdate()
+        {
+            if (!_useFixedUpdate) return;
+            
+            _useFixedUpdate = false;
+           Task.UnregisterFixedUpdate(this);
+        }
+        
+        private void UnregisterUpdate()
+        {
+            if (!_useUpdate) return;
+            
+            _useUpdate = false;
+           Task.UnregisterUpdate(this);
+        }
+        
+        private void UnregisterLateUpdate()
+        {
+            if (!_useLateUpdate) return;
+            
+            _useLateUpdate = false;
+           Task.UnregisterLateUpdate(this);
+        }
 
         #endregion
         
@@ -330,6 +388,15 @@ namespace Universe
             _rigidbody2D ? _rigidbody2D : _rigidbody2D = GetComponent<Rigidbody2D>();
 
         #pragma warning restore 0109
-#endregion
+        #endregion
+
+
+        #region Private
+
+        private bool _useUpdate = true;
+        private bool _useFixedUpdate = true;
+        private bool _useLateUpdate = true;
+
+        #endregion
     }
 }

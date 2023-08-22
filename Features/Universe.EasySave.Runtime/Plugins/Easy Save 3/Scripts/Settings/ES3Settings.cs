@@ -42,7 +42,7 @@ public class ES3Settings : System.ICloneable
                         RemoveOldSettings();
                     }
 
-                    CreateDefaultSettingsFolder();
+                    if(!CreateDefaultSettingsFolder()) return;
                     AssetDatabase.CreateAsset(_defaultSettingsScriptableObject, PathToDefaultSettings());
                     AssetDatabase.SaveAssets();
                 }
@@ -288,14 +288,15 @@ public class ES3Settings : System.ICloneable
         return PathToEasySaveFolder() + "Resources/"+defaultSettingsPath+".asset";
     }
 
-    internal static void CreateDefaultSettingsFolder()
+    internal static bool CreateDefaultSettingsFolder()
     {
         if (AssetDatabase.IsValidFolder(PathToEasySaveFolder() + "Resources/ES3"))
-            return;
+            return false;
         // Remove leading slash from PathToEasySaveFolder.
-        if(PathToEasySaveFolder().Contains("Packages")) return;
         AssetDatabase.CreateFolder(PathToEasySaveFolder().Remove(PathToEasySaveFolder().Length - 1, 1), "Resources");
         AssetDatabase.CreateFolder(PathToEasySaveFolder() + "Resources", "ES3");
+    
+        return true;
     }
 
     private static ES3SerializableSettings GetOldSettings()
