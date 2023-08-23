@@ -91,10 +91,12 @@ namespace Universe
         public void LateUpdate()
         {
             if (!CanUpdate) return;
+            
+            ApplyUnregistingLateUpdate();
+            
             var deltaTime = DeltaTime;
             var length = _registeredLateUpdate.Count;
             
-            ApplyUnregistingLateUpdate();
 
             for (int i = 0; i < length; i++)
             {
@@ -172,13 +174,13 @@ namespace Universe
             SafeAddTargetToList(target, _registeredLateUpdate);
 
         public void RemoveFromLateUpdate(UBehaviour target) =>
-            SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
+            SafeAddTargetToList(target, _unregisteringLateUpdate);
         
         public void RemoveFromFixedUpdate(UBehaviour target) =>
-            SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
+            SafeAddTargetToList(target, _unregisteringFixedUpdate);
 
         public void RemoveFromUpdate(UBehaviour target) =>
-            SafeRemoveTargetFromList(target, _unregisteringUpdate);
+            SafeAddTargetToList(target, _unregisteringUpdate);
 
         private void SafeAddTargetToList(UBehaviour target, List<UBehaviour> list)
         {
@@ -202,27 +204,27 @@ namespace Universe
 
             foreach (var item in _unregisteringUpdate)
             {
-                _registeredUpdate.Remove(item);
+                SafeRemoveTargetFromList(item, _registeredUpdate);
             }
         }
         
         private void ApplyUnregistingFixedUpdate()
         {
             if (_unregisteringFixedUpdate.Count == 0) return;
-
+            
             foreach (var item in _unregisteringFixedUpdate)
             {
-                _registeredFixedUpdate.Remove(item);
+                SafeRemoveTargetFromList(item, _registeredFixedUpdate);
             }
         }
         
         private void ApplyUnregistingLateUpdate()
         {
             if (_unregisteringLateUpdate.Count == 0) return;
-
+            
             foreach (var item in _unregisteringLateUpdate)
             {
-                _registeredLateUpdate.Remove(item);
+                SafeRemoveTargetFromList(item, _registeredLateUpdate);
             }
         }
 
