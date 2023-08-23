@@ -206,6 +206,8 @@ namespace Universe
             {
                 SafeRemoveTargetFromList(item, _registeredUpdate);
             }
+            
+            _unregisteringUpdate.Clear();
         }
         
         private void ApplyUnregistingFixedUpdate()
@@ -216,6 +218,9 @@ namespace Universe
             {
                 SafeRemoveTargetFromList(item, _registeredFixedUpdate);
             }
+            
+            _unregisteringFixedUpdate.Clear();
+
         }
         
         private void ApplyUnregistingLateUpdate()
@@ -226,6 +231,8 @@ namespace Universe
             {
                 SafeRemoveTargetFromList(item, _registeredLateUpdate);
             }
+            
+            _unregisteringLateUpdate.Clear();
         }
 
         public bool IsAlwaysUpdated() => Priority.Equals( TaskPriority.ALWAYS_UPDATE );
