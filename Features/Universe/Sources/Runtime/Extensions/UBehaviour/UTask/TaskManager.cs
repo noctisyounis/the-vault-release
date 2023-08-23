@@ -164,14 +164,23 @@ namespace Universe
         
         #region Update Management
         
-        public void AddToUpdate(UBehaviour target) => 
+        public void AddToUpdate(UBehaviour target)
+        {
             SafeAddTargetToList(target, _registeredUpdate);
-        
-        public void AddToFixedUpdate(UBehaviour target) => 
+            SafeRemoveTargetFromList(target, _unregisteringUpdate);
+        }
+
+        public void AddToFixedUpdate(UBehaviour target)
+        {
             SafeAddTargetToList(target, _registeredFixedUpdate);
+            SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
+        }
         
-        public void AddToLateUpdate(UBehaviour target) =>
+        public void AddToLateUpdate(UBehaviour target)
+        {
             SafeAddTargetToList(target, _registeredLateUpdate);
+            SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
+        }
 
         public void RemoveFromLateUpdate(UBehaviour target) =>
             SafeAddTargetToList(target, _unregisteringLateUpdate);
