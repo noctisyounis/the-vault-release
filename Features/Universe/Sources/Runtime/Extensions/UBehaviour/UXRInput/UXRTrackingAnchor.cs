@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using UnityEngine.AddressableAssets;
-
+using Universe.SceneTask.Runtime;
 using static Universe.SceneTask.Runtime.Task;
 
 namespace Universe
@@ -19,11 +19,11 @@ namespace Universe
             Spawn( m_XRRig, transform, InitializeTrackedElements );
         }
 
-        private void Update()
+        public override void OnUpdate(float deltatime)
         {
             if (!_xrRigInitialized) return;
-
-            activeTask = FindObjectsOfType<TaskManager>().First(manager => manager.gameObject.scene.name == GetFocusSceneName() );
+            
+            activeTask = GetFocusedTaskManager();
             activeTask.SetHeadset(m_xrProvider.GetHeadsetData());
             activeTask.SetPlayArea(m_xrProvider.GetPlayAreaData());
             activeTask.SetLeftController(m_xrProvider.GetLeftControllerData());
