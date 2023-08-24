@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Universe.SceneTask;
 using Universe.SceneTask.Runtime;
@@ -55,12 +56,13 @@ namespace Universe
             
             ApplyUnregistingUpdate();
             
+            var listed = _registeredUpdate.ToArray();
             var deltaTime = DeltaTime;
-            var length = _registeredUpdate.Count;
+            var length = listed.Length;
 
             for (int i = 0; i < length; i++)
             {
-                var u = _registeredUpdate[i];
+                var u = listed[i];
 
                 if(!u.UseUpdates) continue;
 
@@ -74,13 +76,14 @@ namespace Universe
             if (!CanUpdate) return;
             
             ApplyUnregistingFixedUpdate();
-            
+
+            var listed = _registeredFixedUpdate.ToArray();
             var fixedDeltaTime = FixedDeltaTime;
-            var length = _registeredFixedUpdate.Count;
+            var length = listed.Length;
 
             for (int i = 0; i < length; i++)
             {
-                var u = _registeredFixedUpdate[i];
+                var u = listed[i];
 
                 if(!u.UseUpdates) continue;
                 
@@ -94,13 +97,13 @@ namespace Universe
             
             ApplyUnregistingLateUpdate();
             
+            var listed = _registeredLateUpdate.ToArray();
             var deltaTime = DeltaTime;
-            var length = _registeredLateUpdate.Count;
+            var length = listed.Length;
             
-
             for (int i = 0; i < length; i++)
             {
-                var u = _registeredLateUpdate[i];
+                var u = listed[i];
 
                 if(!u.UseUpdates) continue;
                 
@@ -166,19 +169,19 @@ namespace Universe
         
         public void AddToUpdate(UBehaviour target)
         {
-            SafeAddTargetToList(target, _registeredUpdate);
+            SafeAddTargetToHashSet(target, _registeredUpdate);
             SafeRemoveTargetFromList(target, _unregisteringUpdate);
         }
 
         public void AddToFixedUpdate(UBehaviour target)
         {
-            SafeAddTargetToList(target, _registeredFixedUpdate);
+            SafeAddTargetToHashSet(target, _registeredFixedUpdate);
             SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
         }
         
         public void AddToLateUpdate(UBehaviour target)
         {
-            SafeAddTargetToList(target, _registeredLateUpdate);
+            SafeAddTargetToHashSet(target, _registeredLateUpdate);
             SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
         }
 
@@ -199,6 +202,11 @@ namespace Universe
             list.Add(target);
         }
         
+        private void SafeAddTargetToHashSet(UBehaviour target, HashSet<UBehaviour> list)
+        {
+            list.Add(target);
+        }
+        
         private void SafeRemoveTargetFromList(UBehaviour target, List<UBehaviour> list)
         {
             var alreadyExist = list.Contains(target);
@@ -207,14 +215,21 @@ namespace Universe
             list.Remove(target);
         }
         
+        private void SafeRemoveTargetFromHashSet(UBehaviour target, HashSet<UBehaviour> set)
+        {
+            set.Remove(target);
+        }
+
+        private void SafeRemoveTargetsFromHashSet(List<UBehaviour> targets, HashSet<UBehaviour> set)
+        {
+            set.ExceptWith(targets);
+        }
+
         private void ApplyUnregistingUpdate()
         {
             if (_unregisteringUpdate.Count == 0) return;
-
-            foreach (var item in _unregisteringUpdate)
-            {
-                SafeRemoveTargetFromList(item, _registeredUpdate);
-            }
+            
+            SafeRemoveTargetsFromHashSet(_unregisteringUpdate, _registeredUpdate);
             
             _unregisteringUpdate.Clear();
         }
@@ -223,10 +238,7 @@ namespace Universe
         {
             if (_unregisteringFixedUpdate.Count == 0) return;
             
-            foreach (var item in _unregisteringFixedUpdate)
-            {
-                SafeRemoveTargetFromList(item, _registeredFixedUpdate);
-            }
+            SafeRemoveTargetsFromHashSet(_unregisteringFixedUpdate, _registeredFixedUpdate);
             
             _unregisteringFixedUpdate.Clear();
 
@@ -236,10 +248,7 @@ namespace Universe
         {
             if (_unregisteringLateUpdate.Count == 0) return;
             
-            foreach (var item in _unregisteringLateUpdate)
-            {
-                SafeRemoveTargetFromList(item, _registeredLateUpdate);
-            }
+            SafeRemoveTargetsFromHashSet(_unregisteringLateUpdate, _registeredLateUpdate);
             
             _unregisteringLateUpdate.Clear();
         }
@@ -284,9 +293,9 @@ namespace Universe
         private UTrackedAlias _leftControllerTrackedAlias;
         private UTrackedAlias _rightControllerTrackedAlias;
 
-        private List<UBehaviour> _registeredUpdate = new();
-        private List<UBehaviour> _registeredFixedUpdate = new();
-        private List<UBehaviour> _registeredLateUpdate = new();
+        private HashSet<UBehaviour> _registeredUpdate = new();
+        private HashSet<UBehaviour> _registeredFixedUpdate = new();
+        private HashSet<UBehaviour> _registeredLateUpdate = new();
         private List<UBehaviour> _unregisteringUpdate = new();
         private List<UBehaviour> _unregisteringFixedUpdate = new();
         private List<UBehaviour> _unregisteringLateUpdate = new();
