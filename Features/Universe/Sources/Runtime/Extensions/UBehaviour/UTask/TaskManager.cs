@@ -45,7 +45,6 @@ namespace Universe
 
         public override void Awake()
         {
-            base.Awake();
             Task.Register(this);
             InitializeUTrackedAliases();
         }

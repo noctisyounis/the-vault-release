@@ -226,32 +226,57 @@ namespace Universe.SceneTask.Runtime
 
         public static void Register( TaskManager target )
         {
-            if( _taskManagers.Contains( target ) ) return;
-
-            _taskManagers.Add( target );
+            var scene = target.gameObject.scene;
+            if (_taskManagers.ContainsKey(scene))
+            {
+                LogError($"[Task] Another Taskmanager Already registered for scene : {scene.name}");
+                return;
+            }
+            
+            _taskManagers.Add( scene, target );
         }
 
         public static void Unregister( TaskManager target )
         {
-            if( !_taskManagers.Contains( target ) ) return;
+            var scene = target.gameObject.scene;
+            if (!_taskManagers.ContainsKey(scene))
+            {
+                LogError($"[Task] Taskmanager not registered for scene : {scene.name}");
+                return;
+            }
 
-            _taskManagers.Remove( target );
+            _taskManagers.Remove( scene );
         }
 
         public static TaskManager GetFocusedTaskManager()
         {
             var focusedScene = GetFocusScene();
-
-            return _taskManagers.FirstOrDefault( taskManager =>
-                 focusedScene.name == taskManager.gameObject.scene.name );
+            
+            return GetTaskManagerOf(focusedScene);
         }
 
         public static TaskManager GetTaskManagerOf(UBehaviour target)
         {
-            if(target.name.Contains("[TaskManager]")) Register((TaskManager)target);
-            
-            return _taskManagers.FirstOrDefault(taskManager =>
-                target.gameObject.scene.name == taskManager.gameObject.scene.name);
+            var scene = target.gameObject.scene;
+            if (!_taskManagers.ContainsKey(scene))
+            {
+                if (target is TaskManager taskManager)
+                {
+                    Register(taskManager);
+                    return taskManager;
+                }
+
+                Debug.LogWarning($"[Task] Manager of {scene.name} not yet registered, searching for it... (Expensive)");
+
+                taskManager = FindTaskManagerOf(scene);
+                if (!taskManager) return taskManager;
+                
+                Register(taskManager);
+                
+                return taskManager;
+            }
+
+            return _taskManagers[scene];
         }
 
         private static TaskManager GetTaskManagerOf(AsyncOperationHandle<SceneInstance> go)
@@ -263,12 +288,35 @@ namespace Universe.SceneTask.Runtime
 
         private static TaskManager GetTaskManagerOf(Scene scene)
         {
+            if (!scene.IsValid())
+            {
+                LogError("[Task] Cannot get TaskManager of an invalid scene");
+                return default;
+            }
+
+            if (!_taskManagers.ContainsKey(scene))
+            {
+                LogError($"[Task] Scene '{scene.name}' doesn't have any registered taskManager");
+                return default;
+            }
+
+            return _taskManagers[scene];
+        }
+
+        private static TaskManager FindTaskManagerOf(Scene scene)
+        {
             if( !scene.IsValid() )
                 return default;
             var rootGameObjects = new List<GameObject>();
             scene.GetRootGameObjects(rootGameObjects);
 
             var taskManagerRoot = rootGameObjects.Find(SearchTaskManager);
+            if (!taskManagerRoot)
+            {
+                Debug.LogError($"[Task] Scene {scene.name} doesn't have a taskManager");
+                return default;
+            }
+            
             var taskManager = taskManagerRoot.GetComponentInChildren<TaskManager>(true);
 
             return taskManager;
@@ -276,17 +324,18 @@ namespace Universe.SceneTask.Runtime
 
         private static bool SearchTaskManager( GameObject target )
         {
-            if( target.name.Contains( "TaskManager" ) )
+            Component manager;
+            if (target.TryGetComponent(typeof(TaskManager), out manager))
                 return true;
 
-            var transform = target.transform;
+                var transform = target.transform;
             var childCount = transform.childCount;
 
             for( var i = 0; i < childCount; i++ )
             {
                 var child = transform.GetChild(i);
 
-                if( child.name.Contains( "TaskManager" ) )
+                if (child.TryGetComponent(typeof(TaskManager), out manager))
                     return true;
             }
 
@@ -317,19 +366,22 @@ namespace Universe.SceneTask.Runtime
         public static void UnregisterUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
-            taskManager?.RemoveFromUpdate(target);
+            if( taskManager == null ) return;
+            taskManager.RemoveFromUpdate(target);
         }
 
         public static void UnregisterFixedUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
-            taskManager?.RemoveFromFixedUpdate(target);
+            if( taskManager == null ) return;
+            taskManager.RemoveFromFixedUpdate(target);
         }
 
         public static void UnregisterLateUpdate(UBehaviour target)
         {
             var taskManager = GetTaskManagerOf(target);
-            taskManager?.RemoveFromLateUpdate(target);
+            if( taskManager == null ) return;
+            taskManager.RemoveFromLateUpdate(target);
         }
         #endregion
 
@@ -416,7 +468,7 @@ namespace Universe.SceneTask.Runtime
         private static Dictionary<TaskData, List<AsyncOperationHandle<SceneInstance>>> _dicoOfTasks = new();
         private static List<AsyncOperationHandle<SceneInstance>> _taskHandlesList = new();
         private static IEnumerable<TaskData> _orderedKeys = new List<TaskData>();
-        private static List<TaskManager> _taskManagers = new();
+        private static Dictionary<Scene, TaskManager> _taskManagers = new();
         private static TaskPriority _focusPriority;
 
         #endregion
