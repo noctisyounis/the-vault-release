@@ -45,6 +45,8 @@ namespace Universe
 
         private void Register()
         {
+            if (!Application.isPlaying) return;
+            
             RegisterUpdate();
             RegisterFixedUpdate();
             RegisterLateUpdate();
@@ -76,6 +78,8 @@ namespace Universe
 
         private void Unregister()
         {
+            if (!Application.isPlaying) return;
+
             UnregisterUpdate();
             UnregisterFixedUpdate();
             UnregisterLateUpdate();
