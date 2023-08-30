@@ -153,6 +153,12 @@ namespace Universe
             }
         }
 
+        public override bool Equals(object other)
+        {
+            if (!(other is Identity identity)) return false;
+            return guid.Equals(identity.guid);
+        }
+
         #endregion
         
         
