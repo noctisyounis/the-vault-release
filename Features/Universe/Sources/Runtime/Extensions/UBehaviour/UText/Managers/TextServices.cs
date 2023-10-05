@@ -135,10 +135,7 @@ namespace Universe
             }
 
             if (InPlayMode())
-            {
-                Debug.Log($"Amount of targets {OnFontsLoaded.GetInvocationList().Length}");
                 OnFontsLoaded?.Invoke( _fontsDictionary );
-            }
         }
 
         private static void LoadFont( AssetReference fontRef )
