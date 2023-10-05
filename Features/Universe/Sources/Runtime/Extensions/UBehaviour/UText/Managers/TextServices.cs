@@ -133,9 +133,12 @@ namespace Universe
                 _refreshAfterLoad = false;
                 RefreshAllUTexts();
             }
-            
-            if( InPlayMode() )
+
+            if (InPlayMode())
+            {
+                Debug.Log($"Amount of targets {OnFontsLoaded.GetInvocationList().Length}");
                 OnFontsLoaded?.Invoke( _fontsDictionary );
+            }
         }
 
         private static void LoadFont( AssetReference fontRef )
@@ -259,13 +262,19 @@ namespace Universe
         public static void AddListenerToOnFontsLoaded( ObjectEventHandler handler )
         {
             if( !_onFontsLoadedListeners.Contains( handler ) )
+            {
                 OnFontsLoaded += handler;
+                _onFontsLoadedListeners.Add(handler);
+            }
         }
 
         public static void RemoveListenerFromOnFontsLoaded( ObjectEventHandler handler )
         {
-            if( _onFontsLoadedListeners.Contains( handler ) )
+            if (_onFontsLoadedListeners.Contains(handler))
+            {
                 OnFontsLoaded -= handler;
+                _onFontsLoadedListeners.Remove(handler);
+            }
         }
 
         private static event ObjectEventHandler OnFontsLoaded;
