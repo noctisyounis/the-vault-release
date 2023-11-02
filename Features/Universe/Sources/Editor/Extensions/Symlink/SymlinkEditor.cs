@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
@@ -32,6 +34,7 @@ namespace Symlink.Editor
         static SymlinkEditor()
         {
             projectWindowItemOnGUI += OnProjectWindowItemGUI;
+            EditorApplication.update += Update;
         }
         
         #endregion
@@ -50,6 +53,10 @@ namespace Symlink.Editor
 
         public static void LoadSymlink(string sourcePath, string targetPath)
         {
+            if (!DisplayDialog("Vault Warning",
+                    $"Are you sure you want to LOAD SYMLINKS? \n{sourcePath} \n(This operation can take a long time)", 
+                    "Let's go",
+                    "No way")) return;
             using (var cmd = Start(_commandLineExecutableName, $"/C mklink /J \"{targetPath}\" \"{sourcePath}\""))
             {
                 cmd?.WaitForExit();
@@ -59,6 +66,11 @@ namespace Symlink.Editor
         
         public static void LoadAllSymlink(string[] directories, string targetPath)
         {
+            if (!DisplayDialog("Vault Warning",
+                            "Are you sure you want to LOAD ALL SYMLINKS? \n(This operation can take a long time)", 
+                            "Let's go",
+                            "No way")) return;
+            
             foreach (var s in directories)
             {
                 var name = GetFileName(s);
@@ -74,6 +86,10 @@ namespace Symlink.Editor
         public static void RemoveSymlink(string folderPath)
         {
             if (!Directory.Exists(folderPath)) return;
+            if (!DisplayDialog("Vault Warning",
+                    $"Are you sure you want to UNLOAD SYMLINK? \n{folderPath} \n(This operation can take a long time)",
+                    "Let's go", 
+                    "No way")) return;
 
             Directory.Delete( folderPath );
             Delete ($"{folderPath}.meta");
@@ -83,10 +99,11 @@ namespace Symlink.Editor
         
         public static void RemoveAllSymlinks([NotNull] string[] directories, string targetPath)
         {
-            if (directories == null)
-            {
-                throw new ArgumentNullException(nameof(directories));
-            }
+            if (directories == null) throw new ArgumentNullException(nameof(directories));
+            if (!DisplayDialog("Vault Warning",
+                    "Are you sure you want to UNLOAD ALL SYMLINK? \n(This operation can take a long time)", 
+                    "Let's go",
+                    "No way")) return;
 
             foreach (var s in directories)
             {
@@ -154,16 +171,8 @@ namespace Symlink.Editor
         {
             try
             {
-                var path = GUIDToAssetPath(guid);
-
-                if (string.IsNullOrEmpty(path)) return;
-                
-                var attributes = GetAttributes(path);
-                
-                
-                if ((attributes & FOLDER_SYMLINK_ATTRIBS) != FOLDER_SYMLINK_ATTRIBS) return;
-                
-                Label(r, "<=>", SymlinkMarkerStyle);
+                TryDrawSymlink(guid, r);
+                TryDrawGit(guid, r);
             }
             catch
             {
@@ -171,6 +180,139 @@ namespace Symlink.Editor
             }
         }
 
+        private static void TryDrawSymlink(string guid, Rect r)
+        {
+            var path = GUIDToAssetPath(guid);
+
+            if (string.IsNullOrEmpty(path)) return;
+                
+            var attributes = GetAttributes(path);
+                
+                
+            if ((attributes & FOLDER_SYMLINK_ATTRIBS) != FOLDER_SYMLINK_ATTRIBS) return;
+                
+            Label(r, "<=>", SymlinkMarkerStyle);
+        }
+
+       //--------------------------------------------------------------------------------------------------------------
+// Git Prototype
+//--------------------------------------------------------------------------------------------------------------
+
+private static Dictionary<string, string> fileStatusCache = new Dictionary<string, string>();
+private static double lastUpdateTime = 0;
+private const double updateInterval = 60.0; // In seconds
+
+private static void TryDrawGit(string guid, Rect selectionRect)
+{
+    var path = AssetDatabase.GUIDToAssetPath(guid);
+    if (GetExtension(path) != ".unity" && GetExtension(path) != ".prefab") return;
+
+    string label;
+
+    if (!fileStatusCache.TryGetValue(path, out label))
+    {
+        string fileStatus = ExecuteGitCommand($"status --porcelain \"{path}\"");
+        if (fileStatus.StartsWith("A") || fileStatus.StartsWith("??"))
+        {
+            label = "ADDED";
+        }
+        else if (fileStatus.StartsWith("M"))  // Checking if the scene is modified locally
+        {
+            label = "TO COMMIT";
+        }
+        else
+        {
+            bool isLatest = IsLatestCommitInBranch(GetLatestCommitOfFile(path), GetCurrentBranch(), path);
+            label = isLatest ? "UP TO DATE" : "OUTDATED";
+        }
+
+        fileStatusCache[path] = label; // Cache the status
+    }
+
+    // Adjust the style based on the label
+    GUIStyle styleToUse;
+    if (label == "UP TO DATE")
+    {
+        styleToUse = GitUpToDateStyle;
+    }
+    else if (label == "OUTDATED")
+    {
+        styleToUse = GitOutdatedStyle;
+    }
+    else if (label == "TO COMMIT")
+    {
+        styleToUse = GitToCommitStyle;  // Assuming you have defined this GUIStyle for "TO COMMIT" label
+    }
+    else if (label == "ADDED")
+    {
+        styleToUse = GitAddedStyle;
+    }
+    else
+    {
+        styleToUse = SymlinkMarkerStyle;
+    }
+
+    EditorGUI.LabelField(selectionRect, label, styleToUse);
+}
+
+private static void Update()
+{
+    double currentTime = EditorApplication.timeSinceStartup;
+    if (currentTime - lastUpdateTime > updateInterval)
+    {
+        fileStatusCache.Clear(); // Clear the cache to re-check Git status
+        lastUpdateTime = currentTime;
+    }
+}
+
+private static string GetLatestCommitOfFile(string filePath)
+{
+    return ExecuteGitCommand($"log -n 1 --pretty=format:\"%H\" \"{filePath}\"");
+}
+
+private static string GetCurrentBranch()
+{
+    return ExecuteGitCommand("rev-parse --abbrev-ref HEAD");
+}
+
+private static bool IsLatestCommitInBranch(string commitHash, string branchName, string path)
+{
+    // List all commit hashes that affected the file since the specified commit
+    string allCommitsSince = ExecuteGitCommand($"log {commitHash}..{branchName} --pretty=format:\"%H\" \"{path}\"");
+
+    // If the scene's commit hash isn't the last on that list, it's not the latest version.
+    string[] commits = allCommitsSince.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+    return commits.Length == 0; // If no commits since, then it's the latest
+}
+
+private static string ExecuteGitCommand(string command)
+{
+    try
+    {
+        Process gitProcess = new Process();
+        gitProcess.StartInfo.FileName = "git";
+        gitProcess.StartInfo.Arguments = command;
+        gitProcess.StartInfo.RedirectStandardOutput = true;
+        gitProcess.StartInfo.UseShellExecute = false;
+        gitProcess.StartInfo.CreateNoWindow = true;
+        gitProcess.Start();
+
+        string output = gitProcess.StandardOutput.ReadToEnd();
+        gitProcess.WaitForExit();
+
+        return output.Trim(); // Remove any newlines or whitespace
+    }
+    catch
+    {
+        return string.Empty;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------------------
+// End Git Prototype
+//-----
+        
         #endregion
 
         

@@ -133,8 +133,8 @@ namespace Universe
                 _refreshAfterLoad = false;
                 RefreshAllUTexts();
             }
-
-            if (InPlayMode())
+            
+            if( InPlayMode() )
                 OnFontsLoaded?.Invoke( _fontsDictionary );
         }
 

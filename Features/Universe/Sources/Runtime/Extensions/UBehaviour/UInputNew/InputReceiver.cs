@@ -32,7 +32,7 @@ namespace Universe
 
         #region Callbacks
 
-        public void ReceiveOnKeyEvent( CallbackContext context )
+        public virtual void ReceiveOnKeyEvent( CallbackContext context )
         {
             DebugCallbackContext( "ReceiveOnKeyEvent", context );
 

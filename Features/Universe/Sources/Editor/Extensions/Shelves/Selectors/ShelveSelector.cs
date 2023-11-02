@@ -10,6 +10,7 @@ namespace Universe.Toolbar.Editor
 {
     public enum SHELVE
     {
+        None,
         Files,
         Addressable,
         Localisation,
@@ -38,6 +39,8 @@ namespace Universe.Toolbar.Editor
 
             switch (currentShelve)
             {
+                case SHELVE.None:
+                    break;
                 case SHELVE.Files:
                     DrawFiles();
                     break;
@@ -71,16 +74,14 @@ namespace Universe.Toolbar.Editor
         {
             var currentShelve = SHELVE.Files;
             var currentKey = GetPlayerPrefKey(side);
-			
-            if (HasKey(currentKey))
+
+            if (!HasKey(currentKey)) return currentShelve;
+            try
             {
-                try
-                {
-                    currentShelve = (SHELVE)Enum.Parse( typeof( SHELVE ), GetString( currentKey ) );
-                }
-                catch
-                {}
+                currentShelve = (SHELVE)Enum.Parse( typeof( SHELVE ), GetString( currentKey ) );
             }
+            catch
+            {}
 
             return currentShelve;
         }

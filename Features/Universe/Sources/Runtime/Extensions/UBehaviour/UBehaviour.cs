@@ -56,6 +56,7 @@ namespace Universe
         {
             if (_useFixedUpdate) return;
             
+            
             _useFixedUpdate = true;
             Task.RegisterFixedUpdate(this);
         }

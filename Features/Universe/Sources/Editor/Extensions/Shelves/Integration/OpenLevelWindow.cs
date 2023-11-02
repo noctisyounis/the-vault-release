@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.AddressableAssets.Build;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Universe.SceneTask.Runtime;
 
 using static System.IO.File;
@@ -20,6 +22,7 @@ using static Universe.Editor.UPrefs;
 
 namespace Universe.Toolbar.Editor
 {
+	 
     public class OpenLevelWindow : EditorWindow
 	{
 		#region Exposed
@@ -34,6 +37,7 @@ namespace Universe.Toolbar.Editor
 
         #region Unity API
 
+        [MenuItem("File/Open Level %l", false, 151)]
         public static void ShowWindow()
         {
             var window = GetWindow<OpenLevelWindow>();
@@ -272,8 +276,9 @@ namespace Universe.Toolbar.Editor
 				var playerGuid	= _level.m_player.m_assetReference.AssetGUID;
 				var player      = GUIDToAssetPath(playerGuid);
 
-				OpenScene( player, openSceneMode );
+				var scene = OpenScene( player, openSceneMode );
 				openSceneMode = Additive;
+				SetActiveScene(scene);
 			}
 
 			for( var i = 0; i < _taskAmount; i++ )
@@ -320,6 +325,7 @@ namespace Universe.Toolbar.Editor
 			levelSettings.SaveAsset();
 			SetString(EDITOR_LEVEL_PATH, path);
 
+			
 			if (_keepOpen) return;
 			
 			Close();
