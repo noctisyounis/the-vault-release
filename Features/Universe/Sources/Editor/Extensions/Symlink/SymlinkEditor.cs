@@ -6,7 +6,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEditor;
-
+using UnityEditorInternal;
 using static System.Diagnostics.Process;
 using static System.IO.File;
 using static System.IO.FileAttributes;
@@ -53,7 +53,7 @@ namespace Symlink.Editor
 
         public static void LoadSymlink(string sourcePath, string targetPath)
         {
-            if (!DisplayDialog("Vault Warning",
+            if (!InternalEditorUtility.inBatchMode && !DisplayDialog("Vault Warning",
                     $"Are you sure you want to LOAD SYMLINKS? \n{sourcePath} \n(This operation can take a long time)", 
                     "Let's go",
                     "No way")) return;
@@ -66,7 +66,7 @@ namespace Symlink.Editor
         
         public static void LoadAllSymlink(string[] directories, string targetPath)
         {
-            if (!DisplayDialog("Vault Warning",
+            if (!InternalEditorUtility.inBatchMode && !DisplayDialog("Vault Warning",
                             "Are you sure you want to LOAD ALL SYMLINKS? \n(This operation can take a long time)", 
                             "Let's go",
                             "No way")) return;
@@ -86,7 +86,7 @@ namespace Symlink.Editor
         public static void RemoveSymlink(string folderPath)
         {
             if (!Directory.Exists(folderPath)) return;
-            if (!DisplayDialog("Vault Warning",
+            if (!InternalEditorUtility.inBatchMode && !DisplayDialog("Vault Warning",
                     $"Are you sure you want to UNLOAD SYMLINK? \n{folderPath} \n(This operation can take a long time)",
                     "Let's go", 
                     "No way")) return;
@@ -100,7 +100,7 @@ namespace Symlink.Editor
         public static void RemoveAllSymlinks([NotNull] string[] directories, string targetPath)
         {
             if (directories == null) throw new ArgumentNullException(nameof(directories));
-            if (!DisplayDialog("Vault Warning",
+            if (!InternalEditorUtility.inBatchMode && !DisplayDialog("Vault Warning",
                     "Are you sure you want to UNLOAD ALL SYMLINK? \n(This operation can take a long time)", 
                     "Let's go",
                     "No way")) return;
