@@ -42,6 +42,7 @@ namespace Universe.SceneTask.Runtime
             source.TryLoadBlockMeshTask( situation );
             source.TryLoadArtTask( situation );
             source.TryLoadGameplayTask( situation );
+            source.TryLoadPlatformSpecificTask( situation );
             
             Level.UpdateCurrentSituation(situation);
 
@@ -60,6 +61,7 @@ namespace Universe.SceneTask.Runtime
             source.TryUnloadBlockMeshTask( situation );
             source.TryUnloadArtTask( situation );
             source.TryUnloadGameplayTask( situation );
+            source.TryUnloadPlatformSpecificTask( situation );
         }
 
         public static void UReloadGameplay(this UBehaviour source, SituationData of)
@@ -115,6 +117,26 @@ namespace Universe.SceneTask.Runtime
             source.ULoadTask( gameplay );
         }
 
+        private static void TryLoadPlatformSpecificTask(this UBehaviour source, SituationData of)
+        {
+            TaskData[] data;
+#if IKIMASHO_PS5
+            data = of.m_playstation5SpecificTasks; 
+#elif IKIMASHO_META
+            data = of.m_metaSpecificTasks;
+#elif IKIMASHO_PC || UNITY_EDITOR
+            data = of.m_win64SpecificTasks; 
+#endif
+            
+            for (var i = 0; i < data.Length; i++)
+            {
+                var currentTask = data[i];
+                if (currentTask == null || Task.IsLoaded(currentTask)) return;
+                
+                source.ULoadTask(currentTask);
+            }
+        }
+
         private static void TryUnloadBlockMeshTask( this UBehaviour source, SituationData of )
         {
             var blockMesh = of.m_blockMeshEnvironment;
@@ -143,6 +165,26 @@ namespace Universe.SceneTask.Runtime
                 return;
 
             source.UUnloadTask( gameplay );
+        }
+
+        private static void TryUnloadPlatformSpecificTask(this UBehaviour source, SituationData of)
+        {
+            TaskData[] data;
+#if IKIMASHO_PS5
+            data = of.m_playstation5SpecificTasks; 
+#elif IKIMASHO_META
+            data = of.m_metaSpecificTasks;
+#elif IKIMASHO_PC || UNITY_EDITOR
+            data = of.m_win64SpecificTasks; 
+#endif
+            for (var i = 0; i < data.Length; i++)
+            {
+                var currentTask = data[i];
+
+                if (IsStillNeeded(currentTask)) return;
+                
+                source.UUnloadTask(currentTask);
+            }
         }
 
         private static bool IsStillNeeded( TaskData task )

@@ -64,14 +64,8 @@ namespace Universe
                 var u = listed[i];
 
                 if(!u.UseUpdates) continue;
-                try
-                {
-                    u.OnUpdate(deltaTime);
-                }
-                catch (Exception e)
-                {
-                    HandleException(e, u);
-                }
+
+                u.OnUpdate(deltaTime);
             }
         }
 
@@ -92,14 +86,7 @@ namespace Universe
 
                 if(!u.UseUpdates) continue;
                 
-                try
-                {
-                    u.OnFixedUpdate(fixedDeltaTime);
-                }
-                catch (Exception e)
-                {
-                    HandleException(e, u);
-                }
+                u.OnFixedUpdate(fixedDeltaTime);
             }
         }
 
@@ -119,14 +106,7 @@ namespace Universe
 
                 if(!u.UseUpdates) continue;
                 
-                try
-                {
-                    u.OnLateUpdate(deltaTime);
-                }
-                catch (Exception e)
-                {
-                    HandleException(e, u);
-                }
+                u.OnLateUpdate(deltaTime);
             }
         }
         
@@ -302,34 +282,6 @@ namespace Universe
 
         #endregion
 
-        
-        #region Exception Handling
-
-        public void HandleException(Exception e, UBehaviour source)
-        {
-            if (source == null)
-            {
-                Console.Write("[TaskManager] Calling update on an inexisting UBehaviour");
-                return;
-            }
-
-            var target = source.transform;
-            var path = "";
-            
-            while (target)
-            {
-                path = $"\\{target.name}";
-
-                target = target.parent;
-            }
-
-            path = $"{gameObject.scene}\\{path}";
-            
-            Console.Write($"[{path}] {e}");
-        }
-        
-        #endregion
-        
 
         #region Private And Protected
 
