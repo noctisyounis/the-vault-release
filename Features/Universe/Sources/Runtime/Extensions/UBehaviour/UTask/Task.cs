@@ -35,6 +35,12 @@ namespace Universe.SceneTask.Runtime
 
         public static void ULoadTask( this UBehaviour source, TaskData task )
         {
+            if (!task)
+            {
+                LogError("[Task] The task isn't a valid TaskData to be loaded");
+                return;
+            }
+            
             if( CheckIfSceneCanBeLoaded( task ) )
             {
                 if( DicoDoesntContain( task ) )
@@ -67,6 +73,12 @@ namespace Universe.SceneTask.Runtime
 
         public static void UUnloadTask( this UBehaviour source, TaskData task )
         {
+            if (!task)
+            {
+                LogError("[Task] The task isn't a valid TaskData to be unloaded");
+                return;
+            }
+            
             if( DicoDoesntContain( task ) ) return;
             var handle = GetLastHandleOfScene(task);
             RemoveHandleFromDico( task, handle );
@@ -86,8 +98,12 @@ namespace Universe.SceneTask.Runtime
             return sceneHandle.Result;
         }
 
-        public static bool IsLoaded( TaskData target ) =>
-            GetLoadedScene( target ).Scene.IsValid();
+        public static bool IsLoaded(TaskData target)
+        {
+            if (!target) return false;
+            
+            return GetLoadedScene( target ).Scene.IsValid();
+        }
 
         public static void SetFocus( TaskData to )
         {
@@ -328,7 +344,7 @@ namespace Universe.SceneTask.Runtime
             if (target.TryGetComponent(typeof(TaskManager), out manager))
                 return true;
 
-                var transform = target.transform;
+            var transform = target.transform;
             var childCount = transform.childCount;
 
             for( var i = 0; i < childCount; i++ )

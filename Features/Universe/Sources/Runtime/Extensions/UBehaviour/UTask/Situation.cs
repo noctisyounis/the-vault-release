@@ -189,6 +189,8 @@ namespace Universe.SceneTask.Runtime
 
         private static bool IsStillNeeded( TaskData task )
         {
+            if (!task) return false;
+            
             var loadingCount    = LoadingSituations.Count;
             var loadedCount     = LoadedSituations.Count;
 
@@ -199,9 +201,25 @@ namespace Universe.SceneTask.Runtime
                 var art         = situation.m_artEnvironment;
                 var gameplay    = situation.m_gameplay;
 
-                if(blockMesh.Equals(task))  return true;
-                if(art.Equals(task))        return true;
-                if(gameplay.Equals(task))   return true;
+                if(blockMesh && blockMesh.Equals(task))  return true;
+                if(art && art.Equals(task))        return true;
+                if(gameplay && gameplay.Equals(task))   return true;
+                
+                TaskData[] data;
+#if IKIMASHO_PS5
+                data = situation.m_playstation5SpecificTasks; 
+#elif IKIMASHO_META
+                data = situation.m_metaSpecificTasks;
+#elif IKIMASHO_PC || UNITY_EDITOR
+                data = situation.m_win64SpecificTasks; 
+#endif
+                
+                for (var j = 0; j < data.Length; j++)
+                {
+                    var currentTask = data[j];
+
+                    if (currentTask.Equals(task)) return true;
+                }
             }
 
             for( var i = 0; i < loadedCount; i++ )
@@ -211,9 +229,25 @@ namespace Universe.SceneTask.Runtime
                 var art         = situation.m_artEnvironment;
                 var gameplay    = situation.m_gameplay;
 
-                if(blockMesh.Equals(task))  return true;
-                if(art.Equals(task))        return true;
-                if(gameplay.Equals(task))   return true;
+                if(blockMesh && blockMesh.Equals(task))  return true;
+                if(art && art.Equals(task))        return true;
+                if(gameplay && gameplay.Equals(task))   return true;
+                
+                TaskData[] data;
+#if IKIMASHO_PS5
+                data = situation.m_playstation5SpecificTasks; 
+#elif IKIMASHO_META
+                data = situation.m_metaSpecificTasks;
+#elif IKIMASHO_PC || UNITY_EDITOR
+                data = situation.m_win64SpecificTasks; 
+#endif
+                
+                for (var j = 0; j < data.Length; j++)
+                {
+                    var currentTask = data[j];
+
+                    if (currentTask.Equals(task)) return true;
+                }
             }
 
             return false;
