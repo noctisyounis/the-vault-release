@@ -51,17 +51,6 @@ namespace Universe
             ChangeLanguage( m_currentLanguage );
         }
 
-        private void OnGUI()
-        {
-            if( IsNotDebug() ) return;
-
-            EnableGUI( DebugLanguageExist() );
-
-            if( Button( "Switch to debug Language" ) ) ChangeLanguage( m_debugLanguage );
-
-            EnableGUI( true );
-        }
-
         #endregion
 
 

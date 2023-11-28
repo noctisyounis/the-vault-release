@@ -55,14 +55,10 @@ namespace Universe
             
             ApplyUnregistingUpdate();
             
-            var listed = _registeredUpdate.ToArray();
             var deltaTime = DeltaTime;
-            var length = listed.Length;
 
-            for (int i = 0; i < length; i++)
+            foreach (var u in _registeredUpdate)
             {
-                var u = listed[i];
-
                 if(!u.UseUpdates) continue;
 
                 u.OnUpdate(deltaTime);
@@ -76,14 +72,10 @@ namespace Universe
             
             ApplyUnregistingFixedUpdate();
 
-            var listed = _registeredFixedUpdate.ToArray();
             var fixedDeltaTime = FixedDeltaTime;
-            var length = listed.Length;
 
-            for (int i = 0; i < length; i++)
+            foreach (var u in _registeredFixedUpdate)
             {
-                var u = listed[i];
-
                 if(!u.UseUpdates) continue;
                 
                 u.OnFixedUpdate(fixedDeltaTime);
@@ -96,14 +88,10 @@ namespace Universe
             
             ApplyUnregistingLateUpdate();
             
-            var listed = _registeredLateUpdate.ToArray();
             var deltaTime = DeltaTime;
-            var length = listed.Length;
             
-            for (int i = 0; i < length; i++)
+            foreach (var u in _registeredLateUpdate)
             {
-                var u = listed[i];
-
                 if(!u.UseUpdates) continue;
                 
                 u.OnLateUpdate(deltaTime);
@@ -252,10 +240,10 @@ namespace Universe
             _unregisteringLateUpdate.Clear();
         }
 
-        public bool IsAlwaysUpdated() => Priority.Equals( TaskPriority.ALWAYS_UPDATE );
+        public bool IsAlwaysUpdated() => Priority == TaskPriority.ALWAYS_UPDATE;
 
         private bool CanUpdate => IsAlwaysUpdated() || IsFocused;
-        private bool IsFocused => Priority.Equals(Task.GetFocusPriority());
+        private bool IsFocused => Priority == Task.GetFocusPriority();
 
         #endregion
 
