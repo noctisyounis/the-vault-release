@@ -17,6 +17,9 @@ namespace Universe.Editor
 		public const string LOCAL_COMMIT_ID_PATH       = "..\\JenkinsUtility\\Common\\WorkspaceCommitID.txt";
 		public const string BUILD_SLACK_MOVER_PATH     = "..\\JenkinsUtility\\Common\\Jenkins_Slack_Uploader.bat";
 		public const string BUILD_STEAM_MOVER_PATH     = "..\\JenkinsUtility\\Win64\\Jenkins_Steam_Mover.bat";
+		public const string ANDROID_TEMPORARY_MANIFEST = "..\\Temp\\StagingArea\\AndroidManifest.xml";
+		public const string ANDROID_CUSTOM_MANIFEST	   = "Plugins\\Android\\AndroidManifest.xml";
+			
 
 		//.bat relative
 		public const string UPLOAD_PATH = "..\\Builds";

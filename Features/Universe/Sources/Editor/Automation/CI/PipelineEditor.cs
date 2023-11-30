@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Pipeline.Utilities;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using Universe.DebugWatch.Editor;
 using Universe.DebugWatchTools.Runtime;
@@ -245,6 +246,17 @@ namespace Universe.Editor
             var isDevelopment = (summary.options & Development) != 0;
 
             Log( $"[{Now}] Preparing build for {platform} in {path} for {( isDevelopment ? "Development" : "Release" )}" );
+        }
+        
+        [PostProcessBuild]
+        public static void ReplaceAndroidManifest(BuildTarget buildTarget, string pathToBuiltProject)
+        {
+          if (buildTarget != BuildTarget.Android) return;
+           
+          var manifestPath = Application.dataPath + ANDROID_TEMPORARY_MANIFEST;
+          var customManifestPath = Application.dataPath + ANDROID_CUSTOM_MANIFEST; 
+        
+          FileUtil.ReplaceFile(customManifestPath, manifestPath);
         }
 
         public void OnPostprocessBuild( BuildReport report )
