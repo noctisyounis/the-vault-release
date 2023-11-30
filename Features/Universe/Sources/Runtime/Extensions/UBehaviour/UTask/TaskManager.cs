@@ -57,8 +57,9 @@ namespace Universe
             
             var deltaTime = DeltaTime;
 
-            foreach (var u in _registeredUpdate)
+            for (var i = 0; i < _registeredUpdateAmount; i++)
             {
+                var u = _registeredUpdate[i];
                 if(!u.UseUpdates) continue;
 
                 u.OnUpdate(deltaTime);
@@ -74,8 +75,9 @@ namespace Universe
 
             var fixedDeltaTime = FixedDeltaTime;
 
-            foreach (var u in _registeredFixedUpdate)
+            for (var i = 0; i < _registeredLateUpdateAmount; i++)
             {
+                var u = _registeredFixedUpdate[i];
                 if(!u.UseUpdates) continue;
                 
                 u.OnFixedUpdate(fixedDeltaTime);
@@ -90,8 +92,9 @@ namespace Universe
             
             var deltaTime = DeltaTime;
             
-            foreach (var u in _registeredLateUpdate)
+            for (var i = 0; i < _registeredFixedUpdateAmount; i++)
             {
+                var u = _registeredLateUpdate[i];
                 if(!u.UseUpdates) continue;
                 
                 u.OnLateUpdate(deltaTime);
@@ -156,20 +159,26 @@ namespace Universe
         
         public void AddToUpdate(UBehaviour target)
         {
-            SafeAddTargetToHashSet(target, _registeredUpdate);
+            SafeAddTargetToHashSet(target, _registeredUpdateSet);
             SafeRemoveTargetFromList(target, _unregisteringUpdate);
+            _registeredFixedUpdateSet.IntoArray(_registeredUpdate);
+            _registeredUpdateAmount = _registeredUpdate.Length;
         }
 
         public void AddToFixedUpdate(UBehaviour target)
         {
-            SafeAddTargetToHashSet(target, _registeredFixedUpdate);
+            SafeAddTargetToHashSet(target, _registeredUpdateSet);
             SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
+            _registeredFixedUpdateSet.IntoArray(_registeredFixedUpdate);
+            _registeredFixedUpdateAmount = _registeredFixedUpdate.Length;
         }
         
         public void AddToLateUpdate(UBehaviour target)
         {
-            SafeAddTargetToHashSet(target, _registeredLateUpdate);
+            SafeAddTargetToHashSet(target, _registeredUpdateSet);
             SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
+            _registeredLateUpdateSet.IntoArray(_registeredLateUpdate);
+            _registeredLateUpdateAmount = _registeredLateUpdate.Length;
         }
 
         public void RemoveFromLateUpdate(UBehaviour target) =>
@@ -216,28 +225,33 @@ namespace Universe
         {
             if (_unregisteringUpdate.Count == 0) return;
             
-            SafeRemoveTargetsFromHashSet(_unregisteringUpdate, _registeredUpdate);
+            SafeRemoveTargetsFromHashSet(_unregisteringUpdate, _registeredUpdateSet);
             
             _unregisteringUpdate.Clear();
+            _registeredFixedUpdateSet.IntoArray(_registeredUpdate);
+            _registeredUpdateAmount = _registeredUpdate.Length;
         }
         
         private void ApplyUnregistingFixedUpdate()
         {
             if (_unregisteringFixedUpdate.Count == 0) return;
             
-            SafeRemoveTargetsFromHashSet(_unregisteringFixedUpdate, _registeredFixedUpdate);
+            SafeRemoveTargetsFromHashSet(_unregisteringFixedUpdate, _registeredFixedUpdateSet);
             
             _unregisteringFixedUpdate.Clear();
-
+            _registeredFixedUpdateSet.IntoArray(_registeredFixedUpdate);
+            _registeredFixedUpdateAmount = _registeredFixedUpdate.Length;
         }
         
         private void ApplyUnregistingLateUpdate()
         {
             if (_unregisteringLateUpdate.Count == 0) return;
             
-            SafeRemoveTargetsFromHashSet(_unregisteringLateUpdate, _registeredLateUpdate);
+            SafeRemoveTargetsFromHashSet(_unregisteringLateUpdate, _registeredLateUpdateSet);
             
             _unregisteringLateUpdate.Clear();
+            _registeredLateUpdateSet.IntoArray(_registeredLateUpdate);
+            _registeredLateUpdateAmount = _registeredLateUpdate.Length;
         }
 
         public bool IsAlwaysUpdated() => Priority == TaskPriority.ALWAYS_UPDATE;
@@ -280,9 +294,15 @@ namespace Universe
         private UTrackedAlias _leftControllerTrackedAlias;
         private UTrackedAlias _rightControllerTrackedAlias;
 
-        private HashSet<UBehaviour> _registeredUpdate = new();
-        private HashSet<UBehaviour> _registeredFixedUpdate = new();
-        private HashSet<UBehaviour> _registeredLateUpdate = new();
+        private HashSet<UBehaviour> _registeredUpdateSet = new();
+        private HashSet<UBehaviour> _registeredFixedUpdateSet = new();
+        private HashSet<UBehaviour> _registeredLateUpdateSet = new();
+        private UBehaviour[] _registeredUpdate;
+        private UBehaviour[] _registeredFixedUpdate;
+        private UBehaviour[] _registeredLateUpdate;
+        private int _registeredUpdateAmount;
+        private int _registeredFixedUpdateAmount;
+        private int _registeredLateUpdateAmount;
         private List<UBehaviour> _unregisteringUpdate = new();
         private List<UBehaviour> _unregisteringFixedUpdate = new();
         private List<UBehaviour> _unregisteringLateUpdate = new();

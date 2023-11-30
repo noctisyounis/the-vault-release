@@ -177,6 +177,8 @@ namespace Universe.SceneTask.Runtime
 #elif IKIMASHO_PC || UNITY_EDITOR
             data = of.m_win64SpecificTasks; 
 #endif
+            if(data == null) return;
+
             for (var i = 0; i < data.Length; i++)
             {
                 var currentTask = data[i];
@@ -213,12 +215,14 @@ namespace Universe.SceneTask.Runtime
 #elif IKIMASHO_PC || UNITY_EDITOR
                 data = situation.m_win64SpecificTasks; 
 #endif
-                
-                for (var j = 0; j < data.Length; j++)
+                if(data != null)
                 {
-                    var currentTask = data[j];
-
-                    if (currentTask.Equals(task)) return true;
+                    for (var j = 0; j < data.Length; j++)
+                    {
+                        var currentTask = data[j];
+    
+                        if (currentTask.Equals(task)) return true;
+                    }
                 }
             }
 
@@ -241,12 +245,14 @@ namespace Universe.SceneTask.Runtime
 #elif IKIMASHO_PC || UNITY_EDITOR
                 data = situation.m_win64SpecificTasks; 
 #endif
-                
-                for (var j = 0; j < data.Length; j++)
+                if (data != null)
                 {
-                    var currentTask = data[j];
+                    for (var j = 0; j < data.Length; j++)
+                    {
+                        var currentTask = data[j];
 
-                    if (currentTask.Equals(task)) return true;
+                        if (currentTask.Equals(task)) return true;
+                    }
                 }
             }
 

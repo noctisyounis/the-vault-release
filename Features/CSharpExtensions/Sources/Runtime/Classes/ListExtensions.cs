@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Universe
 {
-    public static class ListExtension
+    public static class ListExtensions
     {
         #region Main
 
