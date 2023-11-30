@@ -75,7 +75,7 @@ namespace Universe
 
             var fixedDeltaTime = FixedDeltaTime;
 
-            for (var i = 0; i < _registeredLateUpdateAmount; i++)
+            for (var i = 0; i < _registeredFixedUpdateAmount; i++)
             {
                 var u = _registeredFixedUpdate[i];
                 if(!u.UseUpdates) continue;
@@ -92,7 +92,7 @@ namespace Universe
             
             var deltaTime = DeltaTime;
             
-            for (var i = 0; i < _registeredFixedUpdateAmount; i++)
+            for (var i = 0; i < _registeredLateUpdateAmount; i++)
             {
                 var u = _registeredLateUpdate[i];
                 if(!u.UseUpdates) continue;
@@ -161,23 +161,23 @@ namespace Universe
         {
             SafeAddTargetToHashSet(target, _registeredUpdateSet);
             SafeRemoveTargetFromList(target, _unregisteringUpdate);
-            _registeredFixedUpdateSet.IntoArray(_registeredUpdate);
+            _registeredUpdateSet.IntoArray(ref _registeredUpdate);
             _registeredUpdateAmount = _registeredUpdate.Length;
         }
 
         public void AddToFixedUpdate(UBehaviour target)
         {
-            SafeAddTargetToHashSet(target, _registeredUpdateSet);
+            SafeAddTargetToHashSet(target, _registeredFixedUpdateSet);
             SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
-            _registeredFixedUpdateSet.IntoArray(_registeredFixedUpdate);
+            _registeredFixedUpdateSet.IntoArray(ref _registeredFixedUpdate);
             _registeredFixedUpdateAmount = _registeredFixedUpdate.Length;
         }
         
         public void AddToLateUpdate(UBehaviour target)
         {
-            SafeAddTargetToHashSet(target, _registeredUpdateSet);
+            SafeAddTargetToHashSet(target, _registeredLateUpdateSet);
             SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
-            _registeredLateUpdateSet.IntoArray(_registeredLateUpdate);
+            _registeredLateUpdateSet.IntoArray(ref _registeredLateUpdate);
             _registeredLateUpdateAmount = _registeredLateUpdate.Length;
         }
 
@@ -228,7 +228,7 @@ namespace Universe
             SafeRemoveTargetsFromHashSet(_unregisteringUpdate, _registeredUpdateSet);
             
             _unregisteringUpdate.Clear();
-            _registeredFixedUpdateSet.IntoArray(_registeredUpdate);
+            _registeredUpdateSet.IntoArray(ref _registeredUpdate);
             _registeredUpdateAmount = _registeredUpdate.Length;
         }
         
@@ -239,7 +239,7 @@ namespace Universe
             SafeRemoveTargetsFromHashSet(_unregisteringFixedUpdate, _registeredFixedUpdateSet);
             
             _unregisteringFixedUpdate.Clear();
-            _registeredFixedUpdateSet.IntoArray(_registeredFixedUpdate);
+            _registeredFixedUpdateSet.IntoArray(ref _registeredFixedUpdate);
             _registeredFixedUpdateAmount = _registeredFixedUpdate.Length;
         }
         
@@ -250,7 +250,7 @@ namespace Universe
             SafeRemoveTargetsFromHashSet(_unregisteringLateUpdate, _registeredLateUpdateSet);
             
             _unregisteringLateUpdate.Clear();
-            _registeredLateUpdateSet.IntoArray(_registeredLateUpdate);
+            _registeredLateUpdateSet.IntoArray(ref _registeredLateUpdate);
             _registeredLateUpdateAmount = _registeredLateUpdate.Length;
         }
 

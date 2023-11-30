@@ -23,7 +23,7 @@ public static class HashSetExtensions
         return destination;
     }
 
-    public static void IntoArray<T>(this HashSet<T> source, T[] destination)
+    public static void IntoArray<T>(this HashSet<T> source, ref T[] destination)
     {
         var count = source.Count;
         var i = 0;
