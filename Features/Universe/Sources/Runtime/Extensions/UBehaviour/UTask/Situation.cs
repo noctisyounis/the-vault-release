@@ -119,7 +119,7 @@ namespace Universe.SceneTask.Runtime
 
         private static void TryLoadPlatformSpecificTask(this UBehaviour source, SituationData of)
         {
-            TaskData[] data;
+            TaskData[] data = null;
 #if IKIMASHO_PS5
             data = of.m_playstation5SpecificTasks; 
 #elif IKIMASHO_META
@@ -169,7 +169,7 @@ namespace Universe.SceneTask.Runtime
 
         private static void TryUnloadPlatformSpecificTask(this UBehaviour source, SituationData of)
         {
-            TaskData[] data;
+            TaskData[] data = null;
 #if IKIMASHO_PS5
             data = of.m_playstation5SpecificTasks; 
 #elif IKIMASHO_META
@@ -207,7 +207,7 @@ namespace Universe.SceneTask.Runtime
                 if(art && art.Equals(task))        return true;
                 if(gameplay && gameplay.Equals(task))   return true;
                 
-                TaskData[] data;
+                TaskData[] data = null;
 #if IKIMASHO_PS5
                 data = situation.m_playstation5SpecificTasks; 
 #elif IKIMASHO_META
@@ -237,7 +237,7 @@ namespace Universe.SceneTask.Runtime
                 if(art && art.Equals(task))        return true;
                 if(gameplay && gameplay.Equals(task))   return true;
                 
-                TaskData[] data;
+                TaskData[] data = null;
 #if IKIMASHO_PS5
                 data = situation.m_playstation5SpecificTasks; 
 #elif IKIMASHO_META
