@@ -120,16 +120,6 @@ namespace Universe.EasySave.Runtime
             USaver.OnSaveFinish = OnSaveFinish;
         }
 
-        private void OnGUI()
-        {
-            if( !IsDebug ) return;
-
-            if( Button( "Save All" ) ) SaveAll();
-            if( Button( "Load All" ) ) LoadAll();
-            if( Button( "Save Game data" ) ) Save( Game );
-            if( Button( "Load user data" ) ) Load( User );
-        }
-
         #endregion
 
 
