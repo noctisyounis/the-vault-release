@@ -44,6 +44,9 @@ namespace Universe.Leaderboard.Runtime
 		
         public void Refresh()
         {
+            if(m_content == null) return;
+            if(m_entries == null) m_entries = new();
+            
             var contentAmount = m_content.Length;
             var currentEntryAmount = m_entries.Count;
 

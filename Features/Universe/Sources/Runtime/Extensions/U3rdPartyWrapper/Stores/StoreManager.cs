@@ -86,6 +86,16 @@ namespace Universe.Stores.Runtime
 		private void OnProviderInitializationEnded(AsyncState state)
 		{
 			VerboseWarning("[StoreManager] Checking entitlement");
+			
+#if UNITY_EDITOR
+			
+			OnEntitlementSucceed?.Invoke();
+			_entitlement = SUCCEED;
+			
+			return;
+			
+#endif
+			
 			if (m_skipEntitlement)
 			{
 				OnEntitlementSucceed?.Invoke();
