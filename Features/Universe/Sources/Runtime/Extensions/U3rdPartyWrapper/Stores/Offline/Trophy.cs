@@ -151,6 +151,7 @@ namespace Universe.Stores.Offline.Runtime
 			if (value < 0) return;
 			
 			StoreManager.RequestSetTrophyProgress(buffer[0], value, nextValue => VerboseError($"Progress set to {nextValue}"));
+			EvaluateThroughBuffer(statName);
 		}
 
 		private void EvaluateThroughBuffer(string of)
