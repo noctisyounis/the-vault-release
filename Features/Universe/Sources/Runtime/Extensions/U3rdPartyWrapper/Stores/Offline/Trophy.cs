@@ -20,7 +20,7 @@ namespace Universe.Stores.Offline.Runtime
 		
 		#region Event
 
-		public event IStoreProvider.OnTrophyUnlockedHandler OnTrophyUnlocked;
+		public static event IStoreProvider.OnTrophyUnlockedHandler OnTrophyUnlocked;
 		
 		#endregion
 		
@@ -88,9 +88,10 @@ namespace Universe.Stores.Offline.Runtime
 			if (!m_trophies.GreaterThan(id)) return;
 
 			var trophy = m_trophies[id];
+			var wasUnlocked = trophy.m_unlocked.Value;
 			
 			trophy.Unlock();
-			OnTrophyUnlocked?.Invoke(id);
+			if (!wasUnlocked) OnTrophyUnlocked?.Invoke(id);
 			callback?.Invoke();
 		}
 
@@ -107,7 +108,7 @@ namespace Universe.Stores.Offline.Runtime
 			if (!m_trophies.GreaterThan(id)) return;
 			
 			var trophy = m_trophies[id];
-			var wasUnlocked = trophy.m_unlocked;
+			var wasUnlocked = trophy.m_unlocked.Value;
 			var unlocked = trophy.Evaluate();
 			
 			callback?.Invoke(value);
@@ -161,7 +162,7 @@ namespace Universe.Stores.Offline.Runtime
 			{
 				var id = trophyIds[i];
 				var trophy = m_trophies[id];
-				var wasUnlocked = trophy.m_unlocked;
+				var wasUnlocked = trophy.m_unlocked.Value;
 				var unlocked = trophy.Evaluate();
 
 				if (unlocked && !wasUnlocked) OnTrophyUnlocked?.Invoke(id);
@@ -180,7 +181,7 @@ namespace Universe.Stores.Offline.Runtime
 				var statName = stat.name;
 				if (!statName.Equals(with)) continue;
 
-				var wasUnlocked = trophy.m_unlocked;
+				var wasUnlocked = trophy.m_unlocked.Value;
 				var unlocked = trophy.Evaluate();
 				
 				buffer.Add(id);

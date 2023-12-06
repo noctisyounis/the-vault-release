@@ -103,7 +103,7 @@ namespace Universe.Stores.Offline.Runtime
 
 		public override void SubscribeOnTrophyUnlocked(OnTrophyUnlockedHandler handler)
 		{
-			if(m_trophy) m_trophy.OnTrophyUnlocked += handler;
+			if(m_trophy) Trophy.OnTrophyUnlocked += handler;
 		}
 
 		public override void UnlockTrophy(int id, Action callback = null)
