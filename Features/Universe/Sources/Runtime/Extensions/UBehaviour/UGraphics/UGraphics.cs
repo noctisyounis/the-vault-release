@@ -37,20 +37,45 @@ namespace Universe
         {
             ConvertAssetReferenceToPreferredGraphicTier();
             
-            var callback = GetDesiredCallback();
-            if( m_overrideSpawnTransform )
-            {
-                Spawn( _preferredAsset, m_spawnOverride.m_position, Euler( m_spawnOverride.m_rotation ), m_spawnOverride.m_scale, transform, callback );
-                return;
-            }
-            
-            Spawn( _preferredAsset, zero, identity, one, transform, callback );
+            TrySpawn();
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            TryDespawn();
         }
 
         #endregion
         
 
         #region Main
+
+        public void TrySpawn()
+        {
+            if (_spawnedObject) return;
+            
+            var callback = GetDesiredCallback();
+            if( m_overrideSpawnTransform )
+            {
+                Spawn( _preferredAsset, m_spawnOverride.m_position, Euler( m_spawnOverride.m_rotation ), m_spawnOverride.m_scale, transform, go =>
+                {
+                    callback?.Invoke(go);
+                    _spawnedObject = go;
+                });
+                return;
+            }
+            
+            Spawn( _preferredAsset, zero, identity, one, transform, callback );
+        }
+        
+        public void TryDespawn()
+        {
+            if (!_spawnedObject) return;
+            
+            _preferredAsset.ReleaseInstance(_spawnedObject);
+        }
         
         private void ConvertAssetReferenceToPreferredGraphicTier()
         {
@@ -120,6 +145,7 @@ namespace Universe
         #region Private
 
         private AssetReference _preferredAsset;
+        private GameObject _spawnedObject;
 
         #endregion
     }

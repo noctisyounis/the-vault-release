@@ -186,7 +186,7 @@ namespace Universe.SceneTask.Runtime
         {
             _taskHandlesList.Remove( scene );
             RemoveSceneHandleInDico( scene );
-            UnloadSceneAsync( scene ).Completed += SceneUnloadComplete( sceneToLoadAfter );
+            UnloadSceneAsync(scene).Completed += SceneUnloadComplete( scene, sceneToLoadAfter );
         }
 
         private static void RefreshFocusedScene()
@@ -216,8 +216,9 @@ namespace Universe.SceneTask.Runtime
 
         #region Callbacks
 
-        private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete( TaskData task = null )
+        private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete( AsyncOperationHandle<SceneInstance> unloaded, TaskData task = null )
         {
+            Release(unloaded);
             RefreshFocusedScene();
 
             if( task ) ULoadTask( null, task );
