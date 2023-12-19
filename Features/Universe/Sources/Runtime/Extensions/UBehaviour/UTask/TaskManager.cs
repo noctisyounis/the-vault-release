@@ -41,6 +41,14 @@ namespace Universe
         #endregion
         
         
+        #region Events
+
+        public delegate void OnDestroyedHandler();
+        public event OnDestroyedHandler OnDestroyed;
+        
+        #endregion
+        
+        
         #region Unity API
 
         public override void Awake()
@@ -103,7 +111,7 @@ namespace Universe
         
         public override void OnDestroy()
         {
-            base.OnDestroy();
+            OnDestroyed?.Invoke();
             Task.Unregister(this);
         }
 

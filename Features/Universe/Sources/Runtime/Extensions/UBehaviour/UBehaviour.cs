@@ -46,6 +46,8 @@ namespace Universe
         private void Register()
         {
             if (!Application.isPlaying) return;
+
+            Task.GetTaskManagerOf(this).OnDestroyed += Unregister;
             
             RegisterUpdate();
             RegisterFixedUpdate();
@@ -79,7 +81,7 @@ namespace Universe
         private void Unregister()
         {
             if (!Application.isPlaying) return;
-
+            
             UnregisterUpdate();
             UnregisterFixedUpdate();
             UnregisterLateUpdate();
@@ -88,26 +90,37 @@ namespace Universe
         private void UnregisterFixedUpdate()
         {
             if (!_useFixedUpdate) return;
-            
+            if (!Updated) return;
+
             _useFixedUpdate = false;
-           Task.UnregisterFixedUpdate(this);
+            Task.UnregisterFixedUpdate(this);
+           
+            if (!Updated) Task.GetTaskManagerOf(this).OnDestroyed -= Unregister;
         }
         
         private void UnregisterUpdate()
-        {
+        { 
             if (!_useUpdate) return;
+            if (!Updated) return;
             
             _useUpdate = false;
-           Task.UnregisterUpdate(this);
+            Task.UnregisterUpdate(this);
+           
+            if (!Updated) Task.GetTaskManagerOf(this).OnDestroyed -= Unregister;
         }
         
         private void UnregisterLateUpdate()
         {
             if (!_useLateUpdate) return;
-            
+            if (!Updated) return;
+
             _useLateUpdate = false;
            Task.UnregisterLateUpdate(this);
+           
+           if (!Updated) Task.GetTaskManagerOf(this).OnDestroyed -= Unregister;
         }
+
+        private bool Updated => _useUpdate || _useFixedUpdate || _useLateUpdate;
 
         #endregion
         
