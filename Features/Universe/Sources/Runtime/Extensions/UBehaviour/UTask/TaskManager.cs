@@ -15,8 +15,7 @@ namespace Universe
     {
         #region Exposed
 
-        [Header("Settings")] 
-
+        [Header("Settings")] public ScriptableDebugSizeOfTaskData m_debugUpdateCount;
         public GameObject m_inputManager;
         public XR m_xr;
         
@@ -171,6 +170,7 @@ namespace Universe
             SafeRemoveTargetFromList(target, _unregisteringUpdate);
             _registeredUpdateSet.IntoArray(ref _registeredUpdate);
             _registeredUpdateAmount = _registeredUpdate.Length;
+            m_debugUpdateCount.m_sizeOfEverything.UpdateSizeOfUpdate(_registeredUpdateAmount);
         }
 
         public void AddToFixedUpdate(UBehaviour target)
@@ -179,6 +179,8 @@ namespace Universe
             SafeRemoveTargetFromList(target, _unregisteringFixedUpdate);
             _registeredFixedUpdateSet.IntoArray(ref _registeredFixedUpdate);
             _registeredFixedUpdateAmount = _registeredFixedUpdate.Length;
+            m_debugUpdateCount.m_sizeOfEverything.UpdateOfFixedUpdate(_registeredFixedUpdateAmount);
+
         }
         
         public void AddToLateUpdate(UBehaviour target)
@@ -187,6 +189,8 @@ namespace Universe
             SafeRemoveTargetFromList(target, _unregisteringLateUpdate);
             _registeredLateUpdateSet.IntoArray(ref _registeredLateUpdate);
             _registeredLateUpdateAmount = _registeredLateUpdate.Length;
+            m_debugUpdateCount.m_sizeOfEverything.UpdateOfLateUpdate(_registeredLateUpdateAmount);
+
         }
 
         public void RemoveFromLateUpdate(UBehaviour target) =>
