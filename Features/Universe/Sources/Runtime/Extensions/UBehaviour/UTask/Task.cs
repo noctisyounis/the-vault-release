@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Linq; //--
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -18,8 +18,6 @@ namespace Universe.SceneTask.Runtime
         public static AsyncOperationHandle<SceneInstance> m_focusSceneHandle;
         public static TaskData m_focusTask;
         public static SceneInstance m_focusScene;
-
-        
 
         #endregion
 
