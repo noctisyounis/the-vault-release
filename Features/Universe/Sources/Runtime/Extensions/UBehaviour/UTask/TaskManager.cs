@@ -113,7 +113,7 @@ namespace Universe
             
             for (var i = 0; i < _finalUpdateCount; i++)
             {
-                currentUBehaviour = _registeredUpdate[i];
+                currentUBehaviour = _registeredLateUpdate[i];
                 if(currentUBehaviour is null || !currentUBehaviour.UseUpdates) continue;
                 
                 currentUBehaviour.OnLateUpdate(deltaTime);
