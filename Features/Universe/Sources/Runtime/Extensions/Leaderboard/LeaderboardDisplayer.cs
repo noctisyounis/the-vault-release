@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 namespace Universe.Leaderboard.Runtime
 {
@@ -16,6 +17,14 @@ namespace Universe.Leaderboard.Runtime
         public int m_maxDisplayedAmount;
         public Entry[] m_content;
 		
+        #endregion
+        
+        
+        #region Events
+
+        public UnityEvent OnRefreshed;
+        public UnityEvent OnRefreshedFailed;
+        
         #endregion
 
 
@@ -44,7 +53,11 @@ namespace Universe.Leaderboard.Runtime
 		
         public void Refresh()
         {
-            if(m_content == null) return;
+            if (m_content == null)
+            {
+                OnRefreshedFailed?.Invoke();
+                return;
+            }
             if(m_entries == null) m_entries = new();
             
             var contentAmount = m_content.Length;
@@ -78,6 +91,8 @@ namespace Universe.Leaderboard.Runtime
                     m_entries.Add(entry);
                 });
             }
+            
+            OnRefreshed?.Invoke();
 
             _needRefresh = false;
         }
