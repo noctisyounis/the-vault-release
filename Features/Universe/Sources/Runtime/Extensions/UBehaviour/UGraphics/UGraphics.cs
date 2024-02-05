@@ -114,7 +114,7 @@ namespace Universe
         #region Utils
 
         private void CallbackOnAssetLoaded(GameObject go) =>
-            OnAssetLoaded.Invoke(go);
+            OnAssetLoaded?.Invoke(go);
 
         #endregion
 
