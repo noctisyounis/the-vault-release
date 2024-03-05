@@ -47,7 +47,7 @@ namespace Universe
 
 
         #region Unity API
-
+        
         public new void Awake()
         {
             base.Awake();
@@ -85,6 +85,7 @@ namespace Universe
         private void OnValidate()
         {
             if (FontsAreLoading()) return;
+            GetTextComponent();
             Refresh();
         }
 

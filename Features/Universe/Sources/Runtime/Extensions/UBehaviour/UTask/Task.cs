@@ -25,7 +25,9 @@ namespace Universe.SceneTask.Runtime
         #region Events
 
         public static Action<TaskData> OnTaskLoaded;
-
+        public static Action<TaskData> OnTaskUnloading;
+        public static Action<TaskData> OnTaskUnloaded;
+        
         #endregion
 
 
@@ -65,7 +67,7 @@ namespace Universe.SceneTask.Runtime
             {
                 var previous = GetPreviousSceneLoaded();
                 RemoveSceneHandleInDico( previous );
-                UnloadScene( previous, task );
+                UnloadScene( previous, task, () => {OnTaskUnloaded?.Invoke(task);});
             }
         }
 
@@ -79,8 +81,14 @@ namespace Universe.SceneTask.Runtime
             
             if( DicoDoesntContain( task ) ) return;
             var handle = GetLastHandleOfScene(task);
+            
             RemoveHandleFromDico( task, handle );
-            UnloadScene( handle );
+            UnloadScene( handle, null, () =>
+            {
+                OnTaskUnloaded?.Invoke(task);
+            } );
+            
+            OnTaskUnloading?.Invoke(task);
         }
 
         public static SceneInstance GetLoadedScene( TaskData from )
@@ -151,15 +159,31 @@ namespace Universe.SceneTask.Runtime
                 return false;
 
             var invocations = action.GetInvocationList();
-            if( invocations is null )
-                return false;
 
-            var length = invocations.Length;
             foreach( var invocation in invocations )
             {
                 var method = invocation.Method;
                 var ownerType = method.DeclaringType;
-                if( ownerType.Equals(owner) && method.Name.Equals( methodName ) )
+                if( ownerType == owner && method.Name.Equals( methodName ) )
+                    return true;
+            }
+
+            return false;
+        }
+        
+        public static bool IsSubscribedOnTaskUnloaded(Type owner, string methodName)
+        {
+            var action = OnTaskUnloaded;
+            if( action is null )
+                return false;
+
+            var invocations = action.GetInvocationList();
+
+            foreach( var invocation in invocations )
+            {
+                var method = invocation.Method;
+                var ownerType = method.DeclaringType;
+                if( ownerType == owner && method.Name.Equals( methodName ) )
                     return true;
             }
 
@@ -180,11 +204,15 @@ namespace Universe.SceneTask.Runtime
             handle.Completed += OnSceneLoaded;
         }
 
-        private static void UnloadScene( AsyncOperationHandle<SceneInstance> scene, TaskData sceneToLoadAfter = null )
+        private static void UnloadScene( AsyncOperationHandle<SceneInstance> scene, TaskData sceneToLoadAfter = null, Action callback = null)
         {
             _taskHandlesList.Remove( scene );
             RemoveSceneHandleInDico( scene );
-            UnloadSceneAsync(scene).Completed += SceneUnloadComplete( scene, sceneToLoadAfter );
+            UnloadSceneAsync(scene).Completed += (obj) =>
+            {
+                callback?.Invoke();
+                SceneUnloadComplete(scene, sceneToLoadAfter);
+            };
         }
 
         private static void RefreshFocusedScene()

@@ -5,8 +5,9 @@ namespace Universe.SceneTask.Runtime
     public class GameStarter : UBehaviour
     {
         #region Public Members
-        
-        [Header("Settings")]
+
+        [Header("Settings")] 
+        public bool m_useEditorAwake;
         public UnityMessage m_loadLevelOn; 
         public LevelData m_levelData;
         
@@ -18,6 +19,7 @@ namespace Universe.SceneTask.Runtime
         public override void Awake()
         {
 #if UNITY_EDITOR
+            if (!IsEditorAwake()) return;
             Load();
             return;
 #endif
@@ -52,6 +54,8 @@ namespace Universe.SceneTask.Runtime
 
 #if UNITY_EDITOR
 
+            Level.s_currentLevel = null;
+
             var checkpoint = CheckpointManager.EditorCheckPoint;
             var startLevelData = checkpoint.m_level;
             var startLevelSituation = checkpoint.m_situation;
@@ -69,12 +73,14 @@ namespace Universe.SceneTask.Runtime
         
         
         #region Utils
-        
+
+        private bool IsEditorAwake() => m_useEditorAwake;
         private bool IsAwake() => m_loadLevelOn == UnityMessage.Awake;
         
         private bool IsStart() => m_loadLevelOn == UnityMessage.Start;
         
         private bool IsOnEnable() => m_loadLevelOn == UnityMessage.OnEnable;
+        
         
         #endregion
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Universe.SceneTask.Runtime
 {
@@ -14,6 +15,7 @@ namespace Universe.SceneTask.Runtime
         }
 
         public static bool AreAllSituationsLoaded   => ( LoadingSituations.Count == 0 && LoadedSituations.Count > 0); 
+        public static bool AreAllSituationsUnloaded   => ( UnloadingSituations.Count == 0 && LoadedSituations.Count == 0); 
         public static bool CanLoadArt               => ( CurrentEnvironment & Environment.ART ) != 0;
         public static bool CanLoadBlockMesh         => ( CurrentEnvironment & Environment.BLOCK_MESH ) != 0;
 
@@ -23,6 +25,8 @@ namespace Universe.SceneTask.Runtime
         #region Events
 
         public static Action<SituationData> OnSituationLoaded;
+        public static Action<SituationData> OnSituationUnloading;
+        public static Action<SituationData> OnSituationUnloaded;
 
         #endregion
 
@@ -56,7 +60,15 @@ namespace Universe.SceneTask.Runtime
         {
             if(!LoadedSituations.Contains( situation )) return;
 
+            UnloadingSituations.Add(situation);
+            UnloadingSituationsStatus.Add(situation, 0b000);
             LoadedSituations.Remove( situation );
+
+            if (!Task.IsSubscribedOnTaskUnloaded(typeof(Situation), nameof(OnAnyTaskUnloaded)))
+                Task.OnTaskUnloaded += OnAnyTaskUnloaded;
+            
+
+            OnSituationUnloading?.Invoke(situation);
 
             source.TryUnloadBlockMeshTask( situation );
             source.TryUnloadArtTask( situation );
@@ -72,6 +84,44 @@ namespace Universe.SceneTask.Runtime
 
             source.UUnloadTask( gameplay );
             source.ULoadTask( gameplay );
+        }
+        
+        public static bool IsSubscribedOnTaskLoaded(Type owner, string methodName)
+        {
+            var action = Task.OnTaskLoaded;
+            if( action is null )
+                return false;
+
+            var invocations = action.GetInvocationList();
+
+            foreach( var invocation in invocations )
+            {
+                var method = invocation.Method;
+                var ownerType = method.DeclaringType;
+                if( ownerType == owner && method.Name.Equals( methodName ) )
+                    return true;
+            }
+
+            return false;
+        }
+        
+        public static bool IsSubscribedOnSituationUnloaded(Type owner, string methodName)
+        {
+            var action = OnSituationUnloaded;
+            if( action is null )
+                return false;
+
+            var invocations = action.GetInvocationList();
+
+            foreach( var invocation in invocations )
+            {
+                var method = invocation.Method;
+                var ownerType = method.DeclaringType;
+                if( ownerType == owner && method.Name.Equals( methodName ) )
+                    return true;
+            }
+
+            return false;
         }
 
         #endregion
@@ -140,31 +190,29 @@ namespace Universe.SceneTask.Runtime
         private static void TryUnloadBlockMeshTask( this UBehaviour source, SituationData of )
         {
             var blockMesh = of.m_blockMeshEnvironment;
-
-            if( IsStillNeeded( blockMesh ) )
-                return;
-
+            if( IsStillNeeded( blockMesh ) ) return;
+            
             source.UUnloadTask( blockMesh );
+            UnloadingSituationsStatus[of] |= 0b001;
         }
 
         private static void TryUnloadArtTask( this UBehaviour source, SituationData of )
         {
             var art = of.m_artEnvironment;
-
-            if( IsStillNeeded( art ) )
-                return;
+            if( IsStillNeeded( art ) ) return;
 
             source.UUnloadTask( art );
+            UnloadingSituationsStatus[of] |= 0b010;
+
         }
 
         private static void TryUnloadGameplayTask( this UBehaviour source, SituationData of )
         {
             var gameplay = of.m_gameplay;
-
-            if( IsStillNeeded( gameplay ) )
-                return;
+            if( IsStillNeeded( gameplay ) ) return;
 
             source.UUnloadTask( gameplay );
+            UnloadingSituationsStatus[of] |= 0b100;
         }
 
         private static void TryUnloadPlatformSpecificTask(this UBehaviour source, SituationData of)
@@ -259,9 +307,9 @@ namespace Universe.SceneTask.Runtime
             return false;
         }
 
-        private static void OnAnyTaskLoaded( TaskData task ) =>
-            RefreshLoadingSituations();
-
+        private static void OnAnyTaskLoaded( TaskData task ) => RefreshLoadingSituations();
+        private static void OnAnyTaskUnloaded( TaskData task ) => RefreshUnloadingSituations(task);
+        
         private static void RefreshLoadingSituations()
         {
             var count = LoadingSituations.Count;
@@ -286,10 +334,40 @@ namespace Universe.SceneTask.Runtime
                 Task.OnTaskLoaded -= OnAnyTaskLoaded;
         }
 
-        private static List<SituationData> LoadingSituations =>
-            _loadingSituations ??= new();
-        private static List<SituationData> LoadedSituations =>
-            _loadedSituations ??= new();
+        private static void RefreshUnloadingSituations( TaskData task )
+        {
+            var count = UnloadingSituations.Count;
+            
+            for( var i = count-1; i >= 0; i-- )
+            {
+                var situation  = UnloadingSituations[i];
+                var status = UnloadingSituationsStatus[situation];
+                
+                var blockMesh   = situation.m_blockMeshEnvironment;
+                var art         = situation.m_artEnvironment;
+                var gameplay    = situation.m_gameplay;
+
+                if (task.Equals(blockMesh)) status &= 0b110;
+                if (task.Equals(art)) status &= 0b101;
+                if (task.Equals(gameplay)) status &= 0b011;
+
+                _unloadingSituationsStatus[situation] = status;
+
+                if (status > 0) continue;
+
+                UnloadingSituations.Remove( situation );
+                UnloadingSituationsStatus.Remove(situation);
+                OnSituationUnloaded?.Invoke( situation );
+            }
+            
+            if( UnloadingSituations.Count == 0 )
+                Task.OnTaskUnloaded -= OnAnyTaskUnloaded;
+        }
+
+        private static List<SituationData> LoadingSituations => _loadingSituations ??= new();
+        private static List<SituationData> LoadedSituations => _loadedSituations ??= new();
+        private static List<SituationData> UnloadingSituations => _unloadingSituations ??= new();
+        private static Dictionary<SituationData, byte> UnloadingSituationsStatus => _unloadingSituationsStatus ??= new();
 
         #endregion
 
@@ -300,6 +378,8 @@ namespace Universe.SceneTask.Runtime
 
         private static List<SituationData> _loadingSituations;
         private static List<SituationData> _loadedSituations;
+        private static List<SituationData> _unloadingSituations;
+        private static Dictionary<SituationData, byte> _unloadingSituationsStatus;
 
         #endregion
     }

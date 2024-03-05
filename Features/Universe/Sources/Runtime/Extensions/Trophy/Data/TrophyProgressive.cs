@@ -19,6 +19,8 @@ namespace Universe.Trophy.Runtime
 			return m_unlocked.Value;
 		}
 
+		public override void Unlock() => m_value.Value = m_target;
+
 		public override FactBase GetValue() => m_value;
 
 		#endregion
