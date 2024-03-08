@@ -208,6 +208,8 @@ namespace Universe.SceneTask.Runtime
         {
             _taskHandlesList.Remove( scene );
             RemoveSceneHandleInDico( scene );
+            RefreshFocusedScene();
+
             UnloadSceneAsync(scene).Completed += (obj) =>
             {
                 callback?.Invoke();
