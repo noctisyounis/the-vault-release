@@ -211,7 +211,7 @@ namespace Universe.SceneTask.Runtime
             UnloadSceneAsync(scene).Completed += (obj) =>
             {
                 callback?.Invoke();
-                SceneUnloadComplete(scene, sceneToLoadAfter);
+                SceneUnloadComplete(sceneToLoadAfter);
             };
         }
 
@@ -242,14 +242,11 @@ namespace Universe.SceneTask.Runtime
 
         #region Callbacks
 
-        private static Action<AsyncOperationHandle<SceneInstance>> SceneUnloadComplete( AsyncOperationHandle<SceneInstance> unloaded, TaskData task = null )
+        private static void SceneUnloadComplete( TaskData task = null )
         {
-            Release(unloaded);
             RefreshFocusedScene();
 
             if( task ) ULoadTask( null, task );
-
-            return null;
         }
 
         private static void OnSceneLoaded( AsyncOperationHandle<SceneInstance> go )
