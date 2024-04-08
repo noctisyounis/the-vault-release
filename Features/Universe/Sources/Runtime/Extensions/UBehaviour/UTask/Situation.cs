@@ -172,10 +172,12 @@ namespace Universe.SceneTask.Runtime
             TaskData[] data = null;
 #if IKIMASHO_PS5
             data = of.m_playstation5SpecificTasks; 
-#elif IKIMASHO_META
+#elif IKIMASHO_META || IKIMASHO_PICO
             data = of.m_metaSpecificTasks;
 #elif IKIMASHO_PC || UNITY_EDITOR
             data = of.m_win64SpecificTasks; 
+#else
+            return;
 #endif
             
             for (var i = 0; i < data.Length; i++)
@@ -220,10 +222,12 @@ namespace Universe.SceneTask.Runtime
             TaskData[] data = null;
 #if IKIMASHO_PS5
             data = of.m_playstation5SpecificTasks; 
-#elif IKIMASHO_META
+#elif IKIMASHO_META || IKIMASHO_PICO
             data = of.m_metaSpecificTasks;
 #elif IKIMASHO_PC || UNITY_EDITOR
             data = of.m_win64SpecificTasks; 
+#else
+            return;
 #endif
             if(data == null) return;
 
@@ -258,10 +262,12 @@ namespace Universe.SceneTask.Runtime
                 TaskData[] data = null;
 #if IKIMASHO_PS5
                 data = situation.m_playstation5SpecificTasks; 
-#elif IKIMASHO_META
+#elif IKIMASHO_META || IKIMASHO_PICO
                 data = situation.m_metaSpecificTasks;
 #elif IKIMASHO_PC || UNITY_EDITOR
-                data = situation.m_win64SpecificTasks; 
+                data = situation.m_win64SpecificTasks;
+#else
+                return false;
 #endif
                 if(data != null)
                 {
@@ -288,10 +294,12 @@ namespace Universe.SceneTask.Runtime
                 TaskData[] data = null;
 #if IKIMASHO_PS5
                 data = situation.m_playstation5SpecificTasks; 
-#elif IKIMASHO_META
+#elif IKIMASHO_META || IKIMASHO_PICO
                 data = situation.m_metaSpecificTasks;
 #elif IKIMASHO_PC || UNITY_EDITOR
-                data = situation.m_win64SpecificTasks; 
+                data = situation.m_win64SpecificTasks;
+#else
+                return false;
 #endif
                 if (data != null)
                 {
