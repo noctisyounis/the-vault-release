@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 13966, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: TaskTemplate_Gameplay
+  m_EditorClassIdentifier: 
+  templateScene: {fileID: 102900000, guid: 4c23ff5aaa99784409e001064bf9cb84, type: 3}
+  templateName: Universe Slice
+  description: 
+  preview: {fileID: 0}
+  dependencies:
+  - dependency: {fileID: 733233920122203099, guid: bf598785b45c207478804755616e18f8, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 8751715412098632455, guid: b159d43732891524a8509eab4d138b61, type: 3}
+    instantiationMode: 0
+  - dependency: {fileID: 11400000, guid: e2d4006984c1751438a165db2d45f9fa, type: 2}
+    instantiationMode: 1
+  templatePipeline: {fileID: 0}
+  badge: {fileID: 0}
+  addToDefaults: 0
