@@ -20,9 +20,9 @@ MonoBehaviour:
   m_artTaskName: Art
   m_gameplayTaskName: Gameplay
   m_addressableGroupHelperName: LevelsHelper
-  m_playerSceneTemplate: {fileID: 11400000, guid: 57ae25dceaf5ed64e927f765dfd15606, type: 2}
-  m_audioSceneTemplate: {fileID: 11400000, guid: 57ae25dceaf5ed64e927f765dfd15606, type: 2}
-  m_blockMeshSceneTemplate: {fileID: 11400000, guid: 57ae25dceaf5ed64e927f765dfd15606, type: 2}
+  m_playerSceneTemplate: {fileID: 11400000, guid: 60d61e4c411e6fb449400214ff325502, type: 2}
+  m_audioSceneTemplate: {fileID: 11400000, guid: 8bca3639ead29174da9346d8c5905f9c, type: 2}
+  m_blockMeshSceneTemplate: {fileID: 11400000, guid: 76110ab3456a9cc4b9937a4e5c88a34d, type: 2}
   m_artSceneTemplate: {fileID: 11400000, guid: 57ae25dceaf5ed64e927f765dfd15606, type: 2}
-  m_gameplaySceneTemplate: {fileID: 11400000, guid: 57ae25dceaf5ed64e927f765dfd15606, type: 2}
+  m_gameplaySceneTemplate: {fileID: 11400000, guid: debba2d742d0a9e4fb9c441738ed9a7d, type: 2}
   m_addressableGroupTemplate: {fileID: 11400000, guid: b0dfa86bc0bf7374ba830cbc7ac6bb24, type: 2}

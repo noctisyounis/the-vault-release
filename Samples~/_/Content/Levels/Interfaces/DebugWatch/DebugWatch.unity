@@ -193,6 +193,10 @@ MonoBehaviour:
     m_playArea: {fileID: 0}
     m_dominantHand: {fileID: 805400371}
     m_nonDominantHand: {fileID: 805400372}
+  _updatesCapacity: {fileID: 11400000, guid: e2d4006984c1751438a165db2d45f9fa, type: 2}
+  localUpdate:
+    m_enableOverride: 0
+    m_countOverride: 0
 --- !u!1 &332118559
 GameObject:
   m_ObjectHideFlags: 0
